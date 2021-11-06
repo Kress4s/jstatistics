@@ -26,17 +26,13 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/permission/print": {
-            "get": {
-                "description": "登录验证",
-                "tags": [
-                    "登录验证"
-                ],
-                "summary": "登录验证"
-            }
-        },
         "/api/v1/permission/user": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "创建用户",
                 "tags": [
                     "权限管理 - 管理员"
@@ -211,12 +207,15 @@ var doc = `{
             "type": "object",
             "properties": {
                 "access_token": {
+                    "description": "token",
                     "type": "string"
                 },
                 "expiry": {
+                    "description": "token 到期时间 默认两小时",
                     "type": "integer"
                 },
                 "token_type": {
+                    "description": "认证类型",
                     "type": "string"
                 }
             }
@@ -234,6 +233,13 @@ var doc = `{
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

@@ -40,7 +40,6 @@ func (lh *LoginHandler) Login(ctx iris.Context) mvc.Result {
 	if ex != nil {
 		return response.Error(ex)
 	}
-	ctx.Values().Set("token", res.AccessToken)
 	return response.JSON(res)
 }
 

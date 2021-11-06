@@ -24,10 +24,13 @@ definitions:
   vo.LoginResponse:
     properties:
       access_token:
+        description: token
         type: string
       expiry:
+        description: token 到期时间 默认两小时
         type: integer
       token_type:
+        description: 认证类型
         type: string
     type: object
   vo.UserReq:
@@ -47,12 +50,6 @@ info:
   title: JS流量统计管理系统后台API
   version: "1.0"
 paths:
-  /api/v1/permission/print:
-    get:
-      description: 登录验证
-      summary: 登录验证
-      tags:
-      - 登录验证
   /api/v1/permission/user:
     post:
       description: 创建用户
@@ -82,6 +79,8 @@ paths:
           description: 服务器内部错误
           schema:
             $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
       summary: 创建用户
       tags:
       - 权限管理 - 管理员
@@ -147,4 +146,9 @@ paths:
 schemes:
 - http
 - https
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

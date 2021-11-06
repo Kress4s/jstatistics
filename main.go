@@ -10,6 +10,10 @@ package main
 // @schemes http https
 // @BasePath /
 
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+
 import (
 	"js_statistics/app"
 	"js_statistics/config"

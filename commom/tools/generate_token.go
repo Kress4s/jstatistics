@@ -11,7 +11,7 @@ const (
 )
 
 func Token(userID uint, username string) (string, int64) {
-	exp := time.Now().Add(1 * time.Minute * time.Duration(1)).Unix()
+	exp := time.Now().Add(2 * time.Hour).Unix()
 	token := jwt.NewTokenWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		// 根据需求，可以存一些必要的数据
 		"user_id":   userID,

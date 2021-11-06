@@ -7,7 +7,6 @@ import (
 	"js_statistics/app/vo"
 	"js_statistics/exception"
 
-	"github.com/iris-contrib/middleware/jwt"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
 )
@@ -33,6 +32,7 @@ func NewUserHandler() *UserHandler {
 // @Failure 401 {object} vo.Error "当前用户登录令牌失效"
 // @Failure 403 {object} vo.Error "当前操作无权限"
 // @Failure 500 {object} vo.Error "服务器内部错误"
+// @Security ApiKeyAuth
 // @Router /api/v1/permission/user [post]
 func (u *UserHandler) Create(ctx iris.Context) mvc.Result {
 	user := &vo.UserReq{}
@@ -46,18 +46,7 @@ func (u *UserHandler) Create(ctx iris.Context) mvc.Result {
 	return response.OK()
 }
 
-// Create godoc
-// @Summary 登录验证
-// @Description 登录验证
-// @Tags 登录验证
-// @Router /api/v1/permission/print [get]
-func (lh *UserHandler) Print(ctx iris.Context) {
-	jwtInfo := ctx.Values().Get("jwt").(*jwt.Token).Claims
-	ctx.JSON(jwtInfo)
-}
-
 // BeforeActivation 初始化路由
 func (u *UserHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodPost, "/user", "Create")
-	b.Handle(iris.MethodGet, "/print", "Print")
 }
