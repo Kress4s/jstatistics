@@ -1,0 +1,150 @@
+basePath: /
+definitions:
+  vo.Error:
+    properties:
+      args:
+        description: 参数
+        items:
+          type: string
+        type: array
+      code:
+        description: 错误码
+        type: integer
+      msg:
+        description: 错误消息
+        type: string
+    type: object
+  vo.LoginReq:
+    properties:
+      password:
+        type: string
+      user_name:
+        type: string
+    type: object
+  vo.LoginResponse:
+    properties:
+      access_token:
+        type: string
+      expiry:
+        type: integer
+      token_type:
+        type: string
+    type: object
+  vo.UserReq:
+    properties:
+      is_admin:
+        type: boolean
+      password:
+        type: string
+      user_name:
+        type: string
+    type: object
+info:
+  contact:
+    email: york-xia@gmail.com
+    name: xiayoushuang
+  description: JS流量统计管理系统后台API
+  title: JS流量统计管理系统后台API
+  version: "1.0"
+paths:
+  /api/v1/permission/print:
+    get:
+      description: 登录验证
+      summary: 登录验证
+      tags:
+      - 登录验证
+  /api/v1/permission/user:
+    post:
+      description: 创建用户
+      parameters:
+      - description: UserReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.UserReq'
+      responses:
+        "200":
+          description: 创建用户成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      summary: 创建用户
+      tags:
+      - 权限管理 - 管理员
+  /auth/login:
+    post:
+      description: 用户登录
+      parameters:
+      - description: LoginReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.LoginReq'
+      responses:
+        "200":
+          description: 响应成功
+          schema:
+            $ref: '#/definitions/vo.LoginResponse'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      summary: 用户登录
+      tags:
+      - 登录
+  /auth/logout:
+    get:
+      description: 用户登出
+      responses:
+        "200":
+          description: 响应成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      summary: 用户登出
+      tags:
+      - 登录
+schemes:
+- http
+- https
+swagger: "2.0"

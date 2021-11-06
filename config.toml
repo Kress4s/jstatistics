@@ -1,0 +1,23 @@
+title = "JS访问统计后台配置文件"
+
+[prometheus]
+port = 1920
+
+[server]
+port = 9090
+max_page_size = 300
+
+[server.cors]
+allowed_origins = ["*"]
+allowed_headers = ["*"]
+
+[database]
+type = "postgres"
+
+[database.dsn]
+addr = "49.234.86.244:5433"
+db = "postgres"
+username = "postgres"
+password = "123456"
+connect_timeout = 5
+max_idle_conns = 10
