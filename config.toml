@@ -1,5 +1,7 @@
 title = "JS访问统计后台配置文件"
 
+debug = true
+
 [prometheus]
 port = 1920
 

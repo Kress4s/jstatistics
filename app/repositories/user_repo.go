@@ -24,8 +24,21 @@ func GetUserRepo() UserRepo {
 }
 
 type UserRepo interface {
+	Profile(db *gorm.DB, id uint) (*models.User, exception.Exception)
 	CheckPassword(db *gorm.DB, account, password string) (bool, uint, exception.Exception)
 	Create(db *gorm.DB, user *models.User) exception.Exception
+}
+
+func (u *UserRepoImpl) Profile(db *gorm.DB, id uint) (*models.User, exception.Exception) {
+	user := models.User{}
+	res := db.Where(&models.User{ID: id}).Find(&user)
+	if res.RowsAffected == 0 {
+		return nil, exception.New(response.ExceptionRecordNotFound, "recode not found")
+	}
+	if res.Error != nil {
+		return nil, exception.Wrap(response.ExceptionDatabase, res.Error)
+	}
+	return &user, nil
 }
 
 func (u *UserRepoImpl) CheckPassword(db *gorm.DB, username, password string) (bool, uint, exception.Exception) {

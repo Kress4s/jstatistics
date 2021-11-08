@@ -22,6 +22,7 @@ type userServiceImpl struct {
 }
 
 type UserService interface {
+	Profile(id uint) (*vo.Profile, exception.Exception)
 	Create(params *vo.UserReq) exception.Exception
 }
 
@@ -35,8 +36,20 @@ func GetUserService() UserService {
 	return userServiceInstance
 }
 
+func (us *userServiceImpl) Profile(id uint) (*vo.Profile, exception.Exception) {
+	user, ex := us.repo.Profile(us.db, id)
+	if ex != nil {
+		return nil, ex
+	}
+	return &vo.Profile{
+		ID:    user.ID,
+		Name:  user.Username,
+		Admin: user.IsAdmin,
+	}, nil
+}
+
 func (us *userServiceImpl) Create(params *vo.UserReq) exception.Exception {
-	// password 
+	// password
 	params.Password = string(tools.Base64Encode([]byte(params.Password)))
 	user := params.ToModel()
 	return us.repo.Create(us.db, &user)

@@ -14,7 +14,7 @@ var (
 
 type Config struct {
 	Title      string `toml:"title"`
-	DebugModel bool   `envconfig:"JS_BACKEND_DEBUG_MODE" toml:"-"`
+	DebugModel bool   `toml:"debug"`
 	Prometheus struct {
 		Port int `toml:"port"`
 	} `toml:"prometheus"`

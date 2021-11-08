@@ -4,6 +4,7 @@ import (
 	"js_statistics/app/handlers/auth"
 	v1 "js_statistics/app/handlers/v1"
 	"js_statistics/app/middlewares"
+	"js_statistics/config"
 	_ "js_statistics/docs"
 
 	"github.com/iris-contrib/swagger/v12"
@@ -13,8 +14,8 @@ import (
 )
 
 func RegisterRoutes(app *iris.Application) {
-	// cfg := config.GetConfig()
-	if true {
+	cfg := config.GetConfig()
+	if cfg.DebugModel {
 		app.Get("/swagger/{any:path}", swagger.WrapHandler(swaggerFiles.Handler))
 	}
 	app.Get("/liveness", func(ctx iris.Context) {

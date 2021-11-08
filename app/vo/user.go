@@ -19,3 +19,9 @@ type LoginReq struct {
 	UserName string `json:"user_name"`
 	Password string `json:"password"`
 }
+
+type Profile struct {
+	ID    uint   `json:"id"`
+	Name  string `json:"name"`
+	Admin bool   `json:"admin"`
+}
