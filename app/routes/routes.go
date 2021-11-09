@@ -30,5 +30,6 @@ func RegisterRoutes(app *iris.Application) {
 	permissionParty := party.Party("/permission")
 	permissionApp := mvc.New(permissionParty)
 	permissionApp.Handle(v1.NewUserHandler())
+	permissionApp.Handle(v1.NewPermissionHandler())
 
 }

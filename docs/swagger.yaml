@@ -33,7 +33,111 @@ definitions:
         description: 认证类型
         type: string
     type: object
-  vo.Profile:
+  vo.PermissionReq:
+    properties:
+      identify:
+        description: 权限标识
+        type: string
+      menu_name:
+        description: 菜单名称
+        type: string
+      name:
+        description: 名称
+        type: string
+      parent_id:
+        description: 父级菜单的ID,最高级为 0
+        type: integer
+      route:
+        description: 路由
+        type: string
+      type:
+        description: '权限类型   0: 菜单权限 1: 操作权限'
+        type: integer
+    type: object
+  vo.PermissionResp:
+    properties:
+      id:
+        description: ID
+        type: integer
+      identify:
+        description: 权限标识
+        type: string
+      index:
+        description: 索引
+        type: integer
+      menu_name:
+        description: 菜单名称
+        type: string
+      name:
+        description: 名称
+        type: string
+      parent_id:
+        description: 父级菜单的ID,最高级为 0
+        type: integer
+      route:
+        description: 路由
+        type: string
+      type:
+        description: '权限类型   0: 菜单权限 1: 操作权限'
+        type: integer
+    type: object
+  vo.PermissionTree:
+    properties:
+      id:
+        description: ID
+        type: integer
+      identify:
+        description: 权限标识
+        type: string
+      index:
+        description: 索引
+        type: integer
+      menu_name:
+        description: 菜单名称
+        type: string
+      name:
+        description: 名称
+        type: string
+      parent_id:
+        description: 父级ID
+        type: integer
+      route:
+        description: 路由
+        type: string
+      sub_permissions:
+        description: 子级权限
+        items:
+          $ref: '#/definitions/vo.PermissionTree'
+        type: array
+      type:
+        description: '权限类型   0: 菜单权限 1: 操作权限'
+        type: integer
+    type: object
+  vo.PermissionUpdateReq:
+    properties:
+      identify:
+        description: 权限标识
+        type: string
+      index:
+        description: 索引
+        type: integer
+      menu_name:
+        description: 菜单名称
+        type: string
+      name:
+        description: 名称
+        type: string
+      parent_id:
+        description: 父级菜单的ID,最高级为 0
+        type: integer
+      route:
+        description: 路由
+        type: string
+      type:
+        description: '权限类型   0: 菜单权限 1: 操作权限'
+        type: integer
+    type: object
+  vo.ProfileResp:
     properties:
       admin:
         type: boolean
@@ -51,6 +155,15 @@ definitions:
       user_name:
         type: string
     type: object
+  vo.UserUpdateReq:
+    properties:
+      is_admin:
+        type: boolean
+      password:
+        type: string
+      user_name:
+        type: string
+    type: object
 info:
   contact:
     email: york-xia@gmail.com
@@ -59,6 +172,174 @@ info:
   title: JS流量统计管理系统后台API
   version: "1.0"
 paths:
+  /api/v1/permission/rule:
+    post:
+      description: 创建权限规则
+      parameters:
+      - description: PermissionReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.PermissionReq'
+      responses:
+        "200":
+          description: 创建权限规则成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建权限规则
+      tags:
+      - 权限管理 - 权限规则
+  /api/v1/permission/rule/{id}:
+    delete:
+      description: 删除权限规则
+      parameters:
+      - description: 权限规则id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 删除权限规则成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除权限规则(开发修改中)
+      tags:
+      - 权限管理 - 权限规则
+    get:
+      description: 获取权限规则
+      parameters:
+      - description: 权限规则id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 查询权限规则成功
+          schema:
+            $ref: '#/definitions/vo.PermissionResp'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取权限规则
+      tags:
+      - 权限管理 - 权限规则
+    put:
+      description: 修改权限规则
+      parameters:
+      - description: 权限规则id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: PermissionUpdateReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.PermissionUpdateReq'
+      responses:
+        "200":
+          description: 修改权限规则成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改权限规则(开发修改中)
+      tags:
+      - 权限管理 - 权限规则
+  /api/v1/permission/rules:
+    get:
+      description: 获取权限规则树
+      responses:
+        "200":
+          description: 查询权限规则成功
+          schema:
+            $ref: '#/definitions/vo.PermissionTree'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取权限规则树
+      tags:
+      - 权限管理 - 权限规则
   /api/v1/permission/user:
     post:
       description: 创建用户
@@ -93,14 +374,87 @@ paths:
       summary: 创建用户
       tags:
       - 权限管理 - 管理员
+  /api/v1/permission/user/{id}:
+    get:
+      description: 查询用户信息
+      parameters:
+      - description: 用户id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 查询用户成功
+          schema:
+            $ref: '#/definitions/vo.ProfileResp'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询用户
+      tags:
+      - 权限管理 - 管理员
+    put:
+      description: 修改用户
+      parameters:
+      - description: 用户id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: UserUpdateReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.UserUpdateReq'
+      responses:
+        "200":
+          description: 修改用户成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改用户
+      tags:
+      - 权限管理 - 管理员
   /api/v1/permission/user/profile:
-    post:
+    get:
       description: 登录用户信息
       responses:
         "200":
           description: 获取用户信息成功
           schema:
-            $ref: '#/definitions/vo.Profile'
+            $ref: '#/definitions/vo.ProfileResp'
         "400":
           description: 请求参数错误
           schema:

@@ -8,6 +8,12 @@ type UserReq struct {
 	IsAdmin  bool   `json:"is_admin"`
 }
 
+type UserUpdateReq struct {
+	UserName string `json:"user_name"`
+	Password string `json:"password"`
+	IsAdmin  bool   `json:"is_admin"`
+}
+
 func (u UserReq) ToModel() models.User {
 	return models.User{
 		Username: u.UserName,
@@ -20,7 +26,7 @@ type LoginReq struct {
 	Password string `json:"password"`
 }
 
-type Profile struct {
+type ProfileResp struct {
 	ID    uint   `json:"id"`
 	Name  string `json:"name"`
 	Admin bool   `json:"admin"`

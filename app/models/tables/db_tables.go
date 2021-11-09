@@ -9,4 +9,6 @@ const (
 	UserRoleRelation = "js_user_role_relation"
 	// 权限表
 	Permission = "js_permission"
+	// 角色-权限
+	RolePermissionRelation = "js_role_permission_relation"
 )

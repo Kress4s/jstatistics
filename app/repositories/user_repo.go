@@ -27,6 +27,8 @@ type UserRepo interface {
 	Profile(db *gorm.DB, id uint) (*models.User, exception.Exception)
 	CheckPassword(db *gorm.DB, account, password string) (bool, uint, exception.Exception)
 	Create(db *gorm.DB, user *models.User) exception.Exception
+	Get(db *gorm.DB, id uint) (*models.User, exception.Exception)
+	Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception
 }
 
 func (u *UserRepoImpl) Profile(db *gorm.DB, id uint) (*models.User, exception.Exception) {
@@ -56,3 +58,22 @@ func (u *UserRepoImpl) CheckPassword(db *gorm.DB, username, password string) (bo
 func (u *UserRepoImpl) Create(db *gorm.DB, user *models.User) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Create(user).Error)
 }
+
+func (u *UserRepoImpl) Get(db *gorm.DB, id uint) (*models.User, exception.Exception) {
+	user := models.User{}
+	res := db.Where(&models.User{ID: id}).Find(&user)
+	if res.RowsAffected == 0 {
+		return nil, exception.New(response.ExceptionRecordNotFound, "recode not found")
+	}
+	if res.Error != nil {
+		return nil, exception.Wrap(response.ExceptionDatabase, res.Error)
+	}
+	return &user, nil
+}
+
+func (u *UserRepoImpl) Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception {
+	return exception.Wrap(response.ExceptionDatabase,
+		db.Model(&models.User{}).Where(&models.User{ID: id}).Updates(param).Error)
+}
+
+// TODO DELETE RELATED

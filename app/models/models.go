@@ -1,9 +1,12 @@
 package models
 
-import "js_statistics/app/models/internal/users"
+import (
+	"js_statistics/app/models/internal/permission"
+)
 
 type (
-	User             = users.User
-	Role             = users.Role
-	UserRoleRelation = users.UserRoleRelation
+	User             = permission.User
+	Role             = permission.Role
+	UserRoleRelation = permission.UserRoleRelation
+	Permission       = permission.Permission
 )

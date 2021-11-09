@@ -15,6 +15,270 @@
     },
     "basePath": "/",
     "paths": {
+        "/api/v1/permission/rule": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "创建权限规则",
+                "tags": [
+                    "权限管理 - 权限规则"
+                ],
+                "summary": "创建权限规则",
+                "parameters": [
+                    {
+                        "description": "PermissionReq",
+                        "name": "parameters",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vo.PermissionReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建权限规则成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/permission/rule/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取权限规则",
+                "tags": [
+                    "权限管理 - 权限规则"
+                ],
+                "summary": "获取权限规则",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "权限规则id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询权限规则成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.PermissionResp"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "修改权限规则",
+                "tags": [
+                    "权限管理 - 权限规则"
+                ],
+                "summary": "修改权限规则(开发修改中)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "权限规则id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "PermissionUpdateReq",
+                        "name": "parameters",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vo.PermissionUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "修改权限规则成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "删除权限规则",
+                "tags": [
+                    "权限管理 - 权限规则"
+                ],
+                "summary": "删除权限规则(开发修改中)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "权限规则id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "删除权限规则成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/permission/rules": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取权限规则树",
+                "tags": [
+                    "权限管理 - 权限规则"
+                ],
+                "summary": "获取权限规则树",
+                "responses": {
+                    "200": {
+                        "description": "查询权限规则成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.PermissionTree"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/permission/user": {
             "post": {
                 "security": [
@@ -70,7 +334,7 @@
             }
         },
         "/api/v1/permission/user/profile": {
-            "post": {
+            "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -85,8 +349,122 @@
                     "200": {
                         "description": "获取用户信息成功",
                         "schema": {
-                            "$ref": "#/definitions/vo.Profile"
+                            "$ref": "#/definitions/vo.ProfileResp"
                         }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/permission/user/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询用户信息",
+                "tags": [
+                    "权限管理 - 管理员"
+                ],
+                "summary": "查询用户",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询用户成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.ProfileResp"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "修改用户",
+                "tags": [
+                    "权限管理 - 管理员"
+                ],
+                "summary": "修改用户",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "UserUpdateReq",
+                        "name": "parameters",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vo.UserUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "修改用户成功"
                     },
                     "400": {
                         "description": "请求参数错误",
@@ -255,7 +633,150 @@
                 }
             }
         },
-        "vo.Profile": {
+        "vo.PermissionReq": {
+            "type": "object",
+            "properties": {
+                "identify": {
+                    "description": "权限标识",
+                    "type": "string"
+                },
+                "menu_name": {
+                    "description": "菜单名称",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "名称",
+                    "type": "string"
+                },
+                "parent_id": {
+                    "description": "父级菜单的ID,最高级为 0",
+                    "type": "integer"
+                },
+                "route": {
+                    "description": "路由",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "权限类型   0: 菜单权限 1: 操作权限",
+                    "type": "integer"
+                }
+            }
+        },
+        "vo.PermissionResp": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "ID",
+                    "type": "integer"
+                },
+                "identify": {
+                    "description": "权限标识",
+                    "type": "string"
+                },
+                "index": {
+                    "description": "索引",
+                    "type": "integer"
+                },
+                "menu_name": {
+                    "description": "菜单名称",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "名称",
+                    "type": "string"
+                },
+                "parent_id": {
+                    "description": "父级菜单的ID,最高级为 0",
+                    "type": "integer"
+                },
+                "route": {
+                    "description": "路由",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "权限类型   0: 菜单权限 1: 操作权限",
+                    "type": "integer"
+                }
+            }
+        },
+        "vo.PermissionTree": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "ID",
+                    "type": "integer"
+                },
+                "identify": {
+                    "description": "权限标识",
+                    "type": "string"
+                },
+                "index": {
+                    "description": "索引",
+                    "type": "integer"
+                },
+                "menu_name": {
+                    "description": "菜单名称",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "名称",
+                    "type": "string"
+                },
+                "parent_id": {
+                    "description": "父级ID",
+                    "type": "integer"
+                },
+                "route": {
+                    "description": "路由",
+                    "type": "string"
+                },
+                "sub_permissions": {
+                    "description": "子级权限",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vo.PermissionTree"
+                    }
+                },
+                "type": {
+                    "description": "权限类型   0: 菜单权限 1: 操作权限",
+                    "type": "integer"
+                }
+            }
+        },
+        "vo.PermissionUpdateReq": {
+            "type": "object",
+            "properties": {
+                "identify": {
+                    "description": "权限标识",
+                    "type": "string"
+                },
+                "index": {
+                    "description": "索引",
+                    "type": "integer"
+                },
+                "menu_name": {
+                    "description": "菜单名称",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "名称",
+                    "type": "string"
+                },
+                "parent_id": {
+                    "description": "父级菜单的ID,最高级为 0",
+                    "type": "integer"
+                },
+                "route": {
+                    "description": "路由",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "权限类型   0: 菜单权限 1: 操作权限",
+                    "type": "integer"
+                }
+            }
+        },
+        "vo.ProfileResp": {
             "type": "object",
             "properties": {
                 "admin": {
@@ -270,6 +791,20 @@
             }
         },
         "vo.UserReq": {
+            "type": "object",
+            "properties": {
+                "is_admin": {
+                    "type": "boolean"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "user_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "vo.UserUpdateReq": {
             "type": "object",
             "properties": {
                 "is_admin": {
