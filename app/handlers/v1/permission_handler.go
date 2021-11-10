@@ -91,7 +91,7 @@ func (ph *PermissionHandler) GetPermissionTree(ctx iris.Context) mvc.Result {
 }
 
 // Create godoc
-// @Summary 修改权限规则(开发修改中)
+// @Summary 修改权限规则
 // @Description 修改权限规则
 // @Tags 权限管理 - 权限规则
 // @Param id path string true "权限规则id"
@@ -120,7 +120,7 @@ func (ph *PermissionHandler) Update(ctx iris.Context) mvc.Result {
 }
 
 // Create godoc
-// @Summary 删除权限规则(开发修改中)
+// @Summary 删除权限规则
 // @Description 删除权限规则
 // @Tags 权限管理 - 权限规则
 // @Param id path string true "权限规则id"

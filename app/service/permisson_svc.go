@@ -78,25 +78,27 @@ func (ps *permissionServiceImpl) GetPermissionTree() (*vo.PermissionTree, except
 		}
 		allPermission = append(allPermission, vo.NewPermissionTree(&permissions[i]))
 	}
-	ps.makePermissionTree(allPermission, topsPermission)
+	ps.makePermissionTree(allPermission, topsPermission, nil)
 	return topsPermission, nil
 }
 
-func (ps *permissionServiceImpl) makePermissionTree(allPermission []*vo.PermissionTree, topermission *vo.PermissionTree) {
+func (ps *permissionServiceImpl) makePermissionTree(allPermission []*vo.PermissionTree,
+	topermission *vo.PermissionTree, ids *[]uint) {
 	children, _ := ps.haveChild(allPermission, topermission)
 	if len(children) != 0 {
+		if ids != nil {
+			for i := range children {
+				*ids = append(*ids, children[i].ID)
+			}
+		}
 		topermission.SubPermissions = append(topermission.SubPermissions, children...)
 		for _, v := range children {
 			_, yes := ps.haveChild(allPermission, v)
 			if yes {
-				ps.makePermissionTree(allPermission, v)
+				ps.makePermissionTree(allPermission, v, ids)
 			}
 		}
 	}
-}
-
-func (ps *permissionServiceImpl) Delete(openID string, id uint) exception.Exception {
-	return ps.repo.Delete(ps.db, id)
 }
 
 func (ps *permissionServiceImpl) haveChild(allPermissions []*vo.PermissionTree, topPermission *vo.PermissionTree,
@@ -114,4 +116,32 @@ func (ps *permissionServiceImpl) haveChild(allPermissions []*vo.PermissionTree, 
 
 func (us *permissionServiceImpl) Update(openID string, id uint, params *vo.PermissionUpdateReq) exception.Exception {
 	return us.repo.Update(us.db, id, params.ToMap())
+}
+
+func (ps *permissionServiceImpl) Delete(openID string, id uint) exception.Exception {
+	/*
+		1. 查出节点
+		2. 查出该节点下所有子节点的id
+		3. id汇总下
+	*/
+	p, ex := ps.repo.Get(ps.db, id)
+	if ex != nil {
+		return ex
+	}
+	dp := vo.NewPermissionTree(p)
+	permissions, ex := ps.repo.GetAll(ps.db)
+	if ex != nil {
+		return ex
+	}
+	allPermission := make([]*vo.PermissionTree, 0, len(permissions))
+	ids := new([]uint)
+	*ids = append(*ids, id)
+	for i := range permissions {
+		if permissions[i].ParentID == 0 || permissions[i].ID == dp.ID {
+			continue
+		}
+		allPermission = append(allPermission, vo.NewPermissionTree(&permissions[i]))
+	}
+	ps.makePermissionTree(allPermission, dp, ids)
+	return ps.repo.Delete(ps.db, *ids)
 }

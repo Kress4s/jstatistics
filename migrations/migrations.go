@@ -10,5 +10,6 @@ func Migrate() error {
 	db := database.GetDriver()
 	return db.AutoMigrate(
 		&models.User{}, &models.Role{}, &models.UserRoleRelation{}, &models.Permission{},
+		&models.RolePermissionRelation{},
 	)
 }

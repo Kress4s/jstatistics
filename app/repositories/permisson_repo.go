@@ -29,7 +29,7 @@ type PermissionRepo interface {
 	GetAll(db *gorm.DB) ([]models.Permission, exception.Exception)
 	GetTop(db *gorm.DB) (*models.Permission, exception.Exception)
 	Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception
-	Delete(db *gorm.DB, id uint) exception.Exception
+	Delete(db *gorm.DB, ids []uint) exception.Exception
 }
 
 func (u *PermissionRepoImpl) Create(db *gorm.DB, p *models.Permission) exception.Exception {
@@ -74,6 +74,6 @@ func (u *PermissionRepoImpl) Update(db *gorm.DB, id uint, param map[string]inter
 		db.Model(&models.Permission{}).Where(&models.Permission{ID: id}).Updates(param).Error)
 }
 
-func (u *PermissionRepoImpl) Delete(db *gorm.DB, id uint) exception.Exception {
-	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.Permission{}, id).Error)
+func (u *PermissionRepoImpl) Delete(db *gorm.DB, ids []uint) exception.Exception {
+	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.Permission{}, ids).Error)
 }

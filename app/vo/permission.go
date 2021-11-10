@@ -86,10 +86,6 @@ type PermissionTree struct {
 	MenuName string `json:"menu_name"`
 	// 路由
 	Route string `json:"route"`
-	// 权限标识
-	Identify string `json:"identify"`
-	// 权限类型   0: 菜单权限 1: 操作权限
-	Type int `json:"type"`
 	// 索引
 	Index int `json:"index"`
 	// 父级ID
@@ -104,8 +100,7 @@ func NewPermissionTree(p *models.Permission) *PermissionTree {
 		Name:     p.Name,
 		MenuName: p.MenuName,
 		Route:    p.Route,
-		Identify: p.Identify,
-		Type:     p.Type,
+		Index:    p.Index,
 		ParentID: p.ParentID,
 	}
 }

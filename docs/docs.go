@@ -144,7 +144,7 @@ var doc = `{
                 "tags": [
                     "权限管理 - 权限规则"
                 ],
-                "summary": "修改权限规则(开发修改中)",
+                "summary": "修改权限规则",
                 "parameters": [
                     {
                         "type": "string",
@@ -203,7 +203,7 @@ var doc = `{
                 "tags": [
                     "权限管理 - 权限规则"
                 ],
-                "summary": "删除权限规则(开发修改中)",
+                "summary": "删除权限规则",
                 "parameters": [
                     {
                         "type": "string",
@@ -717,10 +717,6 @@ var doc = `{
                     "description": "ID",
                     "type": "integer"
                 },
-                "identify": {
-                    "description": "权限标识",
-                    "type": "string"
-                },
                 "index": {
                     "description": "索引",
                     "type": "integer"
@@ -747,10 +743,6 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/vo.PermissionTree"
                     }
-                },
-                "type": {
-                    "description": "权限类型   0: 菜单权限 1: 操作权限",
-                    "type": "integer"
                 }
             }
         },
