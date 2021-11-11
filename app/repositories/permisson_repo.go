@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	permissionRepoInstace PermissionRepo
+	permissionRepoInstance PermissionRepo
 	permissionOnce        sync.Once
 )
 
@@ -18,9 +18,9 @@ type PermissionRepoImpl struct{}
 
 func GetPermissionRepo() PermissionRepo {
 	permissionOnce.Do(func() {
-		permissionRepoInstace = &PermissionRepoImpl{}
+		permissionRepoInstance = &PermissionRepoImpl{}
 	})
-	return permissionRepoInstace
+	return permissionRepoInstance
 }
 
 type PermissionRepo interface {

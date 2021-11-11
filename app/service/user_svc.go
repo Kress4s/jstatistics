@@ -7,6 +7,7 @@ import (
 	"js_statistics/commom/tools"
 	"js_statistics/exception"
 	"sync"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -53,7 +54,7 @@ func (us *userServiceImpl) Profile(id uint) (*vo.ProfileResp, exception.Exceptio
 func (us *userServiceImpl) Create(openID string, params *vo.UserReq) exception.Exception {
 	// password
 	params.Password = string(tools.Base64Encode([]byte(params.Password)))
-	user := params.ToModel()
+	user := params.ToModel(openID)
 	return us.repo.Create(us.db, &user)
 }
 
@@ -77,5 +78,7 @@ func (us *userServiceImpl) Update(openID string, id uint, params *vo.UserUpdateR
 	}
 	r["user_name"] = params.UserName
 	r["is_admin"] = params.IsAdmin
+	r["update_by"] = openID
+	r["update_at"] = time.Now()
 	return us.repo.Update(us.db, id, r)
 }

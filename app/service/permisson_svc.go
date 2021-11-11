@@ -40,7 +40,7 @@ func GetPermissionService() PermissionService {
 }
 
 func (ps *permissionServiceImpl) Create(openID string, params *vo.PermissionReq) exception.Exception {
-	p := params.ToModel()
+	p := params.ToModel(openID)
 	return ps.repo.Create(ps.db, &p)
 }
 
@@ -115,7 +115,7 @@ func (ps *permissionServiceImpl) haveChild(allPermissions []*vo.PermissionTree, 
 }
 
 func (us *permissionServiceImpl) Update(openID string, id uint, params *vo.PermissionUpdateReq) exception.Exception {
-	return us.repo.Update(us.db, id, params.ToMap())
+	return us.repo.Update(us.db, id, params.ToMap(openID))
 }
 
 func (ps *permissionServiceImpl) Delete(openID string, id uint) exception.Exception {

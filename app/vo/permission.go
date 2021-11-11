@@ -1,6 +1,9 @@
 package vo
 
-import "js_statistics/app/models"
+import (
+	"js_statistics/app/models"
+	"time"
+)
 
 type PermissionReq struct {
 	// 名称
@@ -17,7 +20,7 @@ type PermissionReq struct {
 	ParentID uint `json:"parent_id"`
 }
 
-func (p PermissionReq) ToModel() models.Permission {
+func (p PermissionReq) ToModel(openID string) models.Permission {
 	return models.Permission{
 		Name:     p.Name,
 		MenuName: p.MenuName,
@@ -25,6 +28,10 @@ func (p PermissionReq) ToModel() models.Permission {
 		Identify: p.Identify,
 		Type:     p.Type,
 		ParentID: p.ParentID,
+		Base: models.Base{
+			CreateBy: openID,
+			UpdateBy: openID,
+		},
 	}
 }
 
@@ -64,7 +71,7 @@ type PermissionUpdateReq struct {
 	ParentID uint `json:"parent_id"`
 }
 
-func (pur *PermissionUpdateReq) ToMap() map[string]interface{} {
+func (pur *PermissionUpdateReq) ToMap(openID string) map[string]interface{} {
 	return map[string]interface{}{
 		"name":      pur.Name,
 		"menu_name": pur.MenuName,
@@ -74,6 +81,8 @@ func (pur *PermissionUpdateReq) ToMap() map[string]interface{} {
 		// TODO index is not known
 		// "index": pur.Index,
 		"parent_id": pur.ParentID,
+		"update_by": openID,
+		"update_at": time.Now(),
 	}
 }
 

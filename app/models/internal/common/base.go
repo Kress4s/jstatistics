@@ -1,6 +1,10 @@
-package models
+package common
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 // Base 基础模型定义
 type Base struct {
@@ -12,4 +16,11 @@ type Base struct {
 	UpdateBy string `gorm:"column:update_by;type:varchar(40);not null;comment:最后一次更新者ID" json:"update_by"`
 	// 更新时间
 	UpdateAt time.Time `gorm:"column:update_at;type:timestamptz;not null;comment:最后一次更新时间" json:"update_at"`
+}
+
+func (b *Base) BeforeCreate(tx *gorm.DB) error {
+	now := time.Now()
+	b.CreateAt = now
+	b.UpdateAt = now
+	return nil
 }

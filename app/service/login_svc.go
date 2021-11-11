@@ -1,25 +1,52 @@
 package service
 
-// var (
-// 	loginServiceInstance UserService
-// 	loginOnce            sync.Once
-// )
+import (
+	"js_statistics/app/repositories"
+	"js_statistics/app/vo"
+	"js_statistics/commom/drivers/database"
+	"js_statistics/commom/tools"
+	"js_statistics/constant"
+	"js_statistics/exception"
+	"sync"
 
-// type loginServiceImpl struct {
-// 	db   *gorm.DB
-// 	repo repositories.UserRepo
-// }
+	"gorm.io/gorm"
+)
 
-// type LoginService interface {
-// 	Create(params *vo.UserReq) exception.Exception
-// }
+var (
+	loginInstance LoginService
+	loginOnce     sync.Once
+)
 
-// func GetLoginService() UserService {
-// 	loginOnce.Do(func() {
-// 		loginServiceInstance = &userServiceImpl{
-// 			db:   database.GetDriver(),
-// 			repo: repositories.GetUserRepo(),
-// 		}
-// 	})
-// 	return loginServiceInstance
-// }
+type loginServiceImpl struct {
+	db   *gorm.DB
+	repo repositories.UserRepo
+}
+
+func GetLoginService() LoginService {
+	loginOnce.Do(func() {
+		loginInstance = &loginServiceImpl{
+			db:   database.GetDriver(),
+			repo: repositories.GetUserRepo(),
+		}
+	})
+	return loginInstance
+}
+
+type LoginService interface {
+	Login(username, password string) (*vo.LoginResponse, exception.Exception)
+}
+
+func (ls *loginServiceImpl) Login(username, password string) (*vo.LoginResponse, exception.Exception) {
+	password = string(tools.Base64Encode([]byte(password)))
+	ok, userID, ex := ls.repo.CheckPassword(ls.db, username, password)
+	if ex != nil || !ok {
+		return nil, ex
+	}
+	// token
+	token, exp := tools.Token(userID, username)
+	return &vo.LoginResponse{
+		AccessToken: token,
+		TokenType:   constant.Authorization,
+		Expiry:      exp,
+	}, nil
+}

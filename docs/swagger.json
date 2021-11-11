@@ -15,6 +15,305 @@
     },
     "basePath": "/",
     "paths": {
+        "/api/v1/permission/role": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "创建角色",
+                "tags": [
+                    "权限管理 - 管理组"
+                ],
+                "summary": "创建角色",
+                "parameters": [
+                    {
+                        "description": "RoleReq",
+                        "name": "parameters",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vo.RoleReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建角色成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/permission/role/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询角色信息",
+                "tags": [
+                    "权限管理 - 管理组"
+                ],
+                "summary": "查询角色",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "角色id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询角色成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.RoleResp"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "修改角色信息",
+                "tags": [
+                    "权限管理 - 管理组"
+                ],
+                "summary": "修改角色",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "角色id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "RoleUpdateReq",
+                        "name": "parameters",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vo.RoleUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "修改角色成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "删除角色",
+                "tags": [
+                    "权限管理 - 管理组"
+                ],
+                "summary": "删除角色",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "角色id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "删除角色成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/permission/roles": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询角色列表信息",
+                "tags": [
+                    "权限管理 - 管理组"
+                ],
+                "summary": "查询角色列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "请求页",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页大小",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "keywords",
+                        "name": "keywords",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询角色列表成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/vo.DataPagination"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/vo.RoleResp"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/permission/rule": {
             "post": {
                 "security": [
@@ -585,6 +884,18 @@
         }
     },
     "definitions": {
+        "vo.DataPagination": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "数据"
+                },
+                "pagination": {
+                    "description": "分页信息",
+                    "$ref": "#/definitions/vo.Pagination"
+                }
+            }
+        },
         "vo.Error": {
             "type": "object",
             "properties": {
@@ -630,6 +941,23 @@
                 "token_type": {
                     "description": "认证类型",
                     "type": "string"
+                }
+            }
+        },
+        "vo.Pagination": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "description": "请求页",
+                    "type": "integer"
+                },
+                "page_size": {
+                    "description": "页大小",
+                    "type": "integer"
+                },
+                "total_count": {
+                    "description": "数据总条数",
+                    "type": "integer"
                 }
             }
         },
@@ -779,6 +1107,82 @@
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "vo.RoleReq": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "description": "说明",
+                    "type": "string"
+                },
+                "identify": {
+                    "description": "标识符",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "角色命",
+                    "type": "string"
+                },
+                "permission": {
+                    "description": "权限ids",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "vo.RoleResp": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "description": "说明",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "角色ID",
+                    "type": "integer"
+                },
+                "identify": {
+                    "description": "标识符",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "角色命",
+                    "type": "string"
+                },
+                "permissions": {
+                    "description": "权限",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "vo.RoleUpdateReq": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "description": "说明",
+                    "type": "string"
+                },
+                "identify": {
+                    "description": "标识符",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "角色命",
+                    "type": "string"
+                },
+                "permission": {
+                    "description": "权限ids",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },

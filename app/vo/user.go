@@ -14,10 +14,15 @@ type UserUpdateReq struct {
 	IsAdmin  bool   `json:"is_admin"`
 }
 
-func (u UserReq) ToModel() models.User {
+func (u UserReq) ToModel(openID string) models.User {
 	return models.User{
 		Username: u.UserName,
 		Password: u.Password,
+		IsAdmin:  u.IsAdmin,
+		Base: models.Base{
+			CreateBy: openID,
+			UpdateBy: openID,
+		},
 	}
 }
 

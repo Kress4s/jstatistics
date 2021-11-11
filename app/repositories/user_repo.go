@@ -2,7 +2,9 @@ package repositories
 
 import (
 	"js_statistics/app/models"
+	"js_statistics/app/models/tables"
 	"js_statistics/app/response"
+	"js_statistics/app/vo"
 	"js_statistics/exception"
 	"sync"
 
@@ -10,17 +12,17 @@ import (
 )
 
 var (
-	userRepoInstace UserRepo
-	userOnce        sync.Once
+	userRepoInstance UserRepo
+	userOnce         sync.Once
 )
 
 type UserRepoImpl struct{}
 
 func GetUserRepo() UserRepo {
 	userOnce.Do(func() {
-		userRepoInstace = &UserRepoImpl{}
+		userRepoInstance = &UserRepoImpl{}
 	})
-	return userRepoInstace
+	return userRepoInstance
 }
 
 type UserRepo interface {
@@ -28,6 +30,7 @@ type UserRepo interface {
 	CheckPassword(db *gorm.DB, account, password string) (bool, uint, exception.Exception)
 	Create(db *gorm.DB, user *models.User) exception.Exception
 	Get(db *gorm.DB, id uint) (*models.User, exception.Exception)
+	List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []models.User, exception.Exception)
 	Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception
 }
 
@@ -69,6 +72,18 @@ func (u *UserRepoImpl) Get(db *gorm.DB, id uint) (*models.User, exception.Except
 		return nil, exception.Wrap(response.ExceptionDatabase, res.Error)
 	}
 	return &user, nil
+}
+
+func (u *UserRepoImpl) List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []models.User, exception.Exception) {
+	users := make([]models.User, 0)
+	tx := db.Table(tables.User)
+	if pageInfo.Keywords != "" {
+		tx = tx.Scopes(vo.FuzzySearch(pageInfo.Keywords, "id", "name"))
+	}
+	tx.Order("id").Limit(pageInfo.Page).Offset(pageInfo.Offset()).Find(&users)
+	count := int64(0)
+	res := tx.Limit(-1).Offset(-1).Count(&count)
+	return count, users, exception.Wrap(response.ExceptionDatabase, res.Error)
 }
 
 func (u *UserRepoImpl) Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception {
