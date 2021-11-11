@@ -61,3 +61,10 @@ type RoleResp struct {
 	// 权限
 	Permissions []uint
 }
+
+type RoleBriefResp struct {
+	// 角色ID
+	ID uint `json:"id"`
+	// 角色命
+	Name string `json:"name"`
+}

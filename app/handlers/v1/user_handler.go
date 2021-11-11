@@ -146,11 +146,39 @@ func (u *UserHandler) Update(ctx iris.Context) mvc.Result {
 }
 
 // Create godoc
-// @Summary 删除用户(有其他依赖关系，暂不可调)
+// @Summary 修改用户角色权限
+// @Description 修改角色权限
+// @Tags 权限管理 - 管理员
+// @Param id path string true "用户id"
+// @Param parameters body vo.UserUpdateRolesReq true "UserUpdateRolesReq"
+// @Success 200 "修改用户成功"
+// @Failure 400 {object} vo.Error "请求参数错误"
+// @Failure 401 {object} vo.Error "当前用户登录令牌失效"
+// @Failure 403 {object} vo.Error "当前操作无权限"
+// @Failure 500 {object} vo.Error "服务器内部错误"
+// @Security ApiKeyAuth
+// @Router /api/v1/permission/user/{id}/roles [put]
+func (u *UserHandler) UpdateRoles(ctx iris.Context) mvc.Result {
+	id, err := ctx.Params().GetUint(constant.ID)
+	if err != nil {
+		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
+	}
+	param := &vo.UserUpdateRolesReq{}
+	if err := ctx.ReadJSON(param); err != nil {
+		return response.Error(exception.Wrap(response.ExceptionInvalidRequestBody, err))
+	}
+	ex := u.Svc.UpdateRoles(u.UserName, id, param)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	return response.OK()
+}
+
+// Create godoc
+// @Summary 删除用户
 // @Description 删除用户
 // @Tags 权限管理 - 管理员
 // @Param id path string true "用户id"
-// @Param parameters body vo.UserUpdateReq true "UserUpdateReq"
 // @Success 200 "删除用户成功"
 // @Failure 400 {object} vo.Error "请求参数错误"
 // @Failure 401 {object} vo.Error "当前用户登录令牌失效"
@@ -158,6 +186,41 @@ func (u *UserHandler) Update(ctx iris.Context) mvc.Result {
 // @Failure 500 {object} vo.Error "服务器内部错误"
 // @Security ApiKeyAuth
 // @Router /api/v1/permission/user/{id} [delete]
+func (u *UserHandler) Delete(ctx iris.Context) mvc.Result {
+	id, err := ctx.Params().GetUint(constant.ID)
+	if err != nil {
+		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
+	}
+	ex := u.Svc.Delete(u.UserName, id)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	return response.OK()
+}
+
+// Create godoc
+// @Summary 查询用户角色信息
+// @Description 查询用户角色信息
+// @Tags 权限管理 - 管理员
+// @Param id path string true "用户id"
+// @Success 200 {object} vo.RoleBriefResp "查询用户角色信息成功"
+// @Failure 400 {object} vo.Error  "请求参数错误"
+// @Failure 401 {object} vo.Error "当前用户登录令牌失效"
+// @Failure 403 {object} vo.Error "当前操作无权限"
+// @Failure 500 {object} vo.Error "服务器内部错误"
+// @Security ApiKeyAuth
+// @Router /api/v1/permission/user/{id}/roles [get]
+func (u *UserHandler) GetRolesByUserID(ctx iris.Context) mvc.Result {
+	id, err := ctx.Params().GetUint(constant.ID)
+	if err != nil {
+		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
+	}
+	res, ex := u.Svc.GetRolesByUserID(u.UserName, id)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	return response.JSON(res)
+}
 
 // BeforeActivation 初始化路由
 func (u *UserHandler) BeforeActivation(b mvc.BeforeActivation) {
@@ -166,4 +229,7 @@ func (u *UserHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodGet, "/user/{id:string}", "Get")
 	b.Handle(iris.MethodGet, "/users", "List")
 	b.Handle(iris.MethodPut, "/user/{id:string}", "Update")
+	b.Handle(iris.MethodDelete, "/user/{id:string}", "Delete")
+	b.Handle(iris.MethodPut, "/user/{id:string}/roles", "UpdateRoles")
+	b.Handle(iris.MethodGet, "/user/{id:string}/roles", "GetRolesByUserID")
 }

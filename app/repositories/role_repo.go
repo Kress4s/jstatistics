@@ -31,6 +31,7 @@ type RoleRepo interface {
 	List(db *gorm.DB, page *vo.PageInfo) (int64, []models.Role, exception.Exception)
 	Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception
 	Delete(db *gorm.DB, id uint) exception.Exception
+	GetByIDs(db *gorm.DB, ids []uint) ([]models.Role, exception.Exception)
 }
 
 func (rri *RoleRepoImpl) Creat(db *gorm.DB, role *models.Role) exception.Exception {
@@ -68,4 +69,13 @@ func (rri *RoleRepoImpl) Update(db *gorm.DB, id uint, param map[string]interface
 
 func (rri *RoleRepoImpl) Delete(db *gorm.DB, id uint) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.Role{}, id).Error)
+}
+
+func (rri *RoleRepoImpl) GetByIDs(db *gorm.DB, ids []uint) ([]models.Role, exception.Exception) {
+	roles := make([]models.Role, 0, len(ids))
+	tx := db.Find(&roles, ids)
+	if tx.Error != nil {
+		return nil, exception.Wrap(response.ExceptionDatabase, tx.Error)
+	}
+	return roles, nil
 }

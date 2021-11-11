@@ -13,6 +13,7 @@ type UserUpdateReq struct {
 	UserName string `json:"user_name"`
 	Password string `json:"password"`
 	IsAdmin  bool   `json:"is_admin"`
+	Status   bool   `json:"status"`
 }
 
 func (u UserReq) ToModel(openID string) models.User {

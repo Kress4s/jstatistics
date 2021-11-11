@@ -17,8 +17,9 @@ var (
 )
 
 type permissionServiceImpl struct {
-	db   *gorm.DB
-	repo repositories.PermissionRepo
+	db     *gorm.DB
+	repo   repositories.PermissionRepo
+	rpRepo repositories.RolePermissionRepo
 }
 
 type PermissionService interface {
@@ -32,8 +33,9 @@ type PermissionService interface {
 func GetPermissionService() PermissionService {
 	permissionOnce.Do(func() {
 		permissionServiceInstance = &permissionServiceImpl{
-			db:   database.GetDriver(),
-			repo: repositories.GetPermissionRepo(),
+			db:     database.GetDriver(),
+			repo:   repositories.GetPermissionRepo(),
+			rpRepo: repositories.GetRolePermissionRepo(),
 		}
 	})
 	return permissionServiceInstance
@@ -143,5 +145,19 @@ func (ps *permissionServiceImpl) Delete(openID string, id uint) exception.Except
 		allPermission = append(allPermission, vo.NewPermissionTree(&permissions[i]))
 	}
 	ps.makePermissionTree(allPermission, dp, ids)
-	return ps.repo.Delete(ps.db, *ids)
+	tx := ps.db.Begin()
+	defer tx.Rollback()
+	if tx.Error != nil {
+		return exception.Wrap(response.ExceptionDatabase, tx.Error)
+	}
+	if ex = ps.repo.Delete(tx, *ids); ex != nil {
+		return ex
+	}
+	if ex = ps.rpRepo.DeleteByPermissionID(tx, id); ex != nil {
+		return ex
+	}
+	if res := tx.Commit(); res.Error != nil {
+		return exception.Wrap(response.ExceptionDatabase, tx.Error)
+	}
+	return nil
 }

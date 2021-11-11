@@ -20,6 +20,7 @@ type roleServiceImpl struct {
 	db     *gorm.DB
 	repo   repositories.RoleRepo
 	rpRepo repositories.RolePermissionRepo
+	urRepo repositories.UserRoleRepo
 }
 
 func GetRoleService() RoleService {
@@ -28,6 +29,7 @@ func GetRoleService() RoleService {
 			db:     database.GetDriver(),
 			repo:   repositories.GetRoleRepo(),
 			rpRepo: repositories.GetRolePermissionRepo(),
+			urRepo: repositories.GetUserRoleRepo(),
 		}
 	})
 	return roleServiceInstance
@@ -143,6 +145,9 @@ func (rsi *roleServiceImpl) Delete(id uint) exception.Exception {
 		return ex
 	}
 	if ex = rsi.rpRepo.DeleteByRoleID(tx, id); ex != nil {
+		return ex
+	}
+	if ex = rsi.urRepo.DeleteByRoleID(tx, id); ex != nil {
 		return ex
 	}
 	if res := tx.Commit(); res.Error != nil {

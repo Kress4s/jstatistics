@@ -160,6 +160,15 @@ definitions:
       name:
         type: string
     type: object
+  vo.RoleBriefResp:
+    properties:
+      id:
+        description: 角色ID
+        type: integer
+      name:
+        description: 角色命
+        type: string
+    type: object
   vo.RoleReq:
     properties:
       description:
@@ -242,8 +251,17 @@ definitions:
         type: boolean
       password:
         type: string
+      status:
+        type: boolean
       user_name:
         type: string
+    type: object
+  vo.UserUpdateRolesReq:
+    properties:
+      role_ids:
+        items:
+          type: integer
+        type: array
     type: object
 info:
   contact:
@@ -644,6 +662,38 @@ paths:
       tags:
       - 权限管理 - 管理员
   /api/v1/permission/user/{id}:
+    delete:
+      description: 删除用户
+      parameters:
+      - description: 用户id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 删除用户成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除用户
+      tags:
+      - 权限管理 - 管理员
     get:
       description: 查询用户信息
       parameters:
@@ -714,6 +764,79 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 修改用户
+      tags:
+      - 权限管理 - 管理员
+  /api/v1/permission/user/{id}/roles:
+    get:
+      description: 查询用户角色信息
+      parameters:
+      - description: 用户id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 查询用户角色信息成功
+          schema:
+            $ref: '#/definitions/vo.RoleBriefResp'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询用户角色信息
+      tags:
+      - 权限管理 - 管理员
+    put:
+      description: 修改角色权限
+      parameters:
+      - description: 用户id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: UserUpdateRolesReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.UserUpdateRolesReq'
+      responses:
+        "200":
+          description: 修改用户成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改用户角色权限
       tags:
       - 权限管理 - 管理员
   /api/v1/permission/user/profile:

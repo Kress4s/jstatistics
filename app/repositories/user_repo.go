@@ -32,6 +32,8 @@ type UserRepo interface {
 	Get(db *gorm.DB, id uint) (*models.User, exception.Exception)
 	List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []models.User, exception.Exception)
 	Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception
+	Delete(db *gorm.DB, id uint) exception.Exception
+	MultiDelete(db *gorm.DB, ids []uint) exception.Exception
 }
 
 func (u *UserRepoImpl) Profile(db *gorm.DB, id uint) (*models.User, exception.Exception) {
@@ -78,7 +80,7 @@ func (u *UserRepoImpl) List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []models
 	users := make([]models.User, 0)
 	tx := db.Table(tables.User)
 	if pageInfo.Keywords != "" {
-		tx = tx.Scopes(vo.FuzzySearch(pageInfo.Keywords, "id", "name"))
+		tx = tx.Scopes(vo.FuzzySearch(pageInfo.Keywords, "user_name"))
 	}
 	tx.Order("id").Limit(pageInfo.PageSize).Offset(pageInfo.Offset()).Find(&users)
 	count := int64(0)
@@ -91,4 +93,10 @@ func (u *UserRepoImpl) Update(db *gorm.DB, id uint, param map[string]interface{}
 		db.Model(&models.User{}).Where(&models.User{ID: id}).Updates(param).Error)
 }
 
-// TODO DELETE RELATED
+func (u *UserRepoImpl) Delete(db *gorm.DB, id uint) exception.Exception {
+	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.User{}, id).Error)
+}
+
+func (u *UserRepoImpl) MultiDelete(db *gorm.DB, ids []uint) exception.Exception {
+	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.User{}, ids).Error)
+}
