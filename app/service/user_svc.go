@@ -26,6 +26,7 @@ type UserService interface {
 	Profile(id uint) (*vo.ProfileResp, exception.Exception)
 	Create(openID string, params *vo.UserReq) exception.Exception
 	Get(id uint) (*vo.ProfileResp, exception.Exception)
+	List(pageInfo *vo.PageInfo) (*vo.DataPagination, exception.Exception)
 	Update(openID string, id uint, params *vo.UserUpdateReq) exception.Exception
 }
 
@@ -68,6 +69,23 @@ func (us *userServiceImpl) Get(id uint) (*vo.ProfileResp, exception.Exception) {
 		Name:  user.Username,
 		Admin: user.IsAdmin,
 	}, nil
+}
+
+func (us *userServiceImpl) List(pageInfo *vo.PageInfo) (*vo.DataPagination, exception.Exception) {
+	count, users, ex := us.repo.List(us.db, pageInfo)
+	if ex != nil {
+		return nil, ex
+	}
+	resp := make([]vo.UserResp, 0, len(users))
+	for i := range users {
+		resp = append(resp, vo.UserResp{
+			ID:       users[i].ID,
+			UserName: users[i].Username,
+			Admin:    users[i].IsAdmin,
+			Status:   users[i].Status,
+		})
+	}
+	return vo.NewDataPagination(count, resp, pageInfo), nil
 }
 
 func (us *userServiceImpl) Update(openID string, id uint, params *vo.UserUpdateReq) exception.Exception {

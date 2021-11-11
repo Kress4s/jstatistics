@@ -80,7 +80,7 @@ func (u *UserRepoImpl) List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []models
 	if pageInfo.Keywords != "" {
 		tx = tx.Scopes(vo.FuzzySearch(pageInfo.Keywords, "id", "name"))
 	}
-	tx.Order("id").Limit(pageInfo.Page).Offset(pageInfo.Offset()).Find(&users)
+	tx.Order("id").Limit(pageInfo.PageSize).Offset(pageInfo.Offset()).Find(&users)
 	count := int64(0)
 	res := tx.Limit(-1).Offset(-1).Count(&count)
 	return count, users, exception.Wrap(response.ExceptionDatabase, res.Error)

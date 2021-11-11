@@ -55,7 +55,7 @@ func (rri *RoleRepoImpl) List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []mode
 	if pageInfo.Keywords != "" {
 		tx = tx.Scopes(vo.FuzzySearch(pageInfo.Keywords, "name", "identify"))
 	}
-	tx.Order("id").Limit(pageInfo.Page).Offset(pageInfo.Offset()).Find(&roles)
+	tx.Order("id").Limit(pageInfo.PageSize).Offset(pageInfo.Offset()).Find(&roles)
 	count := int64(0)
 	res := tx.Limit(-1).Offset(-1).Count(&count)
 	return count, roles, exception.Wrap(response.ExceptionDatabase, res.Error)

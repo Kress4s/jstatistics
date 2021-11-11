@@ -6,6 +6,7 @@ type UserReq struct {
 	UserName string `json:"user_name"`
 	Password string `json:"password"`
 	IsAdmin  bool   `json:"is_admin"`
+	Status   bool   `json:"status"`
 }
 
 type UserUpdateReq struct {
@@ -19,6 +20,7 @@ func (u UserReq) ToModel(openID string) models.User {
 		Username: u.UserName,
 		Password: u.Password,
 		IsAdmin:  u.IsAdmin,
+		Status:   u.Status,
 		Base: models.Base{
 			CreateBy: openID,
 			UpdateBy: openID,
@@ -35,4 +37,11 @@ type ProfileResp struct {
 	ID    uint   `json:"id"`
 	Name  string `json:"name"`
 	Admin bool   `json:"admin"`
+}
+
+type UserResp struct {
+	ID       uint   `json:"id"`
+	UserName string `json:"user_name"`
+	Admin    bool   `json:"admin"`
+	Status   bool   `json:"status"`
 }

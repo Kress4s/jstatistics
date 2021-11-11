@@ -91,6 +91,32 @@ func (u *UserHandler) Get(ctx iris.Context) mvc.Result {
 }
 
 // Create godoc
+// @Summary 查询用户列表
+// @Description 查询用户列表信息
+// @Tags 权限管理 - 管理员
+// @Param page query int false "请求页"
+// @Param page_size query int false "页大小"
+// @Param keywords query string false "keywords" "搜索关键词过滤"
+// @Success 200 {object} vo.DataPagination{data=[]vo.UserResp} "查询用户列表成功"
+// @Failure 400 {object} vo.Error  "请求参数错误"
+// @Failure 401 {object} vo.Error "当前用户登录令牌失效"
+// @Failure 403 {object} vo.Error "当前操作无权限"
+// @Failure 500 {object} vo.Error "服务器内部错误"
+// @Security ApiKeyAuth
+// @Router /api/v1/permission/users [get]
+func (u *UserHandler) List(ctx iris.Context) mvc.Result {
+	params, ex := handlers.GetPageInfo(ctx)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	resp, ex := u.Svc.List(params)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	return response.JSON(resp)
+}
+
+// Create godoc
 // @Summary 修改用户
 // @Description 修改用户
 // @Tags 权限管理 - 管理员
@@ -138,5 +164,6 @@ func (u *UserHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodGet, "/user/profile", "Profile")
 	b.Handle(iris.MethodPost, "/user", "Create")
 	b.Handle(iris.MethodGet, "/user/{id:string}", "Get")
+	b.Handle(iris.MethodGet, "/users", "List")
 	b.Handle(iris.MethodPut, "/user/{id:string}", "Update")
 }
