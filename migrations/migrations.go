@@ -9,7 +9,11 @@ import (
 func Migrate() error {
 	db := database.GetDriver()
 	return db.AutoMigrate(
+		// 权限管理
 		&models.User{}, &models.Role{}, &models.UserRoleRelation{}, &models.Permission{},
 		&models.RolePermissionRelation{},
+
+		// 应用管理
+		&models.DomainMgr{},
 	)
 }

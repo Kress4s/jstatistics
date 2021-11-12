@@ -3,10 +3,14 @@ package vo
 import "js_statistics/app/models"
 
 type UserReq struct {
+	// 用户名
 	UserName string `json:"user_name"`
+	// 密码
 	Password string `json:"password"`
-	IsAdmin  bool   `json:"is_admin"`
-	Status   bool   `json:"status"`
+	// 是否管理员
+	IsAdmin bool `json:"is_admin"`
+	// 状态
+	Status bool `json:"status"`
 }
 
 type UserUpdateReq struct {

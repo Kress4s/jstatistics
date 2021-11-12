@@ -15,6 +15,7 @@ const (
 // http request
 const (
 	ID      = "id"
+	IDS     = "ids"
 	RoleID  = "role_id"
 	BeginAt = "begin_at"
 	EndAt   = "end_at"

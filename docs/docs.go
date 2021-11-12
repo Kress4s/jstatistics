@@ -26,6 +26,357 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/application/domain": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "创建域名管理",
+                "tags": [
+                    "应用管理 - 域名管理"
+                ],
+                "summary": "创建域名",
+                "parameters": [
+                    {
+                        "description": "DomainReq",
+                        "name": "parameters",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vo.DomainReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建域名成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/application/domain/multi": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "批量删除域名管理信息",
+                "tags": [
+                    "应用管理 - 域名管理"
+                ],
+                "summary": "批量删除域名管理",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "域名管理ids, ` + "`" + `,` + "`" + `连接",
+                        "name": "ids",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "批量删除域名成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/application/domain/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询域名信息",
+                "tags": [
+                    "应用管理 - 域名管理"
+                ],
+                "summary": "查询域名",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "域名管理id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询域名成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.DomainResp"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "修改域名管理信息",
+                "tags": [
+                    "应用管理 - 域名管理"
+                ],
+                "summary": "修改域名管理",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "域名管理id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "DomainUpdateReq",
+                        "name": "parameters",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vo.DomainUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "修改域名成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "删除域名管理信息",
+                "tags": [
+                    "应用管理 - 域名管理"
+                ],
+                "summary": "删除域名管理",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "域名管理id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "删除域名成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/application/domains": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询域名管理列表",
+                "tags": [
+                    "应用管理 - 域名管理"
+                ],
+                "summary": "查询域名列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "请求页",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页大小",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "keywords",
+                        "name": "keywords",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询域名列表成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/vo.DataPagination"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/vo.DomainResp"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/permission/role": {
             "post": {
                 "security": [
@@ -1152,6 +1503,79 @@ var doc = `{
                 }
             }
         },
+        "vo.DomainReq": {
+            "type": "object",
+            "properties": {
+                "certificate": {
+                    "description": "证书",
+                    "type": "string"
+                },
+                "domain": {
+                    "description": "域名",
+                    "type": "string"
+                },
+                "secret_key": {
+                    "description": "秘钥",
+                    "type": "string"
+                },
+                "ssl": {
+                    "description": "ssl",
+                    "type": "boolean"
+                },
+                "title": {
+                    "description": "标题",
+                    "type": "string"
+                }
+            }
+        },
+        "vo.DomainResp": {
+            "type": "object",
+            "properties": {
+                "certificate": {
+                    "type": "string"
+                },
+                "domain": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "secret_key": {
+                    "type": "string"
+                },
+                "ssl": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "vo.DomainUpdateReq": {
+            "type": "object",
+            "properties": {
+                "certificate": {
+                    "description": "证书",
+                    "type": "string"
+                },
+                "domain": {
+                    "description": "域名",
+                    "type": "string"
+                },
+                "secret_key": {
+                    "description": "秘钥",
+                    "type": "string"
+                },
+                "ssl": {
+                    "description": "ssl",
+                    "type": "boolean"
+                },
+                "title": {
+                    "description": "标题",
+                    "type": "string"
+                }
+            }
+        },
         "vo.Error": {
             "type": "object",
             "properties": {
@@ -1459,15 +1883,19 @@ var doc = `{
             "type": "object",
             "properties": {
                 "is_admin": {
+                    "description": "是否管理员",
                     "type": "boolean"
                 },
                 "password": {
+                    "description": "密码",
                     "type": "string"
                 },
                 "status": {
+                    "description": "状态",
                     "type": "boolean"
                 },
                 "user_name": {
+                    "description": "用户名",
                     "type": "string"
                 }
             }

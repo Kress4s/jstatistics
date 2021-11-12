@@ -25,6 +25,7 @@ func RegisterRoutes(app *iris.Application) {
 	authApp := app.Party("/auth")
 	mvc.New(authApp).Handle(auth.NewLoginHandler())
 
+	// 权限管理
 	party := app.Party("/api/v1")
 	party.Use(middlewares.Auth().Serve)
 	permissionParty := party.Party("/permission")
@@ -33,4 +34,8 @@ func RegisterRoutes(app *iris.Application) {
 	permissionApp.Handle(v1.NewPermissionHandler())
 	permissionApp.Handle(v1.NewRoleHandler())
 
+	// 应用管理
+	applicationParty := party.Party("/application")
+	applicationApp := mvc.New(applicationParty)
+	applicationApp.Handle(v1.NewDomainHandler())
 }
