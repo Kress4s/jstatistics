@@ -38,4 +38,6 @@ func RegisterRoutes(app *iris.Application) {
 	applicationParty := party.Party("/application")
 	applicationApp := mvc.New(applicationParty)
 	applicationApp.Handle(v1.NewDomainHandler())
+	applicationApp.Handle(v1.NewBlackIPHandler())
+	applicationApp.Handle(v1.NewIPHandler())
 }

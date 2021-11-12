@@ -16,5 +16,7 @@ type (
 	RolePermissionRelation = permission.RolePermissionRelation
 
 	// 应用管理
-	DomainMgr = application.DomainMgr
+	DomainMgr  = application.DomainMgr
+	BlackIPMgr = application.BlackIPMgr
+	WhiteIP    = application.WhiteIP
 )

@@ -1,5 +1,34 @@
 basePath: /
 definitions:
+  vo.BlackIPReq:
+    properties:
+      ip:
+        description: ip
+        type: string
+      title:
+        description: 标题
+        type: string
+    type: object
+  vo.BlackIPResp:
+    properties:
+      create_at:
+        type: string
+      id:
+        type: integer
+      ip:
+        type: string
+      title:
+        type: string
+    type: object
+  vo.BlackIPUpdateReq:
+    properties:
+      ip:
+        description: ip
+        type: string
+      title:
+        description: 标题
+        type: string
+    type: object
   vo.DataPagination:
     properties:
       data:
@@ -71,6 +100,35 @@ definitions:
         type: integer
       msg:
         description: 错误消息
+        type: string
+    type: object
+  vo.IPReq:
+    properties:
+      ip:
+        description: ip
+        type: string
+      title:
+        description: 标题
+        type: string
+    type: object
+  vo.IPResp:
+    properties:
+      create_at:
+        type: string
+      id:
+        type: integer
+      ip:
+        type: string
+      title:
+        type: string
+    type: object
+  vo.IPUpdateReq:
+    properties:
+      ip:
+        description: ip
+        type: string
+      title:
+        description: 标题
         type: string
     type: object
   vo.LoginReq:
@@ -326,6 +384,227 @@ info:
   title: JS流量统计管理系统后台API
   version: "1.0"
 paths:
+  /api/v1/application/black/ip:
+    post:
+      description: 创建ip库管理
+      parameters:
+      - description: BlackIPReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.BlackIPReq'
+      responses:
+        "200":
+          description: 创建ip库成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建ip库
+      tags:
+      - 应用管理 - ip库管理
+  /api/v1/application/black/ip/{id}:
+    delete:
+      description: 删除ip库管理信息
+      parameters:
+      - description: ip管理id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 删除ip成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除ip库管理
+      tags:
+      - 应用管理 - ip库管理
+    get:
+      description: 查询ip库信息
+      parameters:
+      - description: ip管理id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 查询ip成功
+          schema:
+            $ref: '#/definitions/vo.BlackIPResp'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询ip
+      tags:
+      - 应用管理 - ip库管理
+    put:
+      description: 修改ip库管理信息
+      parameters:
+      - description: ip管理库id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: BlackIPUpdateReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.BlackIPUpdateReq'
+      responses:
+        "200":
+          description: 修改ip成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改ip管理
+      tags:
+      - 应用管理 - ip库管理
+  /api/v1/application/black/ip/multi:
+    delete:
+      description: 批量删除ip库信息
+      parameters:
+      - description: ip库管理ids, `,` 连接
+        in: query
+        name: ids
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 批量删除ip库管理成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除ip库
+      tags:
+      - 应用管理 - ip库管理
+  /api/v1/application/black/ips:
+    get:
+      description: 查询ip库管理列表
+      parameters:
+      - description: 请求页
+        in: query
+        name: page
+        type: integer
+      - description: 页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: keywords
+        in: query
+        name: keywords
+        type: string
+      responses:
+        "200":
+          description: 查询ip列表成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/vo.DataPagination'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/vo.BlackIPResp'
+                  type: array
+              type: object
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询ip库列表
+      tags:
+      - 应用管理 - ip库管理
   /api/v1/application/domain:
     post:
       description: 创建域名管理
@@ -469,7 +748,7 @@ paths:
     delete:
       description: 批量删除域名管理信息
       parameters:
-      - description: 域名管理ids, `,`连接
+      - description: 域名管理ids, `,` 连接
         in: query
         name: ids
         required: true
@@ -547,6 +826,227 @@ paths:
       summary: 查询域名列表
       tags:
       - 应用管理 - 域名管理
+  /api/v1/application/ip:
+    post:
+      description: 创建ip白名单
+      parameters:
+      - description: IPReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.IPReq'
+      responses:
+        "200":
+          description: 创建ip白名单成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建ip白名单
+      tags:
+      - 应用管理 - ip白名单
+  /api/v1/application/ip/{id}:
+    delete:
+      description: 删除ip白名单信息
+      parameters:
+      - description: ip白名单id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 删除ip白名单成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除ip白名单
+      tags:
+      - 应用管理 - ip白名单
+    get:
+      description: 查询ip白名单信息
+      parameters:
+      - description: ip白名单id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 查询ip白名单成功
+          schema:
+            $ref: '#/definitions/vo.IPResp'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询ip白名单
+      tags:
+      - 应用管理 - ip白名单
+    put:
+      description: 修改ip白名单信息
+      parameters:
+      - description: ip白名单id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: IPUpdateReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.IPUpdateReq'
+      responses:
+        "200":
+          description: 修改ip白名单成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改ip白名单
+      tags:
+      - 应用管理 - ip白名单
+  /api/v1/application/ip/multi:
+    delete:
+      description: 批量删除ip白名单信息
+      parameters:
+      - description: ip白名单ids, `,` 连接
+        in: query
+        name: ids
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 批量删除ip白名单管理成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除ip白名单
+      tags:
+      - 应用管理 - ip白名单
+  /api/v1/application/ips:
+    get:
+      description: 查询ip白名单列表
+      parameters:
+      - description: 请求页
+        in: query
+        name: page
+        type: integer
+      - description: 页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: keywords
+        in: query
+        name: keywords
+        type: string
+      responses:
+        "200":
+          description: 查询ip列表成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/vo.DataPagination'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/vo.IPReq'
+                  type: array
+              type: object
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询ip白名单
+      tags:
+      - 应用管理 - ip白名单
   /api/v1/permission/role:
     post:
       description: 创建角色

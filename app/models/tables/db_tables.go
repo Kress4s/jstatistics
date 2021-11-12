@@ -14,4 +14,8 @@ const (
 
 	// 域名管理
 	DomainMgr = "js_domain_mgr"
+	// ip库管理
+	BlackIPMgr = "js_black_ip_mgr"
+	// ip白名单
+	WhiteIP = "js_white_ip"
 )
