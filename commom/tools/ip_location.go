@@ -11,10 +11,18 @@ import (
 )
 
 type Location struct {
-	IP       string `json:"ip"`
-	Province string `json:"pro"`
-	City     string `json:"city"`
-	Address  string `json:"addr"`
+	// IP       string `json:"ip"`
+	// Province string `json:"pro"`
+	// City     string `json:"city"`
+	// Address  string `json:"addr"`
+	// 国家
+	Country string `json:"country"`
+	// 省份
+	Province string `json:"regionName"`
+	// 城市
+	City string `json:"city"`
+	// 运行商信息
+	ISP string `json:"isp"`
 }
 
 func IPLocation(ip string) (*Location, exception.Exception) {

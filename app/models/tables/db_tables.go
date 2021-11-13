@@ -18,4 +18,6 @@ const (
 	BlackIPMgr = "js_black_ip_mgr"
 	// ip白名单
 	WhiteIP = "js_white_ip"
+	// cdn 白名单
+	CDN = "js_cdn"
 )

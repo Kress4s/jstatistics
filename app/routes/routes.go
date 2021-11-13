@@ -40,4 +40,5 @@ func RegisterRoutes(app *iris.Application) {
 	applicationApp.Handle(v1.NewDomainHandler())
 	applicationApp.Handle(v1.NewBlackIPHandler())
 	applicationApp.Handle(v1.NewIPHandler())
+	applicationApp.Handle(v1.NewCdnHandler())
 }

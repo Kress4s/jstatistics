@@ -20,4 +20,5 @@ type (
 	DomainMgr  = application.DomainMgr
 	BlackIPMgr = application.BlackIPMgr
 	WhiteIP    = application.WhiteIP
+	CDN        = application.CDN
 )

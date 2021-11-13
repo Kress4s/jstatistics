@@ -32,6 +32,9 @@ const (
 )
 
 const (
-	IPLocation = "http://whois.pconline.com.cn/ipJson.jsp?ip=%s&json=true"
-	IP = "ip"
+	// jsp 文件ip处理，为解决
+	// IPLocation = "http://whois.pconline.com.cn/ipJson.jsp?ip=%s&json=true"
+
+	IPLocation = "http://ip-api.com/json/%s?lang=zh-CN"
+	IP         = "ip"
 )
