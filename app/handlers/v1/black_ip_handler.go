@@ -5,6 +5,7 @@ import (
 	"js_statistics/app/response"
 	"js_statistics/app/service"
 	"js_statistics/app/vo"
+	"js_statistics/commom/tools"
 	"js_statistics/constant"
 	"js_statistics/exception"
 
@@ -171,6 +172,30 @@ func (ih *BlackIPHandler) MultiDelete(ctx iris.Context) mvc.Result {
 	return response.OK()
 }
 
+// Create godoc
+// @Summary 查询ip所在库(归属地)
+// @Description 查询ip所在库(归属地)
+// @Tags 应用管理 - ip库管理
+// @Param ip query string true "ip"
+// @Success 200 {object} tools.Location "查询ip所在库(归属地)成功"
+// @Failure 400 {object} vo.Error "请求参数错误"
+// @Failure 401 {object} vo.Error "当前用户登录令牌失效"
+// @Failure 403 {object} vo.Error "当前操作无权限"
+// @Failure 500 {object} vo.Error "服务器内部错误"
+// @Security ApiKeyAuth
+// @Router /api/v1/application/black/ip/where [get]
+func (ih *BlackIPHandler) IPLocationSearch(ctx iris.Context) mvc.Result {
+	ip := ctx.URLParam(constant.IP)
+	if len(ip) == 0 {
+		return response.Error(exception.New(response.ExceptionInvalidRequestParameters, "ip不能为空"))
+	}
+	localtion, ex := tools.IPLocation(ip)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	return response.JSON(localtion)
+}
+
 // BeforeActivation 初始化路由
 func (ih *BlackIPHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodPost, "/black/ip", "Create")
@@ -179,4 +204,5 @@ func (ih *BlackIPHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodPut, "/black/ip/{id:string}", "Update")
 	b.Handle(iris.MethodDelete, "/black/ip/{id:string}", "Delete")
 	b.Handle(iris.MethodDelete, "/black/ip/multi", "MultiDelete")
+	b.Handle(iris.MethodGet, "/black/ip/where", "IPLocationSearch")
 }

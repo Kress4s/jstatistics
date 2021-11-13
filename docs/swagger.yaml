@@ -1,5 +1,16 @@
 basePath: /
 definitions:
+  tools.Location:
+    properties:
+      addr:
+        type: string
+      city:
+        type: string
+      ip:
+        type: string
+      pro:
+        type: string
+    type: object
   vo.BlackIPReq:
     properties:
       ip:
@@ -358,6 +369,18 @@ definitions:
       user_name:
         type: string
     type: object
+  vo.UserToMenusResp:
+    properties:
+      menu_id:
+        description: 菜单ID
+        type: integer
+      menu_name:
+        description: 菜单名字
+        type: string
+      router:
+        description: 菜单路由
+        type: string
+    type: object
   vo.UserUpdateReq:
     properties:
       is_admin:
@@ -554,6 +577,41 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 批量删除ip库
+      tags:
+      - 应用管理 - ip库管理
+  /api/v1/application/black/ip/where:
+    get:
+      description: 批量删除ip库信息
+      parameters:
+      - description: ip
+        in: query
+        name: ip
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 查询ip所在库(归属地)成功
+          schema:
+            $ref: '#/definitions/tools.Location'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询ip所在库(归属地)
       tags:
       - 应用管理 - ip库管理
   /api/v1/application/black/ips:
@@ -1613,6 +1671,37 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 修改用户角色权限
+      tags:
+      - 权限管理 - 管理员
+  /api/v1/permission/user/menus:
+    get:
+      description: 查询当前用户可展示的菜单权限信息
+      responses:
+        "200":
+          description: 动态菜单获取成功
+          schema:
+            items:
+              $ref: '#/definitions/vo.UserToMenusResp'
+            type: array
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询(动态菜单)当前用户可展示的菜单权限
       tags:
       - 权限管理 - 管理员
   /api/v1/permission/user/profile:

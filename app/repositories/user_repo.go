@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"fmt"
 	"js_statistics/app/models"
 	"js_statistics/app/models/tables"
 	"js_statistics/app/response"
@@ -34,6 +35,7 @@ type UserRepo interface {
 	Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception
 	Delete(db *gorm.DB, id uint) exception.Exception
 	MultiDelete(db *gorm.DB, ids []uint) exception.Exception
+	GetUserMenus(db *gorm.DB, userID uint) ([]models.UserToMenus, exception.Exception)
 }
 
 func (u *UserRepoImpl) Profile(db *gorm.DB, id uint) (*models.User, exception.Exception) {
@@ -99,4 +101,22 @@ func (u *UserRepoImpl) Delete(db *gorm.DB, id uint) exception.Exception {
 
 func (u *UserRepoImpl) MultiDelete(db *gorm.DB, ids []uint) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.User{}, ids).Error)
+}
+
+func (u *UserRepoImpl) GetUserMenus(db *gorm.DB, userID uint) ([]models.UserToMenus, exception.Exception) {
+	menus := make([]models.UserToMenus, 0)
+	tx := db.Table(tables.User+" as u").
+		Select(
+			"u.id as uid, p.id as menu_id, p.menu_name as menu_name, p.route as route",
+		).
+		Joins(fmt.Sprintf("INNER JOIN %s AS ur_rel ON ur_rel.user_id = u.id", tables.UserRoleRelation)).
+		Joins(fmt.Sprintf("inner join %s as rp_rel on rp_rel.role_id = ur_rel.role_id", tables.RolePermissionRelation)).
+		Joins(fmt.Sprintf("INNER JOIN %s AS p ON p.id = rp_rel.permission_id", tables.Permission)).
+		Group("u.id,p.id,p.menu_name,p.route").
+		Having("u.id = ?", userID).
+		Scan(&menus)
+	if tx.Error != nil {
+		return nil, exception.Wrap(response.ExceptionDatabase, tx.Error)
+	}
+	return menus, nil
 }

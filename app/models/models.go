@@ -14,6 +14,7 @@ type (
 	UserRoleRelation       = permission.UserRoleRelation
 	Permission             = permission.Permission
 	RolePermissionRelation = permission.RolePermissionRelation
+	UserToMenus            = permission.UserToMenus
 
 	// 应用管理
 	DomainMgr  = application.DomainMgr

@@ -121,6 +121,61 @@
                 }
             }
         },
+        "/api/v1/application/black/ip/where": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "批量删除ip库信息",
+                "tags": [
+                    "应用管理 - ip库管理"
+                ],
+                "summary": "查询ip所在库(归属地)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ip",
+                        "name": "ip",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询ip所在库(归属地)成功",
+                        "schema": {
+                            "$ref": "#/definitions/tools.Location"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/application/black/ip/{id}": {
             "get": {
                 "security": [
@@ -1685,6 +1740,55 @@
                 }
             }
         },
+        "/api/v1/permission/user/menus": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询当前用户可展示的菜单权限信息",
+                "tags": [
+                    "权限管理 - 管理员"
+                ],
+                "summary": "查询(动态菜单)当前用户可展示的菜单权限",
+                "responses": {
+                    "200": {
+                        "description": "动态菜单获取成功",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vo.UserToMenusResp"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/permission/user/profile": {
             "get": {
                 "security": [
@@ -2182,6 +2286,23 @@
         }
     },
     "definitions": {
+        "tools.Location": {
+            "type": "object",
+            "properties": {
+                "addr": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "pro": {
+                    "type": "string"
+                }
+            }
+        },
         "vo.BlackIPReq": {
             "type": "object",
             "properties": {
@@ -2690,6 +2811,23 @@
                     "type": "boolean"
                 },
                 "user_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "vo.UserToMenusResp": {
+            "type": "object",
+            "properties": {
+                "menu_id": {
+                    "description": "菜单ID",
+                    "type": "integer"
+                },
+                "menu_name": {
+                    "description": "菜单名字",
+                    "type": "string"
+                },
+                "router": {
+                    "description": "菜单路由",
                     "type": "string"
                 }
             }

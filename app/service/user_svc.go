@@ -35,6 +35,7 @@ type UserService interface {
 	Delete(openID string, id uint) exception.Exception
 	GetRolesByUserID(openID string, uid uint) ([]vo.RoleBriefResp, exception.Exception)
 	// MultiDelete(openID string, ids string) exception.Exception
+	GetUserMenus(openID uint) ([]vo.UserToMenusResp, exception.Exception)
 }
 
 func GetUserService() UserService {
@@ -175,4 +176,22 @@ func (us *userServiceImpl) GetRolesByUserID(openID string, uid uint) ([]vo.RoleB
 		})
 	}
 	return resp, nil
+}
+
+func (us *userServiceImpl) GetUserMenus(userID uint) ([]vo.UserToMenusResp, exception.Exception) {
+	res, ex := us.repo.GetUserMenus(us.db, userID)
+	if ex != nil {
+		return nil, ex
+	}
+	menus := make([]vo.UserToMenusResp, 0, len(res))
+	for i := range res {
+		menus = append(menus,
+			vo.UserToMenusResp{
+				MenuID:   res[i].MenuID,
+				MenuName: res[i].MenuName,
+				Route:    res[i].Route,
+			},
+		)
+	}
+	return menus, nil
 }

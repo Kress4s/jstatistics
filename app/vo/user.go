@@ -50,3 +50,12 @@ type UserResp struct {
 	Admin    bool   `json:"admin"`
 	Status   bool   `json:"status"`
 }
+
+type UserToMenusResp struct {
+	// 菜单ID
+	MenuID uint `json:"menu_id"`
+	// 菜单名字
+	MenuName string `json:"menu_name"`
+	// 菜单路由
+	Route string `json:"router"`
+}

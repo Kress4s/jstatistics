@@ -17,3 +17,9 @@ type User struct {
 func (User) TableName() string {
 	return tables.User
 }
+
+type UserToMenus struct {
+	MenuID   uint   `json:"menu_id"`
+	MenuName string `json:"menu_name"`
+	Route    string `json:"router"`
+}

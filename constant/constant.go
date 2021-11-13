@@ -30,3 +30,8 @@ const (
 	PageSize   = "page_size"
 	TextSearch = "keywords"
 )
+
+const (
+	IPLocation = "http://whois.pconline.com.cn/ipJson.jsp?ip=%s&json=true"
+	IP = "ip"
+)

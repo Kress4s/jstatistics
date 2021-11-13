@@ -222,6 +222,25 @@ func (u *UserHandler) GetRolesByUserID(ctx iris.Context) mvc.Result {
 	return response.JSON(res)
 }
 
+// Create godoc
+// @Summary 查询(动态菜单)当前用户可展示的菜单权限
+// @Description 查询当前用户可展示的菜单权限信息
+// @Tags 权限管理 - 管理员
+// @Success 200 {array}  vo.UserToMenusResp "动态菜单获取成功"
+// @Failure 400 {object} vo.Error  "请求参数错误"
+// @Failure 401 {object} vo.Error "当前用户登录令牌失效"
+// @Failure 403 {object} vo.Error "当前操作无权限"
+// @Failure 500 {object} vo.Error "服务器内部错误"
+// @Security ApiKeyAuth
+// @Router /api/v1/permission/user/menus [get]
+func (u *UserHandler) GetUserMenus(iris.Context) mvc.Result {
+	resp, ex := u.Svc.GetUserMenus(u.UserID)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	return response.JSON(resp)
+}
+
 // BeforeActivation 初始化路由
 func (u *UserHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodGet, "/user/profile", "Profile")
@@ -232,4 +251,5 @@ func (u *UserHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodDelete, "/user/{id:string}", "Delete")
 	b.Handle(iris.MethodPut, "/user/{id:string}/roles", "UpdateRoles")
 	b.Handle(iris.MethodGet, "/user/{id:string}/roles", "GetRolesByUserID")
+	b.Handle(iris.MethodGet, "//user/menus", "GetUserMenus")
 }
