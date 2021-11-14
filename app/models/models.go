@@ -21,4 +21,6 @@ type (
 	BlackIPMgr = application.BlackIPMgr
 	WhiteIP    = application.WhiteIP
 	CDN        = application.CDN
+	JsPrimary  = application.JsPrimary
+	JsCategory = application.JsCategory
 )

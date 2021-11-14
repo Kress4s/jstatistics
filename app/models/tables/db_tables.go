@@ -20,4 +20,11 @@ const (
 	WhiteIP = "js_white_ip"
 	// cdn 白名单
 	CDN = "js_cdn"
+
+	// js主分类
+	JsPrimary = "js_primary"
+	// js分类
+	JsCategory = "js_category"
+	// js管理
+	JsManage = "js_manager"
 )

@@ -90,6 +90,15 @@ definitions:
         $ref: '#/definitions/vo.Pagination'
         description: 分页信息
     type: object
+  vo.Domain:
+    properties:
+      id:
+        description: 域名配置的id
+        type: integer
+      title:
+        description: 域名配置的标题
+        type: string
+    type: object
   vo.DomainReq:
     properties:
       certificate:
@@ -180,6 +189,66 @@ definitions:
       ip:
         description: ip
         type: string
+      title:
+        description: 标题
+        type: string
+    type: object
+  vo.JsCategoryReq:
+    properties:
+      domain_id:
+        description: 域名ID
+        type: integer
+      primary_id:
+        description: js主分类ID
+        type: integer
+      title:
+        description: 标题
+        type: string
+    type: object
+  vo.JsCategoryResp:
+    properties:
+      domain:
+        $ref: '#/definitions/vo.Domain'
+        description: 域名配置信息
+      id:
+        description: id
+        type: integer
+      primary:
+        $ref: '#/definitions/vo.JsPrimaryResp'
+        description: js主分类的信息
+      title:
+        description: 标题
+        type: string
+    type: object
+  vo.JsCategoryUpdateReq:
+    properties:
+      domain_id:
+        description: 域名ID
+        type: integer
+      primary_id:
+        description: js主分类ID
+        type: integer
+      title:
+        description: 标题
+        type: string
+    type: object
+  vo.JsPrimaryReq:
+    properties:
+      title:
+        description: 标题
+        type: string
+    type: object
+  vo.JsPrimaryResp:
+    properties:
+      id:
+        description: 主分类id
+        type: integer
+      title:
+        description: 标题名
+        type: string
+    type: object
+  vo.JsPrimaryUpdateReq:
+    properties:
       title:
         description: 标题
         type: string
@@ -822,7 +891,7 @@ paths:
           $ref: '#/definitions/vo.CDNUpdateReq'
       responses:
         "200":
-          description: 修改域名成功
+          description: 修改cdn白名单成功
         "400":
           description: 请求参数错误
           schema:
@@ -1368,6 +1437,420 @@ paths:
       summary: 查询ip白名单
       tags:
       - 应用管理 - ip白名单
+  /api/v1/application/js_categories/primary/{pid}:
+    get:
+      description: 查询js分类列表通过js主分类ID
+      parameters:
+      - description: js主分类id
+        in: path
+        name: pid
+        required: true
+        type: string
+      - description: 请求页
+        in: query
+        name: page
+        type: integer
+      - description: 页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: keywords
+        in: query
+        name: keywords
+        type: string
+      responses:
+        "200":
+          description: 查询js分类列表成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/vo.DataPagination'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/vo.JsCategoryResp'
+                  type: array
+              type: object
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询js分类列表通过js主分类ID
+      tags:
+      - 应用管理 - js分类
+  /api/v1/application/js_category:
+    post:
+      description: 创建js分类管理
+      parameters:
+      - description: JsCategoryReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.JsCategoryReq'
+      responses:
+        "200":
+          description: 创建js分类成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建js分类
+      tags:
+      - 应用管理 - js分类
+  /api/v1/application/js_category/{id}:
+    delete:
+      description: 删除js分类信息
+      parameters:
+      - description: js分类id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 删除js分类成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除js分类
+      tags:
+      - 应用管理 - js分类
+    get:
+      description: 查询js分类信息
+      parameters:
+      - description: js分类id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 查询域名成功
+          schema:
+            $ref: '#/definitions/vo.JsCategoryResp'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询js分类
+      tags:
+      - 应用管理 - js分类
+    put:
+      description: 修改js分类信息
+      parameters:
+      - description: js分类id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: JsCategoryUpdateReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.JsCategoryUpdateReq'
+      responses:
+        "200":
+          description: 修改js分类成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改js分类
+      tags:
+      - 应用管理 - js分类
+  /api/v1/application/js_category/multi:
+    delete:
+      description: 批量删除js分类信息
+      parameters:
+      - description: js分类ids, `,` 连接
+        in: query
+        name: ids
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 批量删除js分类管理成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除js分类
+      tags:
+      - 应用管理 - js分类
+  /api/v1/application/js_primaries:
+    get:
+      description: 查询js主分类列表
+      parameters:
+      - description: 请求页
+        in: query
+        name: page
+        type: integer
+      - description: 页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: keywords
+        in: query
+        name: keywords
+        type: string
+      responses:
+        "200":
+          description: 查询js主分类列表成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/vo.DataPagination'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/vo.JsPrimaryResp'
+                  type: array
+              type: object
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询js主分类列表
+      tags:
+      - 应用管理 - js主分类
+  /api/v1/application/js_primary:
+    post:
+      description: 创建js主分类管理
+      parameters:
+      - description: JsPrimaryReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.JsPrimaryReq'
+      responses:
+        "200":
+          description: 创建js主分类成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建js主分类
+      tags:
+      - 应用管理 - js主分类
+  /api/v1/application/js_primary/{id}:
+    delete:
+      description: 删除js主分类信息
+      parameters:
+      - description: js主分类id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 删除js主分类成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除js主分类
+      tags:
+      - 应用管理 - js主分类
+    get:
+      description: 查询js主分类信息
+      parameters:
+      - description: js主分类id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 查询域名成功
+          schema:
+            $ref: '#/definitions/vo.JsPrimaryResp'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询js主分类
+      tags:
+      - 应用管理 - js主分类
+    put:
+      description: 修改js主分类信息
+      parameters:
+      - description: js主分类id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: JsPrimaryUpdateReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.JsPrimaryUpdateReq'
+      responses:
+        "200":
+          description: 修改js主分类成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改js主分类
+      tags:
+      - 应用管理 - js主分类
   /api/v1/permission/role:
     post:
       description: 创建角色

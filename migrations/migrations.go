@@ -15,5 +15,6 @@ func Migrate() error {
 
 		// 应用管理
 		&models.DomainMgr{}, &models.BlackIPMgr{}, &models.WhiteIP{}, &models.CDN{},
+		&models.JsPrimary{}, &models.JsCategory{},
 	)
 }
