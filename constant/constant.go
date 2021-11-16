@@ -14,15 +14,16 @@ const (
 
 // http request
 const (
-	ID        = "id"
-	IDS       = "ids"
-	PrimaryID = "pid"
-	RoleID    = "role_id"
-	BeginAt   = "begin_at"
-	EndAt     = "end_at"
-	Year      = "year"
-	Date      = "date"
-	TimeAt    = "time_at"
+	ID         = "id"
+	IDS        = "ids"
+	PrimaryID  = "pid"
+	CategoryID = "cid"
+	RoleID     = "role_id"
+	BeginAt    = "begin_at"
+	EndAt      = "end_at"
+	Year       = "year"
+	Date       = "date"
+	TimeAt     = "time_at"
 )
 
 // pagination key

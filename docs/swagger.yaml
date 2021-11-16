@@ -232,6 +232,141 @@ definitions:
         description: 标题
         type: string
     type: object
+  vo.JsManageReq:
+    properties:
+      category_id:
+        description: 所属js分类的ID
+        type: integer
+      client_type:
+        description: 客户端 0：移动端； 1：PC端
+        items:
+          type: integer
+        type: array
+      from_mode:
+        description: 来源 0：无；1：关键词 2：搜索引擎
+        type: integer
+      href_id:
+        description: href 跳转id，多个用 "," 连接
+        type: string
+      key_word:
+        description: 关键词
+        type: string
+      redirect_code:
+        description: 跳转代码 0：Top；1：Windows
+        type: integer
+      redirect_count:
+        description: 跳转次数
+        type: integer
+      redirect_mode:
+        description: 跳转方式
+        type: integer
+      release_time:
+        description: 封禁小时
+        type: integer
+      search_engines:
+        description: 搜索引擎
+        items:
+          type: integer
+        type: array
+      shield_area:
+        description: 屏蔽地区，多个用 ”-“ 相连；eg：北京市-上海市-...
+        type: string
+      title:
+        description: 标题
+        type: string
+      wait_time:
+        description: 等待时间
+        type: integer
+    type: object
+  vo.JsManageResp:
+    properties:
+      client_type:
+        description: 客户端 0：移动端； 1：PC端
+        items:
+          type: integer
+        type: array
+      from_mode:
+        description: 来源 0：无；1：关键词 2：搜索引擎
+        type: integer
+      href_id:
+        description: href 跳转id，多个用 "," 连接
+        type: string
+      id:
+        description: id
+        type: integer
+      ip:
+        description: 今日IP数
+        type: integer
+      key_word:
+        description: 关键词
+        type: string
+      redirect_code:
+        description: 跳转代码 0：Top；1：Windows
+        type: integer
+      redirect_count:
+        description: 跳转次数
+        type: integer
+      redirect_mode:
+        description: 跳转方式
+        type: integer
+      release_time:
+        description: 封禁小时
+        type: integer
+      search_engines:
+        description: 搜索引擎
+        items:
+          type: integer
+        type: array
+      shield_area:
+        description: 屏蔽地区，多个用 ”-“ 相连；eg：北京市-上海市-...
+        type: string
+      title:
+        description: 标题
+        type: string
+      wait_time:
+        description: 等待时间
+        type: integer
+    type: object
+  vo.JsManageUpdateReq:
+    properties:
+      client_type:
+        description: 客户端 0：移动端； 1：PC端
+        items:
+          type: integer
+        type: array
+      from_mode:
+        description: 来源 0：无；1：关键词 2：搜索引擎
+        type: integer
+      href_id:
+        description: href 跳转id，多个用 "," 连接
+        type: string
+      key_word:
+        description: 关键词
+        type: string
+      redirect_code:
+        description: 跳转代码 0：Top；1：Windows
+        type: integer
+      redirect_count:
+        description: 跳转次数
+        type: integer
+      redirect_mode:
+        description: 跳转方式
+        type: integer
+      release_time:
+        description: 封禁小时
+        type: integer
+      search_engines:
+        description: 搜索引擎
+        items:
+          type: integer
+        type: array
+      shield_area:
+        description: 屏蔽地区，多个用 ”-“ 相连；eg：北京市-上海市-...
+        type: string
+      wait_time:
+        description: 等待时间
+        type: integer
+    type: object
   vo.JsPrimaryReq:
     properties:
       title:
@@ -389,6 +524,72 @@ definitions:
       id:
         type: integer
       name:
+        type: string
+    type: object
+  vo.RedirectManageReq:
+    properties:
+      android:
+        description: android端跳转地址
+        type: string
+      ios:
+        description: ios跳转地址
+        type: string
+      "off":
+        description: 关闭时间
+        type: string
+      "on":
+        description: 开启时间
+        type: string
+      pc:
+        description: PC端跳转地址
+        type: string
+      title:
+        description: 标题
+        type: string
+    type: object
+  vo.RedirectManageResp:
+    properties:
+      android:
+        description: android端跳转地址
+        type: string
+      id:
+        description: id
+        type: integer
+      ios:
+        description: ios跳转地址
+        type: string
+      "off":
+        description: 关闭时间
+        type: string
+      "on":
+        description: 开启时间
+        type: string
+      pc:
+        description: PC端跳转地址
+        type: string
+      title:
+        description: 标题
+        type: string
+    type: object
+  vo.RedirectManageUpdateReq:
+    properties:
+      android:
+        description: android端跳转地址
+        type: string
+      ios:
+        description: ios跳转地址
+        type: string
+      "off":
+        description: 关闭时间
+        type: string
+      "on":
+        description: 开启时间
+        type: string
+      pc:
+        description: PC端跳转地址
+        type: string
+      title:
+        description: 标题
         type: string
     type: object
   vo.RoleBriefResp:
@@ -1437,6 +1638,60 @@ paths:
       summary: 查询ip白名单
       tags:
       - 应用管理 - ip白名单
+  /api/v1/application/js_categories/category/{cid}:
+    get:
+      description: 查询js管理列表通过js分类ID
+      parameters:
+      - description: js分类id
+        in: path
+        name: cid
+        required: true
+        type: string
+      - description: 请求页
+        in: query
+        name: page
+        type: integer
+      - description: 页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: keywords
+        in: query
+        name: keywords
+        type: string
+      responses:
+        "200":
+          description: 查询js管理列表成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/vo.DataPagination'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/vo.JsManageResp'
+                  type: array
+              type: object
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询js管理列表通过js分类ID
+      tags:
+      - 应用管理 - js管理
   /api/v1/application/js_categories/primary/{pid}:
     get:
       description: 查询js分类列表通过js主分类ID
@@ -1663,6 +1918,178 @@ paths:
       summary: 批量删除js分类
       tags:
       - 应用管理 - js分类
+  /api/v1/application/js_manage:
+    post:
+      description: 创建js管理管理
+      parameters:
+      - description: JsManageReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.JsManageReq'
+      responses:
+        "200":
+          description: 创建js管理成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建js管理
+      tags:
+      - 应用管理 - js管理
+  /api/v1/application/js_manage/{id}:
+    delete:
+      description: 删除js管理信息
+      parameters:
+      - description: js管理id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 删除js管理成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除js管理
+      tags:
+      - 应用管理 - js管理
+    get:
+      description: 查询js管理信息
+      parameters:
+      - description: js管理id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 查询域名成功
+          schema:
+            $ref: '#/definitions/vo.JsManageResp'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询js管理
+      tags:
+      - 应用管理 - js管理
+    put:
+      description: 修改js管理信息
+      parameters:
+      - description: js管理id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: JsManageUpdateReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.JsManageUpdateReq'
+      responses:
+        "200":
+          description: 修改js管理成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改js管理
+      tags:
+      - 应用管理 - js管理
+  /api/v1/application/js_manage/multi:
+    delete:
+      description: 批量删除js管理信息
+      parameters:
+      - description: js管理ids, `,` 连接
+        in: query
+        name: ids
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 批量删除js管理管理成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除js管理
+      tags:
+      - 应用管理 - js管理
   /api/v1/application/js_primaries:
     get:
       description: 查询js主分类列表
@@ -1851,6 +2278,227 @@ paths:
       summary: 修改js主分类
       tags:
       - 应用管理 - js主分类
+  /api/v1/application/redirect:
+    post:
+      description: 创建跳转管理管理
+      parameters:
+      - description: RedirectManageReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.RedirectManageReq'
+      responses:
+        "200":
+          description: 创建跳转管理成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建跳转管理
+      tags:
+      - 应用管理 - 跳转管理
+  /api/v1/application/redirect/{id}:
+    delete:
+      description: 删除跳转管理信息
+      parameters:
+      - description: 跳转管理id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 删除跳转管理成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除跳转管理
+      tags:
+      - 应用管理 - 跳转管理
+    get:
+      description: 查询跳转管理信息
+      parameters:
+      - description: 跳转管理id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 查询域名成功
+          schema:
+            $ref: '#/definitions/vo.RedirectManageResp'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询跳转管理
+      tags:
+      - 应用管理 - 跳转管理
+    put:
+      description: 修改跳转管理信息
+      parameters:
+      - description: 跳转管理id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: RedirectManageUpdateReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.RedirectManageUpdateReq'
+      responses:
+        "200":
+          description: 修改跳转管理成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改跳转管理
+      tags:
+      - 应用管理 - 跳转管理
+  /api/v1/application/redirect/multi:
+    delete:
+      description: 批量删除跳转管理信息
+      parameters:
+      - description: 跳转管理ids, `,` 连接
+        in: query
+        name: ids
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 批量删除跳转管理管理成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除跳转管理
+      tags:
+      - 应用管理 - 跳转管理
+  /api/v1/application/redirects:
+    get:
+      description: 查询跳转管理列表
+      parameters:
+      - description: 请求页
+        in: query
+        name: page
+        type: integer
+      - description: 页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: keywords
+        in: query
+        name: keywords
+        type: string
+      responses:
+        "200":
+          description: 查询跳转管理列表成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/vo.DataPagination'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/vo.RedirectManageResp'
+                  type: array
+              type: object
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询跳转管理列表
+      tags:
+      - 应用管理 - 跳转管理
   /api/v1/permission/role:
     post:
       description: 创建角色

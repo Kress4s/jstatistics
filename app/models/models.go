@@ -17,10 +17,12 @@ type (
 	UserToMenus            = permission.UserToMenus
 
 	// 应用管理
-	DomainMgr  = application.DomainMgr
-	BlackIPMgr = application.BlackIPMgr
-	WhiteIP    = application.WhiteIP
-	CDN        = application.CDN
-	JsPrimary  = application.JsPrimary
-	JsCategory = application.JsCategory
+	DomainMgr      = application.DomainMgr
+	BlackIPMgr     = application.BlackIPMgr
+	WhiteIP        = application.WhiteIP
+	CDN            = application.CDN
+	JsPrimary      = application.JsPrimary
+	JsCategory     = application.JsCategory
+	JsManage       = application.JsManage
+	RedirectManage = application.RedirectManage
 )

@@ -43,4 +43,6 @@ func RegisterRoutes(app *iris.Application) {
 	applicationApp.Handle(v1.NewCdnHandler())
 	applicationApp.Handle(v1.NewJsPrimaryHandler())
 	applicationApp.Handle(v1.NewJsCategoryHandler())
+	applicationApp.Handle(v1.NewJsManageHandler())
+	applicationApp.Handle(v1.NewRedirectManageHandler())
 }

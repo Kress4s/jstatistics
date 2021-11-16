@@ -27,4 +27,6 @@ const (
 	JsCategory = "js_category"
 	// js管理
 	JsManage = "js_manager"
+	// 跳转管理
+	RedirectManage = "js_redirect_manage"
 )
