@@ -44,6 +44,7 @@ type JscService interface {
 	Update(openID string, id int64, param *vo.JsCategoryUpdateReq) exception.Exception
 	Delete(id int64) exception.Exception
 	MultiDelete(ids string) exception.Exception
+	ListAllByvPrimaryID(id int64) ([]vo.JsCategoryResp, exception.Exception)
 }
 
 func (jsi *jscServiceImpl) Create(openID string, param *vo.JsCategoryReq) exception.Exception {
@@ -115,4 +116,19 @@ func (jsi *jscServiceImpl) MultiDelete(ids string) exception.Exception {
 		jid = append(jid, int64(id))
 	}
 	return jsi.repo.MultiDelete(jsi.db, jid)
+}
+
+func (jsi *jscServiceImpl) ListAllByvPrimaryID(id int64) ([]vo.JsCategoryResp, exception.Exception) {
+	jcs, ex := jsi.repo.ListAllByvPrimaryID(jsi.db, id)
+	if ex != nil {
+		return nil, ex
+	}
+	resp := make([]vo.JsCategoryResp, 0, len(jcs))
+	for i := range jcs {
+		resp = append(resp, vo.JsCategoryResp{
+			ID:    jcs[i].ID,
+			Title: jcs[i].Title,
+		})
+	}
+	return resp, nil
 }

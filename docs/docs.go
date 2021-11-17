@@ -26,6 +26,113 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/application/all/domains": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询所有无分页域名",
+                "tags": [
+                    "应用管理 - 域名管理"
+                ],
+                "summary": "查询所有无分页域名",
+                "responses": {
+                    "200": {
+                        "description": "查询域名列表成功",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vo.DomainResp"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/application/all/js_categories/primary/{pid}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询js所有无分页分类通过js主分类ID",
+                "tags": [
+                    "应用管理 - js分类"
+                ],
+                "summary": "查询js所有无分页分类通过js主分类ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "js主分类id",
+                        "name": "pid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询js分类列表成功",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vo.JsCategoryResp"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/application/black/ip": {
             "post": {
                 "security": [
@@ -1985,6 +2092,61 @@ var doc = `{
                 }
             }
         },
+        "/api/v1/application/js_manage/js_site/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询js地址信息",
+                "tags": [
+                    "应用管理 - js管理"
+                ],
+                "summary": "查询js地址",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "js管理id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询js地址成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.JSiteResp"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/application/js_manage/multi": {
             "delete": {
                 "security": [
@@ -2060,7 +2222,7 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "查询域名成功",
+                        "description": "查询js管理成功",
                         "schema": {
                             "$ref": "#/definitions/vo.JsManageResp"
                         }
@@ -4254,11 +4416,19 @@ var doc = `{
                 }
             }
         },
+        "vo.JSiteResp": {
+            "type": "object",
+            "properties": {
+                "site": {
+                    "type": "string"
+                }
+            }
+        },
         "vo.JsCategoryReq": {
             "type": "object",
             "properties": {
                 "domain_id": {
-                    "description": "域名ID",
+                    "description": "域名ID，未选择则传 0",
                     "type": "integer"
                 },
                 "primary_id": {
@@ -4730,6 +4900,10 @@ var doc = `{
                     "description": "android端跳转地址",
                     "type": "string"
                 },
+                "category_id": {
+                    "description": "js分类id",
+                    "type": "integer"
+                },
                 "ios": {
                     "description": "ios跳转地址",
                     "type": "string"
@@ -4791,6 +4965,10 @@ var doc = `{
                 "android": {
                     "description": "android端跳转地址",
                     "type": "string"
+                },
+                "category_id": {
+                    "description": "js分类id",
+                    "type": "integer"
                 },
                 "ios": {
                     "description": "ios跳转地址",

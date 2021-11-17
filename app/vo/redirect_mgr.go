@@ -14,6 +14,8 @@ type RedirectManageReq struct {
 	Android string `json:"android"`
 	// ios跳转地址
 	IOS string `json:"ios"`
+	// js分类id
+	CategoryID int64 `json:"category_id"`
 	// 开启时间
 	ON time.Time `json:"on"`
 	// 关闭时间
@@ -22,12 +24,13 @@ type RedirectManageReq struct {
 
 func (rmr *RedirectManageReq) ToModel(openID string) *models.RedirectManage {
 	return &models.RedirectManage{
-		Title:   rmr.Title,
-		PC:      rmr.PC,
-		Android: rmr.Android,
-		IOS:     rmr.IOS,
-		ON:      rmr.ON,
-		OFF:     rmr.OFF,
+		Title:      rmr.Title,
+		PC:         rmr.PC,
+		Android:    rmr.Android,
+		IOS:        rmr.IOS,
+		CategoryID: rmr.CategoryID,
+		ON:         rmr.ON,
+		OFF:        rmr.OFF,
 	}
 }
 
@@ -69,6 +72,8 @@ type RedirectManageUpdateReq struct {
 	Android string `json:"android"`
 	// ios跳转地址
 	IOS string `json:"ios"`
+	// js分类id
+	CategoryID int64 `json:"category_id"`
 	// 开启时间
 	ON time.Time `json:"on"`
 	// 关闭时间
@@ -77,11 +82,12 @@ type RedirectManageUpdateReq struct {
 
 func (rmr *RedirectManageUpdateReq) ToMap(openID string) map[string]interface{} {
 	return map[string]interface{}{
-		"title":   rmr.Title,
-		"pc":      rmr.PC,
-		"android": rmr.Android,
-		"ios":     rmr.IOS,
-		"on":      rmr.ON,
-		"off":     rmr.OFF,
+		"title":       rmr.Title,
+		"pc":          rmr.PC,
+		"android":     rmr.Android,
+		"ios":         rmr.IOS,
+		"category_id": rmr.CategoryID,
+		"on":          rmr.ON,
+		"off":         rmr.OFF,
 	}
 }

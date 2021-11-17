@@ -171,6 +171,25 @@ func (dh *DomainHandler) MultiDelete(ctx iris.Context) mvc.Result {
 	return response.OK()
 }
 
+// Create godoc
+// @Summary 查询所有无分页域名
+// @Description 查询所有无分页域名
+// @Tags 应用管理 - 域名管理
+// @Success 200 {array} vo.DomainResp "查询域名列表成功"
+// @Failure 400 {object} vo.Error "请求参数错误"
+// @Failure 401 {object} vo.Error "当前用户登录令牌失效"
+// @Failure 403 {object} vo.Error "当前操作无权限"
+// @Failure 500 {object} vo.Error "服务器内部错误"
+// @Security ApiKeyAuth
+// @Router /api/v1/application/all/domains [get]
+func (dh *DomainHandler) ListAll(ctx iris.Context) mvc.Result {
+	resp, ex := dh.Svc.ListAll()
+	if ex != nil {
+		return response.Error(ex)
+	}
+	return response.JSON(resp)
+}
+
 // BeforeActivation 初始化路由
 func (dh *DomainHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodPost, "/domain", "Create")
@@ -179,4 +198,5 @@ func (dh *DomainHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodPut, "/domain/{id:string}", "Update")
 	b.Handle(iris.MethodDelete, "/domain/{id:string}", "Delete")
 	b.Handle(iris.MethodDelete, "/domain/multi", "MultiDelete")
+	b.Handle(iris.MethodGet, "/all/domains", "ListAll")
 }

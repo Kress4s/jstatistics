@@ -32,6 +32,7 @@ type JscRepo interface {
 	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
 	Delete(db *gorm.DB, id int64) exception.Exception
 	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
+	ListAllByvPrimaryID(db *gorm.DB, pid int64) ([]models.JsCategory, exception.Exception)
 }
 
 func (jsi *JscRepoImpl) Create(db *gorm.DB, jsc *models.JsCategory) exception.Exception {
@@ -73,4 +74,13 @@ func (jsi *JscRepoImpl) Delete(db *gorm.DB, id int64) exception.Exception {
 
 func (jsi *JscRepoImpl) MultiDelete(db *gorm.DB, ids []int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.JsCategory{}, ids).Error)
+}
+
+func (jsi *JscRepoImpl) ListAllByvPrimaryID(db *gorm.DB, pid int64) ([]models.JsCategory, exception.Exception) {
+	categories := make([]models.JsCategory, 0)
+	tx := db.Where("primary_id = ?", pid).Order("id").Find(&categories)
+	if tx.Error != nil {
+		return nil, exception.Wrap(response.ExceptionDatabase, tx.Error)
+	}
+	return categories, nil
 }

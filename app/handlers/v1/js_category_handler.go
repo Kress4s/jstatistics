@@ -176,6 +176,30 @@ func (jh *JscHandler) MultiDelete(ctx iris.Context) mvc.Result {
 	return response.OK()
 }
 
+// Create godoc
+// @Summary 查询js所有无分页分类通过js主分类ID
+// @Description 查询js所有无分页分类通过js主分类ID
+// @Tags 应用管理 - js分类
+// @Param pid path string true "js主分类id"
+// @Success 200 {array} vo.JsCategoryResp "查询js分类列表成功"
+// @Failure 400 {object} vo.Error "请求参数错误"
+// @Failure 401 {object} vo.Error "当前用户登录令牌失效"
+// @Failure 403 {object} vo.Error "当前操作无权限"
+// @Failure 500 {object} vo.Error "服务器内部错误"
+// @Security ApiKeyAuth
+// @Router /api/v1/application/all/js_categories/primary/{pid} [get]
+func (jh *JscHandler) ListAllByvPrimaryID(ctx iris.Context) mvc.Result {
+	pid, err := ctx.Params().GetInt64(constant.PrimaryID)
+	if err != nil {
+		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
+	}
+	res, ex := jh.Svc.ListAllByvPrimaryID(pid)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	return response.JSON(res)
+}
+
 // BeforeActivation 初始化路由
 func (jh *JscHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodPost, "/js_category", "Create")
@@ -184,4 +208,5 @@ func (jh *JscHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodPut, "/js_category/{id:string}", "Update")
 	b.Handle(iris.MethodDelete, "/js_category/{id:string}", "Delete")
 	b.Handle(iris.MethodDelete, "/js_category/multi", "MultiDelete")
+	b.Handle(iris.MethodGet, "/all/js_categories/primary/{pid:string}", "ListAllByvPrimaryID")
 }

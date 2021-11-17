@@ -172,3 +172,7 @@ func randSeq(n int) string {
 func GenerateJSite(n int) string {
 	return randSeq(n)
 }
+
+type JSiteResp struct {
+	Site string `json:"site"`
+}

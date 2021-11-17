@@ -32,6 +32,7 @@ type DomainRepo interface {
 	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
 	Delete(db *gorm.DB, id int64) exception.Exception
 	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
+	ListAll(db *gorm.DB) ([]models.DomainMgr, exception.Exception)
 }
 
 func (dri *DomainRepoImpl) Create(db *gorm.DB, domain *models.DomainMgr) exception.Exception {
@@ -52,7 +53,7 @@ func (dri *DomainRepoImpl) List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []mo
 
 func (dri *DomainRepoImpl) Get(db *gorm.DB, id int64) (*models.DomainMgr, exception.Exception) {
 	domain := models.DomainMgr{}
-	res := db.Where(&models.DomainMgr{ID: id}).Find(&domain)
+	res := db.Where("id = ?", id).Find(&domain)
 	if res.RowsAffected == 0 {
 		return nil, exception.New(response.ExceptionRecordNotFound, "recode not found")
 	}
@@ -73,4 +74,13 @@ func (dri *DomainRepoImpl) Delete(db *gorm.DB, id int64) exception.Exception {
 
 func (dri *DomainRepoImpl) MultiDelete(db *gorm.DB, ids []int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.DomainMgr{}, ids).Error)
+}
+
+func (dri *DomainRepoImpl) ListAll(db *gorm.DB) ([]models.DomainMgr, exception.Exception) {
+	domains := make([]models.DomainMgr, 0)
+	tx := db.Find(&domains)
+	if tx.Error != nil {
+		return nil, exception.Wrap(response.ExceptionDatabase, tx.Error)
+	}
+	return domains, nil
 }

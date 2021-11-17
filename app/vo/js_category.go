@@ -10,7 +10,7 @@ type JsCategoryReq struct {
 	PrimaryID int64 `json:"primary_id"`
 	// 标题
 	Title string `json:"title"`
-	// 域名ID
+	// 域名ID，未选择则传 0
 	DomainID int64 `json:"domain_id"`
 }
 

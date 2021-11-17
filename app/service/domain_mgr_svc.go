@@ -40,6 +40,7 @@ type DomainService interface {
 	Update(openID string, id int64, param *vo.DomainUpdateReq) exception.Exception
 	Delete(id int64) exception.Exception
 	MultiDelete(ids string) exception.Exception
+	ListAll() ([]vo.DomainResp, exception.Exception)
 }
 
 func (dsi *domainServiceImpl) Create(openID string, param *vo.DomainReq) exception.Exception {
@@ -89,4 +90,19 @@ func (dsi *domainServiceImpl) MultiDelete(ids string) exception.Exception {
 		did = append(did, int64(id))
 	}
 	return dsi.repo.MultiDelete(dsi.db, did)
+}
+
+func (dsi *domainServiceImpl) ListAll() ([]vo.DomainResp, exception.Exception) {
+	domains, ex := dsi.repo.ListAll(dsi.db)
+	if ex != nil {
+		return nil, ex
+	}
+	resp := make([]vo.DomainResp, 0, len(domains))
+	for i := range domains {
+		resp = append(resp, vo.DomainResp{
+			ID:    domains[i].ID,
+			Title: domains[i].Title,
+		})
+	}
+	return resp, nil
 }

@@ -1,10 +1,12 @@
 package service
 
 import (
+	"fmt"
 	"js_statistics/app/repositories"
 	"js_statistics/app/response"
 	"js_statistics/app/vo"
 	"js_statistics/commom/drivers/database"
+	"js_statistics/constant"
 	"js_statistics/exception"
 	"strconv"
 	"strings"
@@ -19,16 +21,19 @@ var (
 )
 
 type jsmServiceImpl struct {
-	db     *gorm.DB
-	repo   repositories.JsmRepo
-	jcRepo repositories.JscRepo
+	db         *gorm.DB
+	repo       repositories.JsmRepo
+	jcRepo     repositories.JscRepo
+	domainRepo repositories.DomainRepo
 }
 
 func GetJsmService() JsmService {
 	jsmOnce.Do(func() {
 		jsmServiceInstance = &jsmServiceImpl{
-			db:   database.GetDriver(),
-			repo: repositories.GetJsmRepo(),
+			db:         database.GetDriver(),
+			repo:       repositories.GetJsmRepo(),
+			jcRepo:     repositories.GetJscRepo(),
+			domainRepo: repositories.GetDomainRepo(),
 		}
 	})
 	return jsmServiceInstance
@@ -41,6 +46,7 @@ type JsmService interface {
 	Update(openID string, id int64, param *vo.JsManageUpdateReq) exception.Exception
 	Delete(id int64) exception.Exception
 	MultiDelete(ids string) exception.Exception
+	GetJSiteByID(id int64) (*vo.JSiteResp, exception.Exception)
 }
 
 func (jsi *jsmServiceImpl) Create(openID string, param *vo.JsManageReq) exception.Exception {
@@ -56,7 +62,8 @@ func (jsi *jsmServiceImpl) Get(id int64) (*vo.JsManageResp, exception.Exception)
 	return vo.NewJsManageResponse(jsm), nil
 }
 
-func (jsi *jsmServiceImpl) ListByCategoryID(pageInfo *vo.PageInfo, pid int64) (*vo.DataPagination, exception.Exception) {
+func (jsi *jsmServiceImpl) ListByCategoryID(pageInfo *vo.PageInfo, pid int64) (*vo.DataPagination,
+	exception.Exception) {
 	count, jsms, ex := jsi.repo.ListByCategoryID(jsi.db, pageInfo, pid)
 	if ex != nil {
 		return nil, ex
@@ -90,4 +97,23 @@ func (jsi *jsmServiceImpl) MultiDelete(ids string) exception.Exception {
 		jid = append(jid, int64(id))
 	}
 	return jsi.repo.MultiDelete(jsi.db, jid)
+}
+
+func (jsi *jsmServiceImpl) GetJSiteByID(id int64) (*vo.JSiteResp, exception.Exception) {
+	js, ex := jsi.repo.Get(jsi.db, id)
+	if ex != nil {
+		return nil, ex
+	}
+	jc, ex := jsi.jcRepo.Get(jsi.db, js.CategoryID)
+	if ex != nil {
+		return nil, ex
+	}
+	if jc.DomainID == 0 {
+		return &vo.JSiteResp{Site: fmt.Sprintf(constant.JSiteForm, constant.DefaultJsDomain, js.Sign)}, nil
+	}
+	domain, ex := jsi.domainRepo.Get(jsi.db, jc.DomainID)
+	if ex != nil {
+		return nil, ex
+	}
+	return &vo.JSiteResp{Site: fmt.Sprintf(constant.JSiteForm, domain.Domain, js.Sign)}, nil
 }

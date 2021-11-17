@@ -83,7 +83,7 @@ func (jmh *JsmHandler) ListByCategoryID(ctx iris.Context) mvc.Result {
 // @Description 查询js管理信息
 // @Tags 应用管理 - js管理
 // @Param id path string true "js管理id"
-// @Success 200 {object} vo.JsManageResp "查询域名成功"
+// @Success 200 {object} vo.JsManageResp "查询js管理成功"
 // @Failure 400 {object} vo.Error  "请求参数错误"
 // @Failure 401 {object} vo.Error "当前用户登录令牌失效"
 // @Failure 403 {object} vo.Error "当前操作无权限"
@@ -176,6 +176,30 @@ func (jmh *JsmHandler) MultiDelete(ctx iris.Context) mvc.Result {
 	return response.OK()
 }
 
+// Create godoc
+// @Summary 查询js地址
+// @Description 查询js地址信息
+// @Tags 应用管理 - js管理
+// @Param id path string true "js管理id"
+// @Success 200 {object} vo.JSiteResp "查询js地址成功"
+// @Failure 400 {object} vo.Error  "请求参数错误"
+// @Failure 401 {object} vo.Error "当前用户登录令牌失效"
+// @Failure 403 {object} vo.Error "当前操作无权限"
+// @Failure 500 {object} vo.Error "服务器内部错误"
+// @Security ApiKeyAuth
+// @Router /api/v1/application/js_manage/js_site/{id} [get]
+func (jmh *JsmHandler) GetJSiteByID(ctx iris.Context) mvc.Result {
+	id, err := ctx.Params().GetInt64(constant.ID)
+	if err != nil {
+		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
+	}
+	resp, ex := jmh.Svc.GetJSiteByID(id)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	return response.JSON(resp)
+}
+
 // BeforeActivation 初始化路由
 func (jmh *JsmHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodPost, "/js_manage", "Create")
@@ -184,4 +208,5 @@ func (jmh *JsmHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodPut, "/js_manage/{id:string}", "Update")
 	b.Handle(iris.MethodDelete, "/js_manage/{id:string}", "Delete")
 	b.Handle(iris.MethodDelete, "/js_manage/multi", "MultiDelete")
+	b.Handle(iris.MethodGet, "/js_manage/js_site/{id:string}", "GetJSiteByID")
 }
