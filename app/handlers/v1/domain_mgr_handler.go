@@ -86,7 +86,7 @@ func (dh *DomainHandler) List(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/application/domain/{id} [get]
 func (dh *DomainHandler) Get(ctx iris.Context) mvc.Result {
-	id, err := ctx.Params().GetUint(constant.ID)
+	id, err := ctx.Params().GetInt64(constant.ID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}
@@ -111,7 +111,7 @@ func (dh *DomainHandler) Get(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/application/domain/{id} [put]
 func (dh *DomainHandler) Update(ctx iris.Context) mvc.Result {
-	id, err := ctx.Params().GetUint(constant.ID)
+	id, err := ctx.Params().GetInt64(constant.ID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}
@@ -139,7 +139,7 @@ func (dh *DomainHandler) Update(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/application/domain/{id} [delete]
 func (dh *DomainHandler) Delete(ctx iris.Context) mvc.Result {
-	id, err := ctx.Params().GetUint(constant.ID)
+	id, err := ctx.Params().GetInt64(constant.ID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}

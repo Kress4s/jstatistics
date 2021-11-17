@@ -5,10 +5,10 @@ import (
 )
 
 type RolePermissionReq struct {
-	RoleID uint
+	RoleID int64
 }
 
-func (rpq *RolePermissionReq) ToModel(openID string, pmsids []uint) ([]models.RolePermissionRelation, error) {
+func (rpq *RolePermissionReq) ToModel(openID string, pmsids []int64) ([]models.RolePermissionRelation, error) {
 	ps := make([]models.RolePermissionRelation, 0, len(pmsids))
 	for i := range pmsids {
 		ps = append(ps, models.RolePermissionRelation{

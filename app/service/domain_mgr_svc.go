@@ -35,10 +35,10 @@ func GetDomainService() DomainService {
 
 type DomainService interface {
 	Create(openID string, param *vo.DomainReq) exception.Exception
-	Get(id uint) (*vo.DomainResp, exception.Exception)
+	Get(id int64) (*vo.DomainResp, exception.Exception)
 	List(page *vo.PageInfo) (*vo.DataPagination, exception.Exception)
-	Update(openID string, id uint, param *vo.DomainUpdateReq) exception.Exception
-	Delete(id uint) exception.Exception
+	Update(openID string, id int64, param *vo.DomainUpdateReq) exception.Exception
+	Delete(id int64) exception.Exception
 	MultiDelete(ids string) exception.Exception
 }
 
@@ -47,7 +47,7 @@ func (dsi *domainServiceImpl) Create(openID string, param *vo.DomainReq) excepti
 	return dsi.repo.Create(dsi.db, domainMgr)
 }
 
-func (dsi *domainServiceImpl) Get(id uint) (*vo.DomainResp, exception.Exception) {
+func (dsi *domainServiceImpl) Get(id int64) (*vo.DomainResp, exception.Exception) {
 	domainMgr, ex := dsi.repo.Get(dsi.db, id)
 	if ex != nil {
 		return nil, ex
@@ -67,11 +67,11 @@ func (dsi *domainServiceImpl) List(pageInfo *vo.PageInfo) (*vo.DataPagination, e
 	return vo.NewDataPagination(count, resp, pageInfo), nil
 }
 
-func (dsi *domainServiceImpl) Update(openID string, id uint, param *vo.DomainUpdateReq) exception.Exception {
+func (dsi *domainServiceImpl) Update(openID string, id int64, param *vo.DomainUpdateReq) exception.Exception {
 	return dsi.repo.Update(dsi.db, id, param.ToMap(openID))
 }
 
-func (dsi *domainServiceImpl) Delete(id uint) exception.Exception {
+func (dsi *domainServiceImpl) Delete(id int64) exception.Exception {
 	return dsi.repo.Delete(dsi.db, id)
 }
 
@@ -80,13 +80,13 @@ func (dsi *domainServiceImpl) MultiDelete(ids string) exception.Exception {
 	if len(idslice) == 0 {
 		return exception.New(response.ExceptionInvalidRequestParameters, "无效参数")
 	}
-	did := make([]uint, 0, len(idslice))
+	did := make([]int64, 0, len(idslice))
 	for i := range idslice {
 		id, err := strconv.ParseUint(idslice[i], 10, 0)
 		if err != nil {
 			return exception.Wrap(response.ExceptionParseStringToUintError, err)
 		}
-		did = append(did, uint(id))
+		did = append(did, int64(id))
 	}
 	return dsi.repo.MultiDelete(dsi.db, did)
 }

@@ -27,18 +27,18 @@ func GetJscRepo() JscRepo {
 
 type JscRepo interface {
 	Create(db *gorm.DB, jsc *models.JsCategory) exception.Exception
-	ListByPrimaryID(db *gorm.DB, pageInfo *vo.PageInfo, pid uint) (int64, []models.JsCategory, exception.Exception)
-	Get(db *gorm.DB, id uint) (*models.JsCategory, exception.Exception)
-	Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception
-	Delete(db *gorm.DB, id uint) exception.Exception
-	MultiDelete(db *gorm.DB, ids []uint) exception.Exception
+	ListByPrimaryID(db *gorm.DB, pageInfo *vo.PageInfo, pid int64) (int64, []models.JsCategory, exception.Exception)
+	Get(db *gorm.DB, id int64) (*models.JsCategory, exception.Exception)
+	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
+	Delete(db *gorm.DB, id int64) exception.Exception
+	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
 }
 
 func (jsi *JscRepoImpl) Create(db *gorm.DB, jsc *models.JsCategory) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Create(jsc).Error)
 }
 
-func (jsi *JscRepoImpl) ListByPrimaryID(db *gorm.DB, pageInfo *vo.PageInfo, pid uint) (int64, []models.JsCategory, exception.Exception) {
+func (jsi *JscRepoImpl) ListByPrimaryID(db *gorm.DB, pageInfo *vo.PageInfo, pid int64) (int64, []models.JsCategory, exception.Exception) {
 	jscs := make([]models.JsCategory, 0)
 	tx := db.Table(tables.JsCategory)
 	if pageInfo.Keywords != "" {
@@ -50,7 +50,7 @@ func (jsi *JscRepoImpl) ListByPrimaryID(db *gorm.DB, pageInfo *vo.PageInfo, pid 
 	return count, jscs, exception.Wrap(response.ExceptionDatabase, res.Error)
 }
 
-func (jsi *JscRepoImpl) Get(db *gorm.DB, id uint) (*models.JsCategory, exception.Exception) {
+func (jsi *JscRepoImpl) Get(db *gorm.DB, id int64) (*models.JsCategory, exception.Exception) {
 	jsCategory := models.JsCategory{}
 	res := db.Where(&models.JsCategory{ID: id}).Find(&jsCategory)
 	if res.RowsAffected == 0 {
@@ -62,15 +62,15 @@ func (jsi *JscRepoImpl) Get(db *gorm.DB, id uint) (*models.JsCategory, exception
 	return &jsCategory, nil
 }
 
-func (jsi *JscRepoImpl) Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception {
+func (jsi *JscRepoImpl) Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase,
 		db.Model(&models.JsCategory{}).Where(&models.JsCategory{ID: id}).Updates(param).Error)
 }
 
-func (jsi *JscRepoImpl) Delete(db *gorm.DB, id uint) exception.Exception {
+func (jsi *JscRepoImpl) Delete(db *gorm.DB, id int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.JsCategory{}, id).Error)
 }
 
-func (jsi *JscRepoImpl) MultiDelete(db *gorm.DB, ids []uint) exception.Exception {
+func (jsi *JscRepoImpl) MultiDelete(db *gorm.DB, ids []int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.JsCategory{}, ids).Error)
 }

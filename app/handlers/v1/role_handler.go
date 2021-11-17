@@ -60,7 +60,7 @@ func (rh *RoleHandler) Create(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/permission/role/{id} [get]
 func (rh *RoleHandler) Get(ctx iris.Context) mvc.Result {
-	id, err := ctx.Params().GetUint(constant.ID)
+	id, err := ctx.Params().GetInt64(constant.ID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}
@@ -111,7 +111,7 @@ func (rh *RoleHandler) List(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/permission/role/{id} [put]
 func (rh *RoleHandler) Update(ctx iris.Context) mvc.Result {
-	id, err := ctx.Params().GetUint(constant.ID)
+	id, err := ctx.Params().GetInt64(constant.ID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}
@@ -139,7 +139,7 @@ func (rh *RoleHandler) Update(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/permission/role/{id} [delete]
 func (rh *RoleHandler) Delete(ctx iris.Context) mvc.Result {
-	id, err := ctx.Params().GetUint(constant.ID)
+	id, err := ctx.Params().GetInt64(constant.ID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}

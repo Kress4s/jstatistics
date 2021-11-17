@@ -35,10 +35,10 @@ func GetWhiteIPService() WhiteIPService {
 
 type WhiteIPService interface {
 	Create(openID string, param *vo.IPReq) exception.Exception
-	Get(id uint) (*vo.IPResp, exception.Exception)
+	Get(id int64) (*vo.IPResp, exception.Exception)
 	List(page *vo.PageInfo) (*vo.DataPagination, exception.Exception)
-	Update(openID string, id uint, param *vo.IPUpdateReq) exception.Exception
-	Delete(id uint) exception.Exception
+	Update(openID string, id int64, param *vo.IPUpdateReq) exception.Exception
+	Delete(id int64) exception.Exception
 	MultiDelete(ids string) exception.Exception
 }
 
@@ -47,7 +47,7 @@ func (dsi *ipServiceImpl) Create(openID string, param *vo.IPReq) exception.Excep
 	return dsi.repo.Create(dsi.db, ipMgr)
 }
 
-func (dsi *ipServiceImpl) Get(id uint) (*vo.IPResp, exception.Exception) {
+func (dsi *ipServiceImpl) Get(id int64) (*vo.IPResp, exception.Exception) {
 	ipMgr, ex := dsi.repo.Get(dsi.db, id)
 	if ex != nil {
 		return nil, ex
@@ -67,11 +67,11 @@ func (dsi *ipServiceImpl) List(pageInfo *vo.PageInfo) (*vo.DataPagination, excep
 	return vo.NewDataPagination(count, resp, pageInfo), nil
 }
 
-func (dsi *ipServiceImpl) Update(openID string, id uint, param *vo.IPUpdateReq) exception.Exception {
+func (dsi *ipServiceImpl) Update(openID string, id int64, param *vo.IPUpdateReq) exception.Exception {
 	return dsi.repo.Update(dsi.db, id, param.ToMap(openID))
 }
 
-func (dsi *ipServiceImpl) Delete(id uint) exception.Exception {
+func (dsi *ipServiceImpl) Delete(id int64) exception.Exception {
 	return dsi.repo.Delete(dsi.db, id)
 }
 
@@ -80,13 +80,13 @@ func (dsi *ipServiceImpl) MultiDelete(ids string) exception.Exception {
 	if len(idslice) == 0 {
 		return exception.New(response.ExceptionInvalidRequestParameters, "无效参数")
 	}
-	did := make([]uint, 0, len(idslice))
+	did := make([]int64, 0, len(idslice))
 	for i := range idslice {
 		id, err := strconv.ParseUint(idslice[i], 10, 0)
 		if err != nil {
 			return exception.Wrap(response.ExceptionParseStringToUintError, err)
 		}
-		did = append(did, uint(id))
+		did = append(did, int64(id))
 	}
 	return dsi.repo.MultiDelete(dsi.db, did)
 }

@@ -3,6 +3,7 @@ package vo
 import (
 	"js_statistics/app/models"
 	"js_statistics/types"
+	"math/rand"
 	"time"
 )
 
@@ -32,11 +33,12 @@ type JsManageReq struct {
 	// 等待时间
 	WaitTime int `json:"wait_time"`
 	// 所属js分类的ID
-	CategoryID uint `json:"category_id"`
+	CategoryID int64 `json:"category_id"`
 }
 
 func (jm *JsManageReq) ToModel(openID string) *models.JsManage {
 	now := time.Now()
+	sign := GenerateJSite(17)
 	return &models.JsManage{
 		Title:         jm.Title,
 		ShieldArea:    jm.ShieldArea,
@@ -51,6 +53,7 @@ func (jm *JsManageReq) ToModel(openID string) *models.JsManage {
 		HrefID:        jm.HrefID,
 		WaitTime:      jm.WaitTime,
 		CategoryID:    jm.CategoryID,
+		Sign:          sign,
 		Base: models.Base{
 			CreateBy: openID,
 			CreateAt: now,
@@ -62,7 +65,7 @@ func (jm *JsManageReq) ToModel(openID string) *models.JsManage {
 
 type JsManageResp struct {
 	// id
-	ID uint `json:"id"`
+	ID int64 `json:"id"`
 	// 标题
 	Title string `json:"title"`
 	// 今日IP数
@@ -89,6 +92,8 @@ type JsManageResp struct {
 	HrefID string `json:"href_id"`
 	// 等待时间
 	WaitTime int `json:"wait_time"`
+	// Js地址
+	JSite string `json:"js_site"`
 }
 
 func NewJsManageResponse(jm *models.JsManage) *JsManageResp {
@@ -152,4 +157,18 @@ func (jum *JsManageUpdateReq) ToMap(openID string) map[string]interface{} {
 		"update_by":      openID,
 		"update_at":      time.Now(),
 	}
+}
+
+var letters = []rune("1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+func randSeq(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
+}
+
+func GenerateJSite(n int) string {
+	return randSeq(n)
 }

@@ -86,7 +86,7 @@ func (ch *CdnHandler) List(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/application/cdn/{id} [get]
 func (ch *CdnHandler) Get(ctx iris.Context) mvc.Result {
-	id, err := ctx.Params().GetUint(constant.ID)
+	id, err := ctx.Params().GetInt64(constant.ID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}
@@ -111,7 +111,7 @@ func (ch *CdnHandler) Get(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/application/cdn/{id} [put]
 func (ch *CdnHandler) Update(ctx iris.Context) mvc.Result {
-	id, err := ctx.Params().GetUint(constant.ID)
+	id, err := ctx.Params().GetInt64(constant.ID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}
@@ -139,7 +139,7 @@ func (ch *CdnHandler) Update(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/application/cdn/{id} [delete]
 func (ch *CdnHandler) Delete(ctx iris.Context) mvc.Result {
-	id, err := ctx.Params().GetUint(constant.ID)
+	id, err := ctx.Params().GetInt64(constant.ID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}

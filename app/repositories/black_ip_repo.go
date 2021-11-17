@@ -28,10 +28,10 @@ func GetBlackIPRepo() BlackIPRepo {
 type BlackIPRepo interface {
 	Create(db *gorm.DB, ip *models.BlackIPMgr) exception.Exception
 	List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []models.BlackIPMgr, exception.Exception)
-	Get(db *gorm.DB, id uint) (*models.BlackIPMgr, exception.Exception)
-	Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception
-	Delete(db *gorm.DB, id uint) exception.Exception
-	MultiDelete(db *gorm.DB, ids []uint) exception.Exception
+	Get(db *gorm.DB, id int64) (*models.BlackIPMgr, exception.Exception)
+	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
+	Delete(db *gorm.DB, id int64) exception.Exception
+	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
 }
 
 func (dri *BlackIPRepoImpl) Create(db *gorm.DB, domain *models.BlackIPMgr) exception.Exception {
@@ -50,7 +50,7 @@ func (dri *BlackIPRepoImpl) List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []m
 	return count, ips, exception.Wrap(response.ExceptionDatabase, res.Error)
 }
 
-func (dri *BlackIPRepoImpl) Get(db *gorm.DB, id uint) (*models.BlackIPMgr, exception.Exception) {
+func (dri *BlackIPRepoImpl) Get(db *gorm.DB, id int64) (*models.BlackIPMgr, exception.Exception) {
 	domain := models.BlackIPMgr{}
 	res := db.Where(&models.BlackIPMgr{ID: id}).Find(&domain)
 	if res.RowsAffected == 0 {
@@ -62,15 +62,15 @@ func (dri *BlackIPRepoImpl) Get(db *gorm.DB, id uint) (*models.BlackIPMgr, excep
 	return &domain, nil
 }
 
-func (dri *BlackIPRepoImpl) Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception {
+func (dri *BlackIPRepoImpl) Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase,
 		db.Model(&models.BlackIPMgr{}).Where(&models.BlackIPMgr{ID: id}).Updates(param).Error)
 }
 
-func (dri *BlackIPRepoImpl) Delete(db *gorm.DB, id uint) exception.Exception {
+func (dri *BlackIPRepoImpl) Delete(db *gorm.DB, id int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.BlackIPMgr{}, id).Error)
 }
 
-func (dri *BlackIPRepoImpl) MultiDelete(db *gorm.DB, ids []uint) exception.Exception {
+func (dri *BlackIPRepoImpl) MultiDelete(db *gorm.DB, ids []int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.BlackIPMgr{}, ids).Error)
 }

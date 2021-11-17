@@ -39,10 +39,10 @@ func GetJscService() JscService {
 
 type JscService interface {
 	Create(openID string, param *vo.JsCategoryReq) exception.Exception
-	Get(id uint) (*vo.JsCategoryResp, exception.Exception)
-	ListByPrimaryID(page *vo.PageInfo, pid uint) (*vo.DataPagination, exception.Exception)
-	Update(openID string, id uint, param *vo.JsCategoryUpdateReq) exception.Exception
-	Delete(id uint) exception.Exception
+	Get(id int64) (*vo.JsCategoryResp, exception.Exception)
+	ListByPrimaryID(page *vo.PageInfo, pid int64) (*vo.DataPagination, exception.Exception)
+	Update(openID string, id int64, param *vo.JsCategoryUpdateReq) exception.Exception
+	Delete(id int64) exception.Exception
 	MultiDelete(ids string) exception.Exception
 }
 
@@ -51,14 +51,18 @@ func (jsi *jscServiceImpl) Create(openID string, param *vo.JsCategoryReq) except
 	return jsi.repo.Create(jsi.db, jscMgr)
 }
 
-func (jsi *jscServiceImpl) Get(id uint) (*vo.JsCategoryResp, exception.Exception) {
+func (jsi *jscServiceImpl) Get(id int64) (*vo.JsCategoryResp, exception.Exception) {
 	jsc, ex := jsi.repo.Get(jsi.db, id)
 	if ex != nil {
 		return nil, ex
 	}
 	domain, ex := jsi.domainRepo.Get(jsi.db, jsc.DomainID)
 	if ex != nil {
-		return nil, ex
+		if ex.Type() == response.ExceptionRecordNotFound {
+			domain = nil
+		} else {
+			return nil, ex
+		}
 	}
 	jsp, ex := jsi.jspRepo.Get(jsi.db, jsc.PrimaryID)
 	if ex != nil {
@@ -67,7 +71,7 @@ func (jsi *jscServiceImpl) Get(id uint) (*vo.JsCategoryResp, exception.Exception
 	return vo.NewJsCategoryResponse(jsc, domain, jsp), nil
 }
 
-func (jsi *jscServiceImpl) ListByPrimaryID(pageInfo *vo.PageInfo, pid uint) (*vo.DataPagination, exception.Exception) {
+func (jsi *jscServiceImpl) ListByPrimaryID(pageInfo *vo.PageInfo, pid int64) (*vo.DataPagination, exception.Exception) {
 	count, jscs, ex := jsi.repo.ListByPrimaryID(jsi.db, pageInfo, pid)
 	if ex != nil {
 		return nil, ex
@@ -75,7 +79,9 @@ func (jsi *jscServiceImpl) ListByPrimaryID(pageInfo *vo.PageInfo, pid uint) (*vo
 	resp := make([]vo.JsCategoryResp, 0, len(jscs))
 	for i := range jscs {
 		domain, ex := jsi.domainRepo.Get(jsi.db, jscs[i].DomainID)
-		if ex != nil {
+		if ex.Type() == response.ExceptionRecordNotFound {
+			domain = nil
+		} else if ex != nil {
 			return nil, ex
 		}
 		jsp, ex := jsi.jspRepo.Get(jsi.db, jscs[i].PrimaryID)
@@ -87,11 +93,11 @@ func (jsi *jscServiceImpl) ListByPrimaryID(pageInfo *vo.PageInfo, pid uint) (*vo
 	return vo.NewDataPagination(count, resp, pageInfo), nil
 }
 
-func (jsi *jscServiceImpl) Update(openID string, id uint, param *vo.JsCategoryUpdateReq) exception.Exception {
+func (jsi *jscServiceImpl) Update(openID string, id int64, param *vo.JsCategoryUpdateReq) exception.Exception {
 	return jsi.repo.Update(jsi.db, id, param.ToMap(openID))
 }
 
-func (jsi *jscServiceImpl) Delete(id uint) exception.Exception {
+func (jsi *jscServiceImpl) Delete(id int64) exception.Exception {
 	return jsi.repo.Delete(jsi.db, id)
 }
 
@@ -100,13 +106,13 @@ func (jsi *jscServiceImpl) MultiDelete(ids string) exception.Exception {
 	if len(idslice) == 0 {
 		return exception.New(response.ExceptionInvalidRequestParameters, "无效参数")
 	}
-	jid := make([]uint, 0, len(idslice))
+	jid := make([]int64, 0, len(idslice))
 	for i := range idslice {
 		id, err := strconv.ParseUint(idslice[i], 10, 0)
 		if err != nil {
 			return exception.Wrap(response.ExceptionParseStringToUintError, err)
 		}
-		jid = append(jid, uint(id))
+		jid = append(jid, int64(id))
 	}
 	return jsi.repo.MultiDelete(jsi.db, jid)
 }

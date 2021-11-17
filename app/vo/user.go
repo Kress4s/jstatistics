@@ -39,13 +39,13 @@ type LoginReq struct {
 }
 
 type ProfileResp struct {
-	ID    uint   `json:"id"`
+	ID    int64  `json:"id"`
 	Name  string `json:"name"`
 	Admin bool   `json:"admin"`
 }
 
 type UserResp struct {
-	ID       uint   `json:"id"`
+	ID       int64  `json:"id"`
 	UserName string `json:"user_name"`
 	Admin    bool   `json:"admin"`
 	Status   bool   `json:"status"`

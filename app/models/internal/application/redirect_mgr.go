@@ -6,7 +6,7 @@ import (
 )
 
 type RedirectManage struct {
-	ID      uint      `gorm:"column:id;primaryKey;unique;not null;comment:id"`
+	ID      int64     `gorm:"column:id;primaryKey;unique;not null;comment:id"`
 	Title   string    `gorm:"column:title;type:varchar(50);not null;comment:标题"`
 	PC      string    `gorm:"column:title;type:varchar(50);not null;comment:pc跳转地址"`
 	Android string    `gorm:"column:android;type:varchar(50);not null;comment:android跳转地址"`

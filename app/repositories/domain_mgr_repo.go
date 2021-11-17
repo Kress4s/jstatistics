@@ -28,10 +28,10 @@ func GetDomainRepo() DomainRepo {
 type DomainRepo interface {
 	Create(db *gorm.DB, domain *models.DomainMgr) exception.Exception
 	List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []models.DomainMgr, exception.Exception)
-	Get(db *gorm.DB, id uint) (*models.DomainMgr, exception.Exception)
-	Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception
-	Delete(db *gorm.DB, id uint) exception.Exception
-	MultiDelete(db *gorm.DB, ids []uint) exception.Exception
+	Get(db *gorm.DB, id int64) (*models.DomainMgr, exception.Exception)
+	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
+	Delete(db *gorm.DB, id int64) exception.Exception
+	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
 }
 
 func (dri *DomainRepoImpl) Create(db *gorm.DB, domain *models.DomainMgr) exception.Exception {
@@ -50,7 +50,7 @@ func (dri *DomainRepoImpl) List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []mo
 	return count, domains, exception.Wrap(response.ExceptionDatabase, res.Error)
 }
 
-func (dri *DomainRepoImpl) Get(db *gorm.DB, id uint) (*models.DomainMgr, exception.Exception) {
+func (dri *DomainRepoImpl) Get(db *gorm.DB, id int64) (*models.DomainMgr, exception.Exception) {
 	domain := models.DomainMgr{}
 	res := db.Where(&models.DomainMgr{ID: id}).Find(&domain)
 	if res.RowsAffected == 0 {
@@ -62,15 +62,15 @@ func (dri *DomainRepoImpl) Get(db *gorm.DB, id uint) (*models.DomainMgr, excepti
 	return &domain, nil
 }
 
-func (dri *DomainRepoImpl) Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception {
+func (dri *DomainRepoImpl) Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase,
 		db.Model(&models.DomainMgr{}).Where(&models.DomainMgr{ID: id}).Updates(param).Error)
 }
 
-func (dri *DomainRepoImpl) Delete(db *gorm.DB, id uint) exception.Exception {
+func (dri *DomainRepoImpl) Delete(db *gorm.DB, id int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.DomainMgr{}, id).Error)
 }
 
-func (dri *DomainRepoImpl) MultiDelete(db *gorm.DB, ids []uint) exception.Exception {
+func (dri *DomainRepoImpl) MultiDelete(db *gorm.DB, ids []int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.DomainMgr{}, ids).Error)
 }

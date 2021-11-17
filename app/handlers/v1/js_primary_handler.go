@@ -51,10 +51,7 @@ func (ch *JspHandler) Create(ctx iris.Context) mvc.Result {
 // @Summary 查询js主分类列表
 // @Description 查询js主分类列表
 // @Tags 应用管理 - js主分类
-// @Param page query int false "请求页"
-// @Param page_size query int false "页大小"
-// @Param keywords query string false "keywords" "搜索关键词过滤"
-// @Success 200 {object} vo.DataPagination{data=[]vo.JsPrimaryResp} "查询js主分类列表成功"
+// @Success 200 {array}  vo.JsPrimaryResp "查询js主分类列表成功"
 // @Failure 400 {object} vo.Error "请求参数错误"
 // @Failure 401 {object} vo.Error "当前用户登录令牌失效"
 // @Failure 403 {object} vo.Error "当前操作无权限"
@@ -62,11 +59,7 @@ func (ch *JspHandler) Create(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/application/js_primaries [get]
 func (ch *JspHandler) List(ctx iris.Context) mvc.Result {
-	params, ex := handlers.GetPageInfo(ctx)
-	if ex != nil {
-		return response.Error(ex)
-	}
-	resp, ex := ch.Svc.List(params)
+	resp, ex := ch.Svc.List()
 	if ex != nil {
 		return response.Error(ex)
 	}
@@ -86,7 +79,7 @@ func (ch *JspHandler) List(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/application/js_primary/{id} [get]
 func (ch *JspHandler) Get(ctx iris.Context) mvc.Result {
-	id, err := ctx.Params().GetUint(constant.ID)
+	id, err := ctx.Params().GetInt64(constant.ID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}
@@ -111,7 +104,7 @@ func (ch *JspHandler) Get(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/application/js_primary/{id} [put]
 func (ch *JspHandler) Update(ctx iris.Context) mvc.Result {
-	id, err := ctx.Params().GetUint(constant.ID)
+	id, err := ctx.Params().GetInt64(constant.ID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}
@@ -139,7 +132,7 @@ func (ch *JspHandler) Update(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/application/js_primary/{id} [delete]
 func (ch *JspHandler) Delete(ctx iris.Context) mvc.Result {
-	id, err := ctx.Params().GetUint(constant.ID)
+	id, err := ctx.Params().GetInt64(constant.ID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}

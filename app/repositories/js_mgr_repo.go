@@ -27,18 +27,18 @@ func GetJsmRepo() JsmRepo {
 
 type JsmRepo interface {
 	Create(db *gorm.DB, jsm *models.JsManage) exception.Exception
-	ListByCategoryID(db *gorm.DB, pageInfo *vo.PageInfo, cid uint) (int64, []models.JsManage, exception.Exception)
-	Get(db *gorm.DB, id uint) (*models.JsManage, exception.Exception)
-	Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception
-	Delete(db *gorm.DB, id uint) exception.Exception
-	MultiDelete(db *gorm.DB, ids []uint) exception.Exception
+	ListByCategoryID(db *gorm.DB, pageInfo *vo.PageInfo, cid int64) (int64, []models.JsManage, exception.Exception)
+	Get(db *gorm.DB, id int64) (*models.JsManage, exception.Exception)
+	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
+	Delete(db *gorm.DB, id int64) exception.Exception
+	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
 }
 
 func (jsi *JsmRepoImpl) Create(db *gorm.DB, jsm *models.JsManage) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Create(jsm).Error)
 }
 
-func (jsi *JsmRepoImpl) ListByCategoryID(db *gorm.DB, pageInfo *vo.PageInfo, pid uint) (int64, []models.JsManage, exception.Exception) {
+func (jsi *JsmRepoImpl) ListByCategoryID(db *gorm.DB, pageInfo *vo.PageInfo, pid int64) (int64, []models.JsManage, exception.Exception) {
 	jsms := make([]models.JsManage, 0)
 	tx := db.Table(tables.JsManage)
 	if pageInfo.Keywords != "" {
@@ -50,7 +50,7 @@ func (jsi *JsmRepoImpl) ListByCategoryID(db *gorm.DB, pageInfo *vo.PageInfo, pid
 	return count, jsms, exception.Wrap(response.ExceptionDatabase, res.Error)
 }
 
-func (jsi *JsmRepoImpl) Get(db *gorm.DB, id uint) (*models.JsManage, exception.Exception) {
+func (jsi *JsmRepoImpl) Get(db *gorm.DB, id int64) (*models.JsManage, exception.Exception) {
 	jsCategory := models.JsManage{}
 	res := db.Where(&models.JsManage{ID: id}).Find(&jsCategory)
 	if res.RowsAffected == 0 {
@@ -62,15 +62,15 @@ func (jsi *JsmRepoImpl) Get(db *gorm.DB, id uint) (*models.JsManage, exception.E
 	return &jsCategory, nil
 }
 
-func (jsi *JsmRepoImpl) Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception {
+func (jsi *JsmRepoImpl) Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase,
 		db.Model(&models.JsManage{}).Where(&models.JsManage{ID: id}).Updates(param).Error)
 }
 
-func (jsi *JsmRepoImpl) Delete(db *gorm.DB, id uint) exception.Exception {
+func (jsi *JsmRepoImpl) Delete(db *gorm.DB, id int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.JsManage{}, id).Error)
 }
 
-func (jsi *JsmRepoImpl) MultiDelete(db *gorm.DB, ids []uint) exception.Exception {
+func (jsi *JsmRepoImpl) MultiDelete(db *gorm.DB, ids []int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.JsManage{}, ids).Error)
 }

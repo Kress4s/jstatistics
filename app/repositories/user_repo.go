@@ -27,18 +27,18 @@ func GetUserRepo() UserRepo {
 }
 
 type UserRepo interface {
-	Profile(db *gorm.DB, id uint) (*models.User, exception.Exception)
-	CheckPassword(db *gorm.DB, account, password string) (bool, uint, exception.Exception)
+	Profile(db *gorm.DB, id int64) (*models.User, exception.Exception)
+	CheckPassword(db *gorm.DB, account, password string) (bool, int64, exception.Exception)
 	Create(db *gorm.DB, user *models.User) exception.Exception
-	Get(db *gorm.DB, id uint) (*models.User, exception.Exception)
+	Get(db *gorm.DB, id int64) (*models.User, exception.Exception)
 	List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []models.User, exception.Exception)
-	Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception
-	Delete(db *gorm.DB, id uint) exception.Exception
-	MultiDelete(db *gorm.DB, ids []uint) exception.Exception
-	GetUserMenus(db *gorm.DB, userID uint) ([]models.UserToMenus, exception.Exception)
+	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
+	Delete(db *gorm.DB, id int64) exception.Exception
+	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
+	GetUserMenus(db *gorm.DB, userID int64) ([]models.UserToMenus, exception.Exception)
 }
 
-func (u *UserRepoImpl) Profile(db *gorm.DB, id uint) (*models.User, exception.Exception) {
+func (u *UserRepoImpl) Profile(db *gorm.DB, id int64) (*models.User, exception.Exception) {
 	user := models.User{}
 	res := db.Where(&models.User{ID: id}).Find(&user)
 	if res.RowsAffected == 0 {
@@ -50,7 +50,7 @@ func (u *UserRepoImpl) Profile(db *gorm.DB, id uint) (*models.User, exception.Ex
 	return &user, nil
 }
 
-func (u *UserRepoImpl) CheckPassword(db *gorm.DB, username, password string) (bool, uint, exception.Exception) {
+func (u *UserRepoImpl) CheckPassword(db *gorm.DB, username, password string) (bool, int64, exception.Exception) {
 	user := &models.User{}
 	res := db.Where(&models.User{Username: username, Password: password}).Find(user)
 	if res.Error != nil {
@@ -66,7 +66,7 @@ func (u *UserRepoImpl) Create(db *gorm.DB, user *models.User) exception.Exceptio
 	return exception.Wrap(response.ExceptionDatabase, db.Create(user).Error)
 }
 
-func (u *UserRepoImpl) Get(db *gorm.DB, id uint) (*models.User, exception.Exception) {
+func (u *UserRepoImpl) Get(db *gorm.DB, id int64) (*models.User, exception.Exception) {
 	user := models.User{}
 	res := db.Where(&models.User{ID: id}).Find(&user)
 	if res.RowsAffected == 0 {
@@ -90,20 +90,20 @@ func (u *UserRepoImpl) List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []models
 	return count, users, exception.Wrap(response.ExceptionDatabase, res.Error)
 }
 
-func (u *UserRepoImpl) Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception {
+func (u *UserRepoImpl) Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase,
 		db.Model(&models.User{}).Where(&models.User{ID: id}).Updates(param).Error)
 }
 
-func (u *UserRepoImpl) Delete(db *gorm.DB, id uint) exception.Exception {
+func (u *UserRepoImpl) Delete(db *gorm.DB, id int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.User{}, id).Error)
 }
 
-func (u *UserRepoImpl) MultiDelete(db *gorm.DB, ids []uint) exception.Exception {
+func (u *UserRepoImpl) MultiDelete(db *gorm.DB, ids []int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.User{}, ids).Error)
 }
 
-func (u *UserRepoImpl) GetUserMenus(db *gorm.DB, userID uint) ([]models.UserToMenus, exception.Exception) {
+func (u *UserRepoImpl) GetUserMenus(db *gorm.DB, userID int64) ([]models.UserToMenus, exception.Exception) {
 	menus := make([]models.UserToMenus, 0)
 	tx := db.Table(tables.User+" as u").
 		Select(

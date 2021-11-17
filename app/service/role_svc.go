@@ -37,10 +37,10 @@ func GetRoleService() RoleService {
 
 type RoleService interface {
 	Create(openID string, param *vo.RoleReq) exception.Exception
-	Get(id uint) (*vo.RoleResp, exception.Exception)
+	Get(id int64) (*vo.RoleResp, exception.Exception)
 	List(page *vo.PageInfo) (*vo.DataPagination, exception.Exception)
-	Update(openID string, id uint, param *vo.RoleUpdateReq) exception.Exception
-	Delete(id uint) exception.Exception
+	Update(openID string, id int64, param *vo.RoleUpdateReq) exception.Exception
+	Delete(id int64) exception.Exception
 }
 
 func (rsi *roleServiceImpl) Create(openID string, param *vo.RoleReq) exception.Exception {
@@ -67,7 +67,7 @@ func (rsi *roleServiceImpl) Create(openID string, param *vo.RoleReq) exception.E
 	return nil
 }
 
-func (rsi *roleServiceImpl) Get(id uint) (*vo.RoleResp, exception.Exception) {
+func (rsi *roleServiceImpl) Get(id int64) (*vo.RoleResp, exception.Exception) {
 	role, ex := rsi.repo.Get(rsi.db, id)
 	if ex != nil {
 		return nil, ex
@@ -82,7 +82,7 @@ func (rsi *roleServiceImpl) Get(id uint) (*vo.RoleResp, exception.Exception) {
 	if ex != nil {
 		return nil, ex
 	}
-	psids := make([]uint, 0, len(psms))
+	psids := make([]int64, 0, len(psms))
 	for i := range psms {
 		psids = append(psids, psms[i].PermissionID)
 	}
@@ -107,7 +107,7 @@ func (rsi *roleServiceImpl) List(page *vo.PageInfo) (*vo.DataPagination, excepti
 	return vo.NewDataPagination(count, resp, page), nil
 }
 
-func (rsi *roleServiceImpl) Update(openID string, id uint, param *vo.RoleUpdateReq) exception.Exception {
+func (rsi *roleServiceImpl) Update(openID string, id int64, param *vo.RoleUpdateReq) exception.Exception {
 	tx := rsi.db.Begin()
 	defer tx.Rollback()
 	if tx.Error != nil {
@@ -134,7 +134,7 @@ func (rsi *roleServiceImpl) Update(openID string, id uint, param *vo.RoleUpdateR
 	return nil
 }
 
-func (rsi *roleServiceImpl) Delete(id uint) exception.Exception {
+func (rsi *roleServiceImpl) Delete(id int64) exception.Exception {
 	tx := rsi.db.Begin()
 	defer tx.Rollback()
 	if tx.Error != nil {

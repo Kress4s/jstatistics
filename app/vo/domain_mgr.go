@@ -36,7 +36,7 @@ func (dr *DomainReq) ToModel(openID string) *models.DomainMgr {
 }
 
 type DomainResp struct {
-	ID          uint   `json:"id"`
+	ID          int64   `json:"id"`
 	Title       string `json:"title"`
 	Domain      string `json:"domain"`
 	SSL         bool   `json:"ssl"`

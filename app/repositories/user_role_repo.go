@@ -25,26 +25,26 @@ func GetUserRoleRepo() UserRoleRepo {
 
 type UserRoleRepo interface {
 	Create(db *gorm.DB, rps []models.UserRoleRelation) exception.Exception
-	GetByUserID(db *gorm.DB, userID uint) ([]models.UserRoleRelation, exception.Exception)
-	DeleteByUserID(db *gorm.DB, userID uint) exception.Exception
-	DeleteByRoleID(db *gorm.DB, roleID uint) exception.Exception
+	GetByUserID(db *gorm.DB, userID int64) ([]models.UserRoleRelation, exception.Exception)
+	DeleteByUserID(db *gorm.DB, userID int64) exception.Exception
+	DeleteByRoleID(db *gorm.DB, roleID int64) exception.Exception
 }
 
 func (uri *UserRoleRepoImpl) Create(db *gorm.DB, urs []models.UserRoleRelation) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Create(&urs).Error)
 }
 
-func (uri *UserRoleRepoImpl) DeleteByUserID(db *gorm.DB, userID uint) exception.Exception {
+func (uri *UserRoleRepoImpl) DeleteByUserID(db *gorm.DB, userID int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase,
 		db.Where("user_id = ?", userID).Delete(models.UserRoleRelation{}).Error)
 }
 
-func (uri *UserRoleRepoImpl) DeleteByRoleID(db *gorm.DB, roleID uint) exception.Exception {
+func (uri *UserRoleRepoImpl) DeleteByRoleID(db *gorm.DB, roleID int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase,
 		db.Where("role_id = ?", roleID).Delete(models.UserRoleRelation{}).Error)
 }
 
-func (uri *UserRoleRepoImpl) GetByUserID(db *gorm.DB, userID uint) ([]models.UserRoleRelation,
+func (uri *UserRoleRepoImpl) GetByUserID(db *gorm.DB, userID int64) ([]models.UserRoleRelation,
 	exception.Exception) {
 	urs := make([]models.UserRoleRelation, 0)
 	tx := db.Where(&models.UserRoleRelation{UserID: userID}).Find(&urs)

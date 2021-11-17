@@ -7,7 +7,7 @@ import (
 )
 
 type JsManage struct {
-	ID            uint              `gorm:"column:id;primaryKey;unique;not null;comment:id"`
+	ID            int64             `gorm:"column:id;primaryKey;unique;not null;comment:id"`
 	Title         string            `gorm:"column:title;type:varchar(50);not null;comment:标题"`
 	ShieldArea    string            `gorm:"column:shield_area;type:varchar(30);comment:屏蔽地区"`
 	ClientType    types.BigintArray `gorm:"column:client_type;type:varchar(20)[];comment:客户端"`
@@ -21,7 +21,8 @@ type JsManage struct {
 	HrefID        string            `gorm:"column:href_id;type:varchar(30);comment:href跳转id"`
 	WaitTime      int               `gorm:"column:wait_time;type:integer;comment:跳转等待时间"`
 	Status        bool              `gorm:"column:status;type:boolean;default:true;comment:状态"`
-	CategoryID    uint              `gorm:"column:category_id;type:bigint;not null;comment:js分类id"`
+	CategoryID    int64             `gorm:"column:category_id;type:bigint;not null;comment:js分类id"`
+	Sign          string            `gorm:"column:sign;type:varchar(50);not null;comment:js标志字符串"`
 	common.Base
 }
 

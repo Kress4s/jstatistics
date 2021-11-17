@@ -33,7 +33,7 @@ func (rmr *RedirectManageReq) ToModel(openID string) *models.RedirectManage {
 
 type RedirectManageResp struct {
 	// id
-	ID uint `json:"id"`
+	ID int64 `json:"id"`
 	// 标题
 	Title string `json:"title"`
 	// PC端跳转地址

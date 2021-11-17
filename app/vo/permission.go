@@ -17,7 +17,7 @@ type PermissionReq struct {
 	// 权限类型   0: 菜单权限 1: 操作权限
 	Type int `json:"type"`
 	// 父级菜单的ID,最高级为 0
-	ParentID uint `json:"parent_id"`
+	ParentID int64 `json:"parent_id"`
 }
 
 func (p PermissionReq) ToModel(openID string) models.Permission {
@@ -37,7 +37,7 @@ func (p PermissionReq) ToModel(openID string) models.Permission {
 
 type PermissionResp struct {
 	// ID
-	ID uint `json:"id"`
+	ID int64 `json:"id"`
 	// 名称
 	Name string `json:"name"`
 	// 菜单名称
@@ -51,7 +51,7 @@ type PermissionResp struct {
 	// 索引
 	Index int `json:"index"`
 	// 父级菜单的ID,最高级为 0
-	ParentID uint `json:"parent_id"`
+	ParentID int64 `json:"parent_id"`
 }
 
 type PermissionUpdateReq struct {
@@ -68,7 +68,7 @@ type PermissionUpdateReq struct {
 	// 索引
 	Index int `json:"index"`
 	// 父级菜单的ID,最高级为 0
-	ParentID uint `json:"parent_id"`
+	ParentID int64 `json:"parent_id"`
 }
 
 func (pur *PermissionUpdateReq) ToMap(openID string) map[string]interface{} {
@@ -88,7 +88,7 @@ func (pur *PermissionUpdateReq) ToMap(openID string) map[string]interface{} {
 
 type PermissionTree struct {
 	// ID
-	ID uint `json:"id"`
+	ID int64 `json:"id"`
 	// 名称
 	Name string `json:"name"`
 	// 菜单名称
@@ -98,7 +98,7 @@ type PermissionTree struct {
 	// 索引
 	Index int `json:"index"`
 	// 父级ID
-	ParentID uint `json:"parent_id"`
+	ParentID int64 `json:"parent_id"`
 	// 子级权限
 	SubPermissions []*PermissionTree `json:"sub_permissions"`
 }

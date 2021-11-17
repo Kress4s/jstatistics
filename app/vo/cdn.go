@@ -28,7 +28,7 @@ func (cr *CDNReq) ToModel(openID string) *models.CDN {
 
 type CDNResp struct {
 	// ID
-	ID uint `json:"id"`
+	ID int64 `json:"id"`
 	// 标题
 	Title string `json:"title"`
 	// cdn

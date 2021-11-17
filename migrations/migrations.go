@@ -8,6 +8,10 @@ import (
 
 func Migrate() error {
 	db := database.GetDriver()
+	// 初始化管理员
+	db.Create(InitUser())
+	// 初始化权限菜单
+	db.Create(InitPermissions())
 	return db.AutoMigrate(
 		// 权限管理
 		&models.User{}, &models.Role{}, &models.UserRoleRelation{}, &models.Permission{},

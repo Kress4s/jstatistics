@@ -13,7 +13,7 @@ type RoleReq struct {
 	// 说明
 	Description string `json:"description"`
 	// 权限ids
-	Permissions []uint `json:"permission"`
+	Permissions []int64 `json:"permission"`
 }
 
 type RoleUpdateReq struct {
@@ -24,7 +24,7 @@ type RoleUpdateReq struct {
 	// 说明
 	Description string `json:"description"`
 	// 权限ids
-	Permissions []uint `json:"permission"`
+	Permissions []int64 `json:"permission"`
 }
 
 func (rup *RoleUpdateReq) ToMap(openID string) map[string]interface{} {
@@ -51,7 +51,7 @@ func (r *RoleReq) ToModel(openID string) *models.Role {
 
 type RoleResp struct {
 	// 角色ID
-	ID uint `json:"id"`
+	ID int64 `json:"id"`
 	// 角色命
 	Name string `json:"name"`
 	// 标识符
@@ -59,12 +59,12 @@ type RoleResp struct {
 	// 说明
 	Description string `json:"description"`
 	// 权限
-	Permissions []uint
+	Permissions []int64
 }
 
 type RoleBriefResp struct {
 	// 角色ID
-	ID uint `json:"id"`
+	ID int64 `json:"id"`
 	// 角色命
 	Name string `json:"name"`
 }

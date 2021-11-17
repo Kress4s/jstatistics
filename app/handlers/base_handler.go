@@ -14,7 +14,7 @@ import (
 )
 
 type BaseHandler struct {
-	UserID   uint
+	UserID   int64
 	UserName string
 }
 
@@ -22,7 +22,7 @@ func (bh *BaseHandler) BeginRequest(ctx iris.Context) {
 	token := ctx.Values().Get("jwt").(*jwt.Token)
 	userInfo := token.Claims.(jwt.MapClaims)
 	id := userInfo["user_id"].(float64)
-	bh.UserID = uint(id)
+	bh.UserID = int64(id)
 	bh.UserName = userInfo["user_name"].(string)
 }
 

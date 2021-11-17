@@ -2,16 +2,15 @@ package response
 
 import (
 	"fmt"
+	"js_statistics/app/vo"
 	"js_statistics/exception"
 	"log"
 	"mime"
 	"path"
 	"strings"
 
-	"js_statistics/app/vo"
-
-	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/context"
+	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
 )
 

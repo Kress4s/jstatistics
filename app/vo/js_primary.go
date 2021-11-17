@@ -25,7 +25,7 @@ func (jpr *JsPrimaryReq) ToModel(openID string) *models.JsPrimary {
 
 type JsPrimaryResp struct {
 	// 主分类id
-	ID uint `json:"id"`
+	ID int64 `json:"id"`
 	// 标题名
 	Title string `json:"title"`
 }

@@ -28,10 +28,10 @@ func GetCdnRepo() CdnRepo {
 type CdnRepo interface {
 	Create(db *gorm.DB, cdn *models.CDN) exception.Exception
 	List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []models.CDN, exception.Exception)
-	Get(db *gorm.DB, id uint) (*models.CDN, exception.Exception)
-	Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception
-	Delete(db *gorm.DB, id uint) exception.Exception
-	MultiDelete(db *gorm.DB, ids []uint) exception.Exception
+	Get(db *gorm.DB, id int64) (*models.CDN, exception.Exception)
+	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
+	Delete(db *gorm.DB, id int64) exception.Exception
+	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
 }
 
 func (cri *CdnRepoImpl) Create(db *gorm.DB, cdn *models.CDN) exception.Exception {
@@ -50,7 +50,7 @@ func (cri *CdnRepoImpl) List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []model
 	return count, cdns, exception.Wrap(response.ExceptionDatabase, res.Error)
 }
 
-func (cri *CdnRepoImpl) Get(db *gorm.DB, id uint) (*models.CDN, exception.Exception) {
+func (cri *CdnRepoImpl) Get(db *gorm.DB, id int64) (*models.CDN, exception.Exception) {
 	cdn := models.CDN{}
 	res := db.Where(&models.CDN{ID: id}).Find(&cdn)
 	if res.RowsAffected == 0 {
@@ -62,15 +62,15 @@ func (cri *CdnRepoImpl) Get(db *gorm.DB, id uint) (*models.CDN, exception.Except
 	return &cdn, nil
 }
 
-func (cri *CdnRepoImpl) Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception {
+func (cri *CdnRepoImpl) Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase,
 		db.Model(&models.CDN{}).Where(&models.CDN{ID: id}).Updates(param).Error)
 }
 
-func (cri *CdnRepoImpl) Delete(db *gorm.DB, id uint) exception.Exception {
+func (cri *CdnRepoImpl) Delete(db *gorm.DB, id int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.CDN{}, id).Error)
 }
 
-func (cri *CdnRepoImpl) MultiDelete(db *gorm.DB, ids []uint) exception.Exception {
+func (cri *CdnRepoImpl) MultiDelete(db *gorm.DB, ids []int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.CDN{}, ids).Error)
 }

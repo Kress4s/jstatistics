@@ -10,7 +10,7 @@ const (
 	salt = "JS Secret"
 )
 
-func Token(userID uint, username string) (string, int64) {
+func Token(userID int64, username string) (string, int64) {
 	exp := time.Now().Add(4 * time.Hour).Unix()
 	token := jwt.NewTokenWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		// 根据需求，可以存一些必要的数据

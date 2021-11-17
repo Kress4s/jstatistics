@@ -6,7 +6,7 @@ import (
 )
 
 type JsPrimary struct {
-	ID    uint   `gorm:"column:id;primaryKey;unique;not null;comment:id"`
+	ID    int64  `gorm:"column:id;primaryKey;unique;not null;comment:id"`
 	Title string `gorm:"column:title;type:varchar(50);not null;comment:标题"`
 	common.Base
 }

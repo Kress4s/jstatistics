@@ -19,15 +19,16 @@ var (
 )
 
 type jsmServiceImpl struct {
-	db         *gorm.DB
-	repo       repositories.JsmRepo
+	db     *gorm.DB
+	repo   repositories.JsmRepo
+	jcRepo repositories.JscRepo
 }
 
 func GetJsmService() JsmService {
 	jsmOnce.Do(func() {
 		jsmServiceInstance = &jsmServiceImpl{
-			db:         database.GetDriver(),
-			repo:       repositories.GetJsmRepo(),
+			db:   database.GetDriver(),
+			repo: repositories.GetJsmRepo(),
 		}
 	})
 	return jsmServiceInstance
@@ -35,10 +36,10 @@ func GetJsmService() JsmService {
 
 type JsmService interface {
 	Create(openID string, param *vo.JsManageReq) exception.Exception
-	Get(id uint) (*vo.JsManageResp, exception.Exception)
-	ListByCategoryID(page *vo.PageInfo, pid uint) (*vo.DataPagination, exception.Exception)
-	Update(openID string, id uint, param *vo.JsManageUpdateReq) exception.Exception
-	Delete(id uint) exception.Exception
+	Get(id int64) (*vo.JsManageResp, exception.Exception)
+	ListByCategoryID(page *vo.PageInfo, pid int64) (*vo.DataPagination, exception.Exception)
+	Update(openID string, id int64, param *vo.JsManageUpdateReq) exception.Exception
+	Delete(id int64) exception.Exception
 	MultiDelete(ids string) exception.Exception
 }
 
@@ -47,7 +48,7 @@ func (jsi *jsmServiceImpl) Create(openID string, param *vo.JsManageReq) exceptio
 	return jsi.repo.Create(jsi.db, jsmMgr)
 }
 
-func (jsi *jsmServiceImpl) Get(id uint) (*vo.JsManageResp, exception.Exception) {
+func (jsi *jsmServiceImpl) Get(id int64) (*vo.JsManageResp, exception.Exception) {
 	jsm, ex := jsi.repo.Get(jsi.db, id)
 	if ex != nil {
 		return nil, ex
@@ -55,7 +56,7 @@ func (jsi *jsmServiceImpl) Get(id uint) (*vo.JsManageResp, exception.Exception) 
 	return vo.NewJsManageResponse(jsm), nil
 }
 
-func (jsi *jsmServiceImpl) ListByCategoryID(pageInfo *vo.PageInfo, pid uint) (*vo.DataPagination, exception.Exception) {
+func (jsi *jsmServiceImpl) ListByCategoryID(pageInfo *vo.PageInfo, pid int64) (*vo.DataPagination, exception.Exception) {
 	count, jsms, ex := jsi.repo.ListByCategoryID(jsi.db, pageInfo, pid)
 	if ex != nil {
 		return nil, ex
@@ -67,11 +68,11 @@ func (jsi *jsmServiceImpl) ListByCategoryID(pageInfo *vo.PageInfo, pid uint) (*v
 	return vo.NewDataPagination(count, resp, pageInfo), nil
 }
 
-func (jsi *jsmServiceImpl) Update(openID string, id uint, param *vo.JsManageUpdateReq) exception.Exception {
+func (jsi *jsmServiceImpl) Update(openID string, id int64, param *vo.JsManageUpdateReq) exception.Exception {
 	return jsi.repo.Update(jsi.db, id, param.ToMap(openID))
 }
 
-func (jsi *jsmServiceImpl) Delete(id uint) exception.Exception {
+func (jsi *jsmServiceImpl) Delete(id int64) exception.Exception {
 	return jsi.repo.Delete(jsi.db, id)
 }
 
@@ -80,13 +81,13 @@ func (jsi *jsmServiceImpl) MultiDelete(ids string) exception.Exception {
 	if len(idslice) == 0 {
 		return exception.New(response.ExceptionInvalidRequestParameters, "无效参数")
 	}
-	jid := make([]uint, 0, len(idslice))
+	jid := make([]int64, 0, len(idslice))
 	for i := range idslice {
 		id, err := strconv.ParseUint(idslice[i], 10, 0)
 		if err != nil {
 			return exception.Wrap(response.ExceptionParseStringToUintError, err)
 		}
-		jid = append(jid, uint(id))
+		jid = append(jid, int64(id))
 	}
 	return jsi.repo.MultiDelete(jsi.db, jid)
 }

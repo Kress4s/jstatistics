@@ -28,10 +28,10 @@ func GetRmRepo() RmRepo {
 type RmRepo interface {
 	Create(db *gorm.DB, rm *models.RedirectManage) exception.Exception
 	List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []models.RedirectManage, exception.Exception)
-	Get(db *gorm.DB, id uint) (*models.RedirectManage, exception.Exception)
-	Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception
-	Delete(db *gorm.DB, id uint) exception.Exception
-	MultiDelete(db *gorm.DB, ids []uint) exception.Exception
+	Get(db *gorm.DB, id int64) (*models.RedirectManage, exception.Exception)
+	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
+	Delete(db *gorm.DB, id int64) exception.Exception
+	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
 }
 
 func (jsi *RmRepoImpl) Create(db *gorm.DB, rm *models.RedirectManage) exception.Exception {
@@ -50,7 +50,7 @@ func (jsi *RmRepoImpl) List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []models
 	return count, rms, exception.Wrap(response.ExceptionDatabase, res.Error)
 }
 
-func (jsi *RmRepoImpl) Get(db *gorm.DB, id uint) (*models.RedirectManage, exception.Exception) {
+func (jsi *RmRepoImpl) Get(db *gorm.DB, id int64) (*models.RedirectManage, exception.Exception) {
 	jsCategory := models.RedirectManage{}
 	res := db.Where(&models.RedirectManage{ID: id}).Find(&jsCategory)
 	if res.RowsAffected == 0 {
@@ -62,15 +62,15 @@ func (jsi *RmRepoImpl) Get(db *gorm.DB, id uint) (*models.RedirectManage, except
 	return &jsCategory, nil
 }
 
-func (jsi *RmRepoImpl) Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception {
+func (jsi *RmRepoImpl) Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase,
 		db.Model(&models.RedirectManage{}).Where(&models.RedirectManage{ID: id}).Updates(param).Error)
 }
 
-func (jsi *RmRepoImpl) Delete(db *gorm.DB, id uint) exception.Exception {
+func (jsi *RmRepoImpl) Delete(db *gorm.DB, id int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.RedirectManage{}, id).Error)
 }
 
-func (jsi *RmRepoImpl) MultiDelete(db *gorm.DB, ids []uint) exception.Exception {
+func (jsi *RmRepoImpl) MultiDelete(db *gorm.DB, ids []int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.RedirectManage{}, ids).Error)
 }

@@ -2213,46 +2213,14 @@ var doc = `{
                     "应用管理 - js主分类"
                 ],
                 "summary": "查询js主分类列表",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "请求页",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "页大小",
-                        "name": "page_size",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "keywords",
-                        "name": "keywords",
-                        "in": "query"
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "查询js主分类列表成功",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/vo.DataPagination"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/vo.JsPrimaryResp"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vo.JsPrimaryResp"
+                            }
                         }
                     },
                     "400": {
@@ -4429,6 +4397,10 @@ var doc = `{
                 "ip": {
                     "description": "今日IP数",
                     "type": "integer"
+                },
+                "js_site": {
+                    "description": "Js地址",
+                    "type": "string"
                 },
                 "key_word": {
                     "description": "关键词",

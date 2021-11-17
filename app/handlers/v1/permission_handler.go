@@ -60,7 +60,7 @@ func (ph *PermissionHandler) Create(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/permission/rule/{id} [get]
 func (ph *PermissionHandler) Get(ctx iris.Context) mvc.Result {
-	id, err := ctx.Params().GetUint(constant.ID)
+	id, err := ctx.Params().GetInt64(constant.ID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}
@@ -104,7 +104,7 @@ func (ph *PermissionHandler) GetPermissionTree(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/permission/rule/{id} [put]
 func (ph *PermissionHandler) Update(ctx iris.Context) mvc.Result {
-	id, err := ctx.Params().GetUint(constant.ID)
+	id, err := ctx.Params().GetInt64(constant.ID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}
@@ -132,7 +132,7 @@ func (ph *PermissionHandler) Update(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/permission/rule/{id} [delete]
 func (ph *PermissionHandler) Delete(ctx iris.Context) mvc.Result {
-	id, err := ctx.Params().GetUint(constant.ID)
+	id, err := ctx.Params().GetInt64(constant.ID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}

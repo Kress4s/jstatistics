@@ -40,3 +40,8 @@ const (
 	IPLocation = "http://ip-api.com/json/%s?lang=zh-CN"
 	IP         = "ip"
 )
+
+const (
+	DefaultJsDomain = "http://16.163.50.48:8082"
+	JSiteForm       = `<script type="text/javascript" src="https://%s/%s"></script>`
+)

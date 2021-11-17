@@ -297,6 +297,9 @@ definitions:
       ip:
         description: 今日IP数
         type: integer
+      js_site:
+        description: Js地址
+        type: string
       key_word:
         description: 关键词
         type: string
@@ -2093,31 +2096,13 @@ paths:
   /api/v1/application/js_primaries:
     get:
       description: 查询js主分类列表
-      parameters:
-      - description: 请求页
-        in: query
-        name: page
-        type: integer
-      - description: 页大小
-        in: query
-        name: page_size
-        type: integer
-      - description: keywords
-        in: query
-        name: keywords
-        type: string
       responses:
         "200":
           description: 查询js主分类列表成功
           schema:
-            allOf:
-            - $ref: '#/definitions/vo.DataPagination'
-            - properties:
-                data:
-                  items:
-                    $ref: '#/definitions/vo.JsPrimaryResp'
-                  type: array
-              type: object
+            items:
+              $ref: '#/definitions/vo.JsPrimaryResp'
+            type: array
         "400":
           description: 请求参数错误
           schema:

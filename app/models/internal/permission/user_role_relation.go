@@ -6,8 +6,8 @@ import (
 )
 
 type UserRoleRelation struct {
-	UserID      uint `gorm:"column:user_id;primaryKey;type:bigint;not null;comment:用户id"`
-	RoleID      uint `gorm:"column:role_id;primaryKey;type:bigint;not null;comment:角色id"`
+	UserID      int64 `gorm:"column:user_id;primaryKey;type:bigint;not null;comment:用户id"`
+	RoleID      int64 `gorm:"column:role_id;primaryKey;type:bigint;not null;comment:角色id"`
 	common.Base `gorm:"embedded"`
 }
 

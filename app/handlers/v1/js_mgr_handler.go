@@ -63,7 +63,7 @@ func (jmh *JsmHandler) Create(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/application/js_categories/category/{cid} [get]
 func (jmh *JsmHandler) ListByCategoryID(ctx iris.Context) mvc.Result {
-	pid, err := ctx.Params().GetUint(constant.CategoryID)
+	pid, err := ctx.Params().GetInt64(constant.CategoryID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}
@@ -91,7 +91,7 @@ func (jmh *JsmHandler) ListByCategoryID(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/application/js_manage/{id} [get]
 func (jmh *JsmHandler) Get(ctx iris.Context) mvc.Result {
-	id, err := ctx.Params().GetUint(constant.ID)
+	id, err := ctx.Params().GetInt64(constant.ID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}
@@ -116,7 +116,7 @@ func (jmh *JsmHandler) Get(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/application/js_manage/{id} [put]
 func (jmh *JsmHandler) Update(ctx iris.Context) mvc.Result {
-	id, err := ctx.Params().GetUint(constant.ID)
+	id, err := ctx.Params().GetInt64(constant.ID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}
@@ -144,7 +144,7 @@ func (jmh *JsmHandler) Update(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/application/js_manage/{id} [delete]
 func (jmh *JsmHandler) Delete(ctx iris.Context) mvc.Result {
-	id, err := ctx.Params().GetUint(constant.ID)
+	id, err := ctx.Params().GetInt64(constant.ID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}

@@ -28,10 +28,10 @@ func GetIPRepo() IPRepo {
 type IPRepo interface {
 	Create(db *gorm.DB, ip *models.WhiteIP) exception.Exception
 	List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []models.WhiteIP, exception.Exception)
-	Get(db *gorm.DB, id uint) (*models.WhiteIP, exception.Exception)
-	Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception
-	Delete(db *gorm.DB, id uint) exception.Exception
-	MultiDelete(db *gorm.DB, ids []uint) exception.Exception
+	Get(db *gorm.DB, id int64) (*models.WhiteIP, exception.Exception)
+	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
+	Delete(db *gorm.DB, id int64) exception.Exception
+	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
 }
 
 func (iri *ipRepoImpl) Create(db *gorm.DB, domain *models.WhiteIP) exception.Exception {
@@ -50,7 +50,7 @@ func (iri *ipRepoImpl) List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []models
 	return count, ips, exception.Wrap(response.ExceptionDatabase, res.Error)
 }
 
-func (iri *ipRepoImpl) Get(db *gorm.DB, id uint) (*models.WhiteIP, exception.Exception) {
+func (iri *ipRepoImpl) Get(db *gorm.DB, id int64) (*models.WhiteIP, exception.Exception) {
 	domain := models.WhiteIP{}
 	res := db.Where(&models.WhiteIP{ID: id}).Find(&domain)
 	if res.RowsAffected == 0 {
@@ -62,15 +62,15 @@ func (iri *ipRepoImpl) Get(db *gorm.DB, id uint) (*models.WhiteIP, exception.Exc
 	return &domain, nil
 }
 
-func (iri *ipRepoImpl) Update(db *gorm.DB, id uint, param map[string]interface{}) exception.Exception {
+func (iri *ipRepoImpl) Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase,
 		db.Model(&models.WhiteIP{}).Where(&models.WhiteIP{ID: id}).Updates(param).Error)
 }
 
-func (iri *ipRepoImpl) Delete(db *gorm.DB, id uint) exception.Exception {
+func (iri *ipRepoImpl) Delete(db *gorm.DB, id int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.WhiteIP{}, id).Error)
 }
 
-func (iri *ipRepoImpl) MultiDelete(db *gorm.DB, ids []uint) exception.Exception {
+func (iri *ipRepoImpl) MultiDelete(db *gorm.DB, ids []int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.WhiteIP{}, ids).Error)
 }

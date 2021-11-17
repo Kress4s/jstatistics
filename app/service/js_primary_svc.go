@@ -32,10 +32,10 @@ func GetJspService() JspService {
 
 type JspService interface {
 	Create(openID string, param *vo.JsPrimaryReq) exception.Exception
-	Get(id uint) (*vo.JsPrimaryResp, exception.Exception)
-	List(page *vo.PageInfo) (*vo.DataPagination, exception.Exception)
-	Update(openID string, id uint, param *vo.JsPrimaryUpdateReq) exception.Exception
-	Delete(id uint) exception.Exception
+	Get(id int64) (*vo.JsPrimaryResp, exception.Exception)
+	List() ([]vo.JsPrimaryResp, exception.Exception)
+	Update(openID string, id int64, param *vo.JsPrimaryUpdateReq) exception.Exception
+	Delete(id int64) exception.Exception
 }
 
 func (jsi *jspServiceImpl) Create(openID string, param *vo.JsPrimaryReq) exception.Exception {
@@ -43,7 +43,7 @@ func (jsi *jspServiceImpl) Create(openID string, param *vo.JsPrimaryReq) excepti
 	return jsi.repo.Create(jsi.db, jspMgr)
 }
 
-func (jsi *jspServiceImpl) Get(id uint) (*vo.JsPrimaryResp, exception.Exception) {
+func (jsi *jspServiceImpl) Get(id int64) (*vo.JsPrimaryResp, exception.Exception) {
 	jspMgr, ex := jsi.repo.Get(jsi.db, id)
 	if ex != nil {
 		return nil, ex
@@ -51,8 +51,8 @@ func (jsi *jspServiceImpl) Get(id uint) (*vo.JsPrimaryResp, exception.Exception)
 	return vo.NewJsPrimaryResponse(jspMgr), nil
 }
 
-func (jsi *jspServiceImpl) List(pageInfo *vo.PageInfo) (*vo.DataPagination, exception.Exception) {
-	count, jsps, ex := jsi.repo.List(jsi.db, pageInfo)
+func (jsi *jspServiceImpl) List() ([]vo.JsPrimaryResp, exception.Exception) {
+	jsps, ex := jsi.repo.List(jsi.db)
 	if ex != nil {
 		return nil, ex
 	}
@@ -60,13 +60,13 @@ func (jsi *jspServiceImpl) List(pageInfo *vo.PageInfo) (*vo.DataPagination, exce
 	for i := range jsps {
 		resp = append(resp, *vo.NewJsPrimaryResponse(&jsps[i]))
 	}
-	return vo.NewDataPagination(count, resp, pageInfo), nil
+	return resp, nil
 }
 
-func (jsi *jspServiceImpl) Update(openID string, id uint, param *vo.JsPrimaryUpdateReq) exception.Exception {
+func (jsi *jspServiceImpl) Update(openID string, id int64, param *vo.JsPrimaryUpdateReq) exception.Exception {
 	return jsi.repo.Update(jsi.db, id, param.ToMap(openID))
 }
 
-func (jsi *jspServiceImpl) Delete(id uint) exception.Exception {
+func (jsi *jspServiceImpl) Delete(id int64) exception.Exception {
 	return jsi.repo.Delete(jsi.db, id)
 }

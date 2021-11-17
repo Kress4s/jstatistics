@@ -6,7 +6,7 @@ import (
 )
 
 type DomainMgr struct {
-	ID          uint   `gorm:"column:id;primaryKey;unique;not null;comment:id"`
+	ID          int64  `gorm:"column:id;primaryKey;unique;not null;comment:id"`
 	Title       string `gorm:"column:title;type:varchar(50);not null;comment:标题"`
 	Domain      string `gorm:"column:domain;type:varchar(50);uniqueIndex;not null;comment:域名"`
 	SSL         bool   `gorm:"column:ssl;type:boolean;default:false;not null;comment:是否使用ssl"`

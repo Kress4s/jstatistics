@@ -24,10 +24,10 @@ type permissionServiceImpl struct {
 
 type PermissionService interface {
 	Create(openID string, params *vo.PermissionReq) exception.Exception
-	Get(id uint) (*vo.PermissionResp, exception.Exception)
-	Update(openID string, id uint, params *vo.PermissionUpdateReq) exception.Exception
+	Get(id int64) (*vo.PermissionResp, exception.Exception)
+	Update(openID string, id int64, params *vo.PermissionUpdateReq) exception.Exception
 	GetPermissionTree() (*vo.PermissionTree, exception.Exception)
-	Delete(openID string, id uint) exception.Exception
+	Delete(openID string, id int64) exception.Exception
 }
 
 func GetPermissionService() PermissionService {
@@ -46,7 +46,7 @@ func (ps *permissionServiceImpl) Create(openID string, params *vo.PermissionReq)
 	return ps.repo.Create(ps.db, &p)
 }
 
-func (ps *permissionServiceImpl) Get(id uint) (*vo.PermissionResp, exception.Exception) {
+func (ps *permissionServiceImpl) Get(id int64) (*vo.PermissionResp, exception.Exception) {
 	p, ex := ps.repo.Get(ps.db, id)
 	if ex != nil {
 		return nil, ex
@@ -85,7 +85,7 @@ func (ps *permissionServiceImpl) GetPermissionTree() (*vo.PermissionTree, except
 }
 
 func (ps *permissionServiceImpl) makePermissionTree(allPermission []*vo.PermissionTree,
-	topermission *vo.PermissionTree, ids *[]uint) {
+	topermission *vo.PermissionTree, ids *[]int64) {
 	children, _ := ps.haveChild(allPermission, topermission)
 	if len(children) != 0 {
 		if ids != nil {
@@ -116,11 +116,11 @@ func (ps *permissionServiceImpl) haveChild(allPermissions []*vo.PermissionTree, 
 	return
 }
 
-func (us *permissionServiceImpl) Update(openID string, id uint, params *vo.PermissionUpdateReq) exception.Exception {
+func (us *permissionServiceImpl) Update(openID string, id int64, params *vo.PermissionUpdateReq) exception.Exception {
 	return us.repo.Update(us.db, id, params.ToMap(openID))
 }
 
-func (ps *permissionServiceImpl) Delete(openID string, id uint) exception.Exception {
+func (ps *permissionServiceImpl) Delete(openID string, id int64) exception.Exception {
 	/*
 		1. 查出节点
 		2. 查出该节点下所有子节点的id
@@ -136,7 +136,7 @@ func (ps *permissionServiceImpl) Delete(openID string, id uint) exception.Except
 		return ex
 	}
 	allPermission := make([]*vo.PermissionTree, 0, len(permissions))
-	ids := new([]uint)
+	ids := new([]int64)
 	*ids = append(*ids, id)
 	for i := range permissions {
 		if permissions[i].ParentID == 0 || permissions[i].ID == dp.ID {
