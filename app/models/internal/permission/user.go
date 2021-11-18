@@ -19,7 +19,7 @@ func (User) TableName() string {
 }
 
 type UserToMenus struct {
-	MenuID   uint   `json:"menu_id"`
+	MenuID   int64  `json:"menu_id"`
 	MenuName string `json:"menu_name"`
 	Route    string `json:"router"`
 }

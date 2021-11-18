@@ -1,6 +1,7 @@
 package service
 
 import (
+	"js_statistics/app/models"
 	repositories "js_statistics/app/repositories"
 	"js_statistics/app/response"
 	"js_statistics/app/vo"
@@ -23,6 +24,7 @@ type userServiceImpl struct {
 	repo     repositories.UserRepo
 	roleRepo repositories.RoleRepo
 	urRepo   repositories.UserRoleRepo
+	pmRepo   repositories.PermissionRepo
 }
 
 type UserService interface {
@@ -45,6 +47,7 @@ func GetUserService() UserService {
 			repo:     repositories.GetUserRepo(),
 			urRepo:   repositories.GetUserRoleRepo(),
 			roleRepo: repositories.GetRoleRepo(),
+			pmRepo:   repositories.GetPermissionRepo(),
 		}
 	})
 	return userServiceInstance
@@ -179,9 +182,30 @@ func (us *userServiceImpl) GetRolesByUserID(openID string, uid int64) ([]vo.Role
 }
 
 func (us *userServiceImpl) GetUserMenus(userID int64) ([]vo.UserToMenusResp, exception.Exception) {
-	res, ex := us.repo.GetUserMenus(us.db, userID)
+	user, ex := us.repo.Get(us.db, userID)
 	if ex != nil {
 		return nil, ex
+	}
+	res := make([]models.UserToMenus, 0)
+	// 判断是否是超管
+	if user.IsAdmin {
+		ps, ex := us.pmRepo.GetAll(us.db)
+		if ex != nil {
+			return nil, ex
+		}
+		for i := range ps {
+			res = append(res, models.UserToMenus{
+				MenuID:   ps[i].ID,
+				MenuName: ps[i].MenuName,
+				Route:    ps[i].Route,
+			})
+		}
+	} else {
+		// 非超管
+		res, ex = us.repo.GetUserMenus(us.db, userID)
+		if ex != nil {
+			return nil, ex
+		}
 	}
 	menus := make([]vo.UserToMenusResp, 0, len(res))
 	for i := range res {

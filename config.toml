@@ -17,7 +17,7 @@ allowed_headers = ["*"]
 type = "postgres"
 
 [database.dsn]
-addr = "49.234.86.244:5433"
+addr = "121.41.38.13:5432"
 db = "postgres"
 username = "postgres"
 password = "123456"

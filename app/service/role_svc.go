@@ -56,7 +56,7 @@ func (rsi *roleServiceImpl) Create(openID string, param *vo.RoleReq) exception.E
 	rp := vo.RolePermissionReq{RoleID: role.ID}
 	rpm, err := rp.ToModel(openID, param.Permissions)
 	if err != nil {
-		return exception.Wrap(response.ExceptionParseStringToUintError, err)
+		return exception.Wrap(response.ExceptionParseStringToInt64Error, err)
 	}
 	if ex := rsi.rpRepo.Create(tx, rpm); ex != nil {
 		return ex
@@ -123,7 +123,7 @@ func (rsi *roleServiceImpl) Update(openID string, id int64, param *vo.RoleUpdate
 	rps := &vo.RolePermissionReq{RoleID: id}
 	rpms, err := rps.ToModel(openID, param.Permissions)
 	if err != nil {
-		return exception.Wrap(response.ExceptionParseStringToUintError, err)
+		return exception.Wrap(response.ExceptionParseStringToInt64Error, err)
 	}
 	if ex = rsi.rpRepo.Create(tx, rpms); ex != nil {
 		return ex

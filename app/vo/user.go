@@ -53,7 +53,7 @@ type UserResp struct {
 
 type UserToMenusResp struct {
 	// 菜单ID
-	MenuID uint `json:"menu_id"`
+	MenuID int64 `json:"menu_id"`
 	// 菜单名字
 	MenuName string `json:"menu_name"`
 	// 菜单路由

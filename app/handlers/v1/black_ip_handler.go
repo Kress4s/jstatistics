@@ -189,7 +189,7 @@ func (ih *BlackIPHandler) IPLocationSearch(ctx iris.Context) mvc.Result {
 	if len(ip) == 0 {
 		return response.Error(exception.New(response.ExceptionInvalidRequestParameters, "ip不能为空"))
 	}
-	localtion, ex := tools.IPLocation(ip)
+	localtion, ex := tools.LocationIP(ip)
 	if ex != nil {
 		return response.Error(ex)
 	}

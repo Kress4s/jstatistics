@@ -51,6 +51,7 @@ var (
 	ExceptionParseFloatError          exception.Type = &Exception{code: 500022, statusCode: iris.StatusInternalServerError}
 	ExceptionUnzipBundleError         exception.Type = &Exception{code: 500023, statusCode: iris.StatusInternalServerError}
 	ExceptionParseDate                exception.Type = &Exception{code: 500024, statusCode: iris.StatusInternalServerError}
-	ExceptionParseStringToUintError   exception.Type = &Exception{code: 500025, statusCode: iris.StatusInternalServerError}
+	ExceptionParseStringToInt64Error  exception.Type = &Exception{code: 500025, statusCode: iris.StatusInternalServerError}
 	ExceptionHttpRequestError         exception.Type = &Exception{code: 500026, statusCode: iris.StatusInternalServerError}
+	ExceptionPraseIPLocationError     exception.Type = &Exception{code: 500027, statusCode: iris.StatusInternalServerError}
 )

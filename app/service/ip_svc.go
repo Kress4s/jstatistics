@@ -84,7 +84,7 @@ func (dsi *ipServiceImpl) MultiDelete(ids string) exception.Exception {
 	for i := range idslice {
 		id, err := strconv.ParseUint(idslice[i], 10, 0)
 		if err != nil {
-			return exception.Wrap(response.ExceptionParseStringToUintError, err)
+			return exception.Wrap(response.ExceptionParseStringToInt64Error, err)
 		}
 		did = append(did, int64(id))
 	}
