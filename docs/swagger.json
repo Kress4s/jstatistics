@@ -15,6 +15,964 @@
     },
     "basePath": "/",
     "paths": {
+        "/": {
+            "get": {
+                "description": "js链接",
+                "tags": [
+                    "JS链接"
+                ],
+                "summary": "js链接(开发中, 暂不可调)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "js唯一字符串",
+                        "name": "sign",
+                        "in": "path",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/analysis/flow/from_now/flowdata": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询开始至今流量数据",
+                "tags": [
+                    "数据统计 - 流量统计"
+                ],
+                "summary": "查询开始至今流量数据",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "JS主分类ID",
+                        "name": "pid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS分类ID",
+                        "name": "cid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS ID",
+                        "name": "jid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "请求页",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页大小",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询开始时间范围流量数据成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/vo.DataPagination"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/vo.FlowDataResp"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/analysis/flow/from_now/ip_uv": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询开始至今IP、UV的统计",
+                "tags": [
+                    "数据统计 - 流量统计"
+                ],
+                "summary": "查询 开始至今 IP、UV的统计",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "JS主分类ID",
+                        "name": "pid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS分类ID",
+                        "name": "cid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS ID",
+                        "name": "jid",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询昨日IP、UV的统计成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.HomeIPAndUVisit"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/analysis/flow/last_month_ip": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询上月IP统计数",
+                "tags": [
+                    "数据统计 - 流量统计"
+                ],
+                "summary": "查询上月IP统计数",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "JS主分类ID",
+                        "name": "pid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS分类ID",
+                        "name": "cid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS ID",
+                        "name": "jid",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询上月IP统计数成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.LastMonthIP"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/analysis/flow/this_month_ip": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询本月IP统计数",
+                "tags": [
+                    "数据统计 - 流量统计"
+                ],
+                "summary": "查询本月IP统计数",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "JS主分类ID",
+                        "name": "pid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS分类ID",
+                        "name": "cid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS ID",
+                        "name": "jid",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询本月IP统计数成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.ThisMonthIP"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/analysis/flow/timescope/flowdata": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询时间范围内流量数据",
+                "tags": [
+                    "数据统计 - 流量统计"
+                ],
+                "summary": "查询时间范围流量数据(过去七天、过去30天、自选时间范围)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "时间格式: 2021-08-24",
+                        "name": "begin_at",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "时间格式: 2021-08-31",
+                        "name": "end_at",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS主分类ID",
+                        "name": "pid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS分类ID",
+                        "name": "cid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS ID",
+                        "name": "jid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "请求页",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页大小",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询开始时间范围流量数据成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/vo.DataPagination"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/vo.FlowDataResp"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/analysis/flow/timescope/ip_uv": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询时间范围内IP、UV的统计",
+                "tags": [
+                    "数据统计 - 流量统计"
+                ],
+                "summary": "查询时间范围内IP、UV的统计(过去七天、过去30天、自选时间范围)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "JS主分类ID",
+                        "name": "pid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS分类ID",
+                        "name": "cid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS ID",
+                        "name": "jid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "时间格式: 2021-08-24",
+                        "name": "begin_at",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "时间格式: 2021-08-31",
+                        "name": "end_at",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询时间范围内IP、UV的统计成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.HomeIPAndUVisit"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/analysis/flow/today/flowdata": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询今日流量数据",
+                "tags": [
+                    "数据统计 - 流量统计"
+                ],
+                "summary": "查询今日流量数据",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "JS主分类ID",
+                        "name": "pid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS分类ID",
+                        "name": "cid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS ID",
+                        "name": "jid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "请求页",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页大小",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询今日流量数据成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/vo.DataPagination"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/vo.FlowDataResp"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/analysis/flow/today/ip_uv": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询今日IP、UV的统计",
+                "tags": [
+                    "数据统计 - 流量统计"
+                ],
+                "summary": "查询今日IP、UV的统计",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "JS主分类ID",
+                        "name": "pid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS分类ID",
+                        "name": "cid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS ID",
+                        "name": "jid",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询今日IP、UV的统计成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.HomeIPAndUVisit"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/analysis/flow/today_ip": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询今日IP统计数",
+                "tags": [
+                    "数据统计 - 流量统计"
+                ],
+                "summary": "查询今日IP统计数",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "JS主分类ID",
+                        "name": "pid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS分类ID",
+                        "name": "cid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS ID",
+                        "name": "jid",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询今日IP统计数成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.TodayIP"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/analysis/flow/yesterday/flowdata": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询昨日流量数据",
+                "tags": [
+                    "数据统计 - 流量统计"
+                ],
+                "summary": "查询昨日流量数据",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "JS主分类ID",
+                        "name": "pid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS分类ID",
+                        "name": "cid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS ID",
+                        "name": "jid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "请求页",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页大小",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询昨日流量数据成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/vo.DataPagination"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/vo.FlowDataResp"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/analysis/flow/yesterday/ip_uv": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询昨日IP、UV的统计",
+                "tags": [
+                    "数据统计 - 流量统计"
+                ],
+                "summary": "查询昨日IP、UV的统计",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "JS主分类ID",
+                        "name": "pid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS分类ID",
+                        "name": "cid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS ID",
+                        "name": "jid",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询昨日IP、UV的统计成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.HomeIPAndUVisit"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/analysis/flow/yesterday_ip": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询昨日IP统计数",
+                "tags": [
+                    "数据统计 - 流量统计"
+                ],
+                "summary": "查询昨日IP统计数",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "JS主分类ID",
+                        "name": "pid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS分类ID",
+                        "name": "cid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS ID",
+                        "name": "jid",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询昨日IP统计数成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.YesterdayIP"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/application/all/domains": {
             "get": {
                 "security": [
@@ -75,7 +1033,7 @@
                 "tags": [
                     "应用管理 - js分类"
                 ],
-                "summary": "查询js所有无分页分类通过js主分类ID",
+                "summary": "查询js所有无分页分类通过js主分类ID(js管理table表头使用)",
                 "parameters": [
                     {
                         "type": "string",
@@ -2970,6 +3928,345 @@
                 }
             }
         },
+        "/api/v1/home/ip_uv/statistic": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "访问量统计",
+                "tags": [
+                    "主页 - 统计"
+                ],
+                "summary": "查询IP、UV访问量统计",
+                "responses": {
+                    "200": {
+                        "description": "查询访问量统计成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.HomeIPAndUVisit"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/home/js/rank": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "js流量排行榜详情",
+                "tags": [
+                    "主页 - 统计"
+                ],
+                "summary": "查询js流量排行榜",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "请求页",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页大小",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询js流量排行榜成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.DataPagination"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/home/last_month_ip": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询上月IP统计数",
+                "tags": [
+                    "主页 - 统计"
+                ],
+                "summary": "查询上月IP",
+                "responses": {
+                    "200": {
+                        "description": "查询上月IP统计数成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.LastMonthIP"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/home/region/statistic": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "IP地域地图统计详情",
+                "tags": [
+                    "主页 - 统计"
+                ],
+                "summary": "查询IP地域地图统计",
+                "responses": {
+                    "200": {
+                        "description": "查询访问量统计成功",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vo.RegionStatisticResp"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/home/this_month_ip": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询本月IP统计数",
+                "tags": [
+                    "主页 - 统计"
+                ],
+                "summary": "查询本月IP",
+                "responses": {
+                    "200": {
+                        "description": "查询本月IP统计数成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.ThisMonthIP"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/home/today_ip": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询今日IP统计数",
+                "tags": [
+                    "主页 - 统计"
+                ],
+                "summary": "查询今日IP",
+                "responses": {
+                    "200": {
+                        "description": "查询今日IP统计数成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.TodayIP"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/home/yesterday_ip": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询昨日IP统计数",
+                "tags": [
+                    "主页 - 统计"
+                ],
+                "summary": "查询昨日IP",
+                "responses": {
+                    "200": {
+                        "description": "查询昨日IP统计数成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.YesterdayIP"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/permission/role": {
             "post": {
                 "security": [
@@ -4144,11 +5441,7 @@
                     "description": "IP       string `json:\"ip\"`\nProvince string `json:\"pro\"`\nCity     string `json:\"city\"`\nAddress  string `json:\"addr\"`\n国家",
                     "type": "string"
                 },
-                "isp": {
-                    "description": "运行商信息",
-                    "type": "string"
-                },
-                "regionName": {
+                "province": {
                     "description": "省份",
                     "type": "string"
                 }
@@ -4362,6 +5655,42 @@
                 }
             }
         },
+        "vo.FlowDataResp": {
+            "type": "object",
+            "properties": {
+                "ip": {
+                    "description": "ip总数",
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "标题",
+                    "type": "string"
+                },
+                "uv": {
+                    "description": "uv总数",
+                    "type": "integer"
+                }
+            }
+        },
+        "vo.HomeIPAndUVisit": {
+            "type": "object",
+            "properties": {
+                "ip": {
+                    "description": "ip 时间-数量",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vo.IPVisit"
+                    }
+                },
+                "uv": {
+                    "description": "uv 时间-数量",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vo.UVVisit"
+                    }
+                }
+            }
+        },
         "vo.IPReq": {
             "type": "object",
             "properties": {
@@ -4402,6 +5731,19 @@
                 "title": {
                     "description": "标题",
                     "type": "string"
+                }
+            }
+        },
+        "vo.IPVisit": {
+            "type": "object",
+            "properties": {
+                "bucket": {
+                    "description": "时间",
+                    "type": "string"
+                },
+                "count": {
+                    "description": "访问量",
+                    "type": "integer"
                 }
             }
         },
@@ -4685,6 +6027,15 @@
                 "title": {
                     "description": "标题",
                     "type": "string"
+                }
+            }
+        },
+        "vo.LastMonthIP": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "description": "上月ip数量",
+                    "type": "integer"
                 }
             }
         },
@@ -4981,6 +6332,19 @@
                 }
             }
         },
+        "vo.RegionStatisticResp": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "description": "ip个数",
+                    "type": "integer"
+                },
+                "region": {
+                    "description": "省份",
+                    "type": "string"
+                }
+            }
+        },
         "vo.RoleBriefResp": {
             "type": "object",
             "properties": {
@@ -5070,6 +6434,37 @@
                 }
             }
         },
+        "vo.ThisMonthIP": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "description": "本月ip数量",
+                    "type": "integer"
+                }
+            }
+        },
+        "vo.TodayIP": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "description": "今日ip数量",
+                    "type": "integer"
+                }
+            }
+        },
+        "vo.UVVisit": {
+            "type": "object",
+            "properties": {
+                "bucket": {
+                    "description": "时间",
+                    "type": "string"
+                },
+                "count": {
+                    "description": "访问量",
+                    "type": "integer"
+                }
+            }
+        },
         "vo.UserReq": {
             "type": "object",
             "properties": {
@@ -5150,6 +6545,15 @@
                     "items": {
                         "type": "integer"
                     }
+                }
+            }
+        },
+        "vo.YesterdayIP": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "description": "昨日ip数量",
+                    "type": "integer"
                 }
             }
         }

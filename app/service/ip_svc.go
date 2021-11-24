@@ -40,6 +40,7 @@ type WhiteIPService interface {
 	Update(openID string, id int64, param *vo.IPUpdateReq) exception.Exception
 	Delete(id int64) exception.Exception
 	MultiDelete(ids string) exception.Exception
+	IsExistByIP(ip string) bool
 }
 
 func (dsi *ipServiceImpl) Create(openID string, param *vo.IPReq) exception.Exception {
@@ -89,4 +90,14 @@ func (dsi *ipServiceImpl) MultiDelete(ids string) exception.Exception {
 		did = append(did, int64(id))
 	}
 	return dsi.repo.MultiDelete(dsi.db, did)
+}
+
+func (dsi *ipServiceImpl) IsExistByIP(ip string) bool {
+	_, ex := dsi.repo.IsExistByIP(dsi.db, ip)
+	if ex != nil {
+		// TODO 记录日志
+		println(ex.Error())
+		return false
+	}
+	return true
 }

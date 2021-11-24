@@ -29,4 +29,11 @@ const (
 	JsManage = "js_manager"
 	// 跳转管理
 	RedirectManage = "js_redirect_manage"
+
+	// ip 访问类型
+	IPStatistics = "js_ip_statistics"
+	// UV 访问类型
+	UVStatistics = "js_uv_statistics"
+	// ip记录
+	IPRecode = "js_ip_recode"
 )

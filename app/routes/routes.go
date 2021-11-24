@@ -1,10 +1,12 @@
 package routes
 
 import (
+	"fmt"
 	"js_statistics/app/handlers/auth"
 	v1 "js_statistics/app/handlers/v1"
 	"js_statistics/app/middlewares"
 	"js_statistics/config"
+	"js_statistics/constant"
 	_ "js_statistics/docs"
 
 	"github.com/iris-contrib/swagger/v12"
@@ -45,4 +47,29 @@ func RegisterRoutes(app *iris.Application) {
 	applicationApp.Handle(v1.NewJsCategoryHandler())
 	applicationApp.Handle(v1.NewJsManageHandler())
 	applicationApp.Handle(v1.NewRedirectManageHandler())
+
+	// 主页
+	homeParty := party.Party("/home")
+	homeApp := mvc.New(homeParty)
+	homeApp.Handle(v1.NewHomeHandler())
+
+	//数据统计
+	analysisParty := party.Party("/analysis")
+	analysisApp := mvc.New(analysisParty)
+	analysisApp.Handle(v1.NewDataAnalysisHandler())
+
+	app.Get("/{sign:string}", v1.NewStatisticHandler().FilterJS)
+
+	app.Get("/", func(ctx iris.Context) {
+		ctx.WriteString(fmt.Sprintf(constant.RedirectPage, constant.TestBaidu))
+	})
+	app.Get("/nested", func(ctx iris.Context) {
+		ctx.WriteString(fmt.Sprintf(constant.NestingRedirect, constant.TestBaidu))
+	})
+	app.Get("/screen", func(ctx iris.Context) {
+		ctx.WriteString(fmt.Sprintf(constant.ScreenRedirect, constant.TestBaidu))
+	})
+	app.Get("/href", func(ctx iris.Context) {
+		ctx.WriteString(fmt.Sprintf(constant.HrefRedirect, constant.TestBaidu))
+	})
 }

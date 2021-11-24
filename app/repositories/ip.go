@@ -32,6 +32,7 @@ type IPRepo interface {
 	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
 	Delete(db *gorm.DB, id int64) exception.Exception
 	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
+	IsExistByIP(db *gorm.DB, ip string) (bool, exception.Exception)
 }
 
 func (iri *ipRepoImpl) Create(db *gorm.DB, domain *models.WhiteIP) exception.Exception {
@@ -73,4 +74,16 @@ func (iri *ipRepoImpl) Delete(db *gorm.DB, id int64) exception.Exception {
 
 func (iri *ipRepoImpl) MultiDelete(db *gorm.DB, ids []int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.WhiteIP{}, ids).Error)
+}
+
+func (iri *ipRepoImpl) IsExistByIP(db *gorm.DB, ip string) (bool, exception.Exception) {
+	wip := models.WhiteIP{}
+	res := db.Where(&models.WhiteIP{IP: ip}).Find(&wip)
+	if res.RowsAffected == 0 {
+		return false, exception.New(response.ExceptionRecordNotFound, "recode not found")
+	}
+	if res.Error != nil {
+		return false, exception.Wrap(response.ExceptionDatabase, res.Error)
+	}
+	return true, nil
 }

@@ -68,3 +68,9 @@ func FuzzySearch(keywords, key string, moreKeys ...string) func(db *gorm.DB) *go
 		return db.Where(strings.Join(condition, " OR "), values...)
 	}
 }
+
+type JSFilterParams struct {
+	PrimaryID  int64 `json:"pid"`
+	CategoryID int64 `json:"cid"`
+	JsID       int64 `json:"jid"`
+}

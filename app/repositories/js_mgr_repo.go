@@ -32,6 +32,7 @@ type JsmRepo interface {
 	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
 	Delete(db *gorm.DB, id int64) exception.Exception
 	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
+	GetBySign(db *gorm.DB, sign string) (*models.JsManage, exception.Exception)
 }
 
 func (jsi *JsmRepoImpl) Create(db *gorm.DB, jsm *models.JsManage) exception.Exception {
@@ -51,15 +52,15 @@ func (jsi *JsmRepoImpl) ListByCategoryID(db *gorm.DB, pageInfo *vo.PageInfo, pid
 }
 
 func (jsi *JsmRepoImpl) Get(db *gorm.DB, id int64) (*models.JsManage, exception.Exception) {
-	jsCategory := models.JsManage{}
-	res := db.Where(&models.JsManage{ID: id}).Find(&jsCategory)
+	jsMgr := models.JsManage{}
+	res := db.Where(&models.JsManage{ID: id}).Find(&jsMgr)
 	if res.RowsAffected == 0 {
 		return nil, exception.New(response.ExceptionRecordNotFound, "recode not found")
 	}
 	if res.Error != nil {
 		return nil, exception.Wrap(response.ExceptionDatabase, res.Error)
 	}
-	return &jsCategory, nil
+	return &jsMgr, nil
 }
 
 func (jsi *JsmRepoImpl) Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception {
@@ -73,4 +74,16 @@ func (jsi *JsmRepoImpl) Delete(db *gorm.DB, id int64) exception.Exception {
 
 func (jsi *JsmRepoImpl) MultiDelete(db *gorm.DB, ids []int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.JsManage{}, ids).Error)
+}
+
+func (jsi *JsmRepoImpl) GetBySign(db *gorm.DB, sign string) (*models.JsManage, exception.Exception) {
+	jsMgr := models.JsManage{}
+	res := db.Where(&models.JsManage{Sign: sign}).Find(&jsMgr)
+	if res.RowsAffected == 0 {
+		return nil, exception.New(response.ExceptionRecordNotFound, "recode not found")
+	}
+	if res.Error != nil {
+		return nil, exception.Wrap(response.ExceptionDatabase, res.Error)
+	}
+	return &jsMgr, nil
 }

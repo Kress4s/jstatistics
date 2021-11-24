@@ -1,7 +1,6 @@
 package migrations
 
 import (
-	// "js_statistics/app/models/internal/users"
 	"js_statistics/app/models"
 	"js_statistics/commom/drivers/database"
 )
@@ -20,5 +19,8 @@ func Migrate() error {
 		// 应用管理
 		&models.DomainMgr{}, &models.BlackIPMgr{}, &models.WhiteIP{}, &models.CDN{},
 		&models.JsPrimary{}, &models.JsCategory{}, &models.JsManage{}, &models.RedirectManage{},
+
+		// 统计表
+		&models.IPStatistics{}, &models.UVStatistics{}, &models.IPRecode{},
 	)
 }

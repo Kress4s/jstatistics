@@ -3,6 +3,7 @@ package models
 import (
 	"js_statistics/app/models/internal/application"
 	"js_statistics/app/models/internal/common"
+	"js_statistics/app/models/internal/dash_board"
 	"js_statistics/app/models/internal/permission"
 )
 
@@ -25,4 +26,17 @@ type (
 	JsCategory     = application.JsCategory
 	JsManage       = application.JsManage
 	RedirectManage = application.RedirectManage
+	IPStatistics   = dash_board.IPStatistics
+	UVStatistics   = dash_board.UVStatistics
+	IPRecode       = dash_board.IPRecode
+
+	// view
+	IPVisitStatistic = dash_board.IPVisitStatistic
+	UVisitStatistic  = dash_board.UVisitStatistic
+	RegionStatistic  = dash_board.RegionStatistic
+	JSVisitStatistic = dash_board.JSVisitStatistic
+
+	// data flow view
+	FlowDataView      = dash_board.FlowDataView
+	FlowDataStatistic = dash_board.FlowDataStatistic
 )

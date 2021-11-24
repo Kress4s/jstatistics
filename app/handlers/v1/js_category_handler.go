@@ -177,7 +177,7 @@ func (jh *JscHandler) MultiDelete(ctx iris.Context) mvc.Result {
 }
 
 // Create godoc
-// @Summary 查询js所有无分页分类通过js主分类ID
+// @Summary 查询js所有无分页分类通过js主分类ID(js管理table表头使用)
 // @Description 查询js所有无分页分类通过js主分类ID
 // @Tags 应用管理 - js分类
 // @Param pid path string true "js主分类id"

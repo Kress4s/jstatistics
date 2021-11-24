@@ -80,10 +80,12 @@ func (jsi *jscServiceImpl) ListByPrimaryID(pageInfo *vo.PageInfo, pid int64) (*v
 	resp := make([]vo.JsCategoryResp, 0, len(jscs))
 	for i := range jscs {
 		domain, ex := jsi.domainRepo.Get(jsi.db, jscs[i].DomainID)
-		if ex.Type() == response.ExceptionRecordNotFound {
-			domain = nil
-		} else if ex != nil {
-			return nil, ex
+		if ex != nil {
+			if ex.Type() == response.ExceptionRecordNotFound {
+				domain = nil
+			} else {
+				return nil, ex
+			}
 		}
 		jsp, ex := jsi.jspRepo.Get(jsi.db, jscs[i].PrimaryID)
 		if ex != nil {

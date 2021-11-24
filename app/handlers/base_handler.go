@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"js_statistics/app/vo"
+	"js_statistics/constant"
 	"js_statistics/exception"
 
 	constants "js_statistics/constant"
@@ -57,4 +58,40 @@ func GetPageInfo(ctx iris.Context) (*vo.PageInfo, exception.Exception) {
 		PageSize: pageSize,
 		Keywords: textSearch,
 	}, nil
+}
+
+func GetJSFilterParam(ctx iris.Context) (*vo.JSFilterParams, exception.Exception) {
+	var pid, cid, jid int64
+	var err error
+	if !ctx.URLParamExists(constant.PrimaryID) {
+		return nil, exception.New(response.ExceptionInvalidRequestParameters, "pid not be null")
+	}
+	pid, err = ctx.URLParamInt64(constant.PrimaryID)
+	if err != nil {
+		pid = 0
+	}
+	if ctx.URLParamExists(constant.CategoryID) {
+		pid, err = ctx.URLParamInt64(constant.CategoryID)
+		if err != nil {
+			cid = 0
+		}
+	}
+	if ctx.URLParamExists(constant.CategoryID) {
+		jid, err = ctx.URLParamInt64(constant.CategoryID)
+		if err != nil {
+			jid = 0
+		}
+	}
+	return &vo.JSFilterParams{
+		PrimaryID:  pid,
+		CategoryID: cid,
+		JsID:       jid,
+	}, nil
+}
+
+func GetTimeScopeParam(ctx iris.Context) (string, string, exception.Exception) {
+	if !ctx.URLParamExists(constant.BeginAt) || !ctx.URLParamExists(constant.EndAt) {
+		return "", "", exception.New(response.ExceptionMissingParameters, "begin_at or end_at cant be null")
+	}
+	return ctx.URLParam(constant.BeginAt), ctx.URLParam(constant.EndAt), nil
 }
