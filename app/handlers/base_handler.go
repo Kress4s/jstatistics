@@ -71,13 +71,13 @@ func GetJSFilterParam(ctx iris.Context) (*vo.JSFilterParams, exception.Exception
 		pid = 0
 	}
 	if ctx.URLParamExists(constant.CategoryID) {
-		pid, err = ctx.URLParamInt64(constant.CategoryID)
+		cid, err = ctx.URLParamInt64(constant.CategoryID)
 		if err != nil {
 			cid = 0
 		}
 	}
-	if ctx.URLParamExists(constant.CategoryID) {
-		jid, err = ctx.URLParamInt64(constant.CategoryID)
+	if ctx.URLParamExists(constant.JsID) {
+		jid, err = ctx.URLParamInt64(constant.JsID)
 		if err != nil {
 			jid = 0
 		}

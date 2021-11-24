@@ -57,6 +57,7 @@ func RegisterRoutes(app *iris.Application) {
 	analysisParty := party.Party("/analysis")
 	analysisApp := mvc.New(analysisParty)
 	analysisApp.Handle(v1.NewDataAnalysisHandler())
+	analysisApp.Handle(v1.NewFromAnalysisHandler())
 
 	app.Get("/{sign:string}", v1.NewStatisticHandler().FilterJS)
 

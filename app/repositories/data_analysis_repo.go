@@ -247,9 +247,7 @@ func (dri *daRepoImpl) FromNowIPAndUVisit(db *gorm.DB, param *vo.JSFilterParams)
 	[]models.UVisitStatistic, exception.Exception) {
 	ip := make([]models.IPVisitStatistic, 0)
 	uv := make([]models.UVisitStatistic, 0)
-	today := time.Now().Format(constant.DateFormat)
-	txIP := db.Table(tables.IPStatistics).Select("ip, visit_time, count(*) as count").
-		Where("visit_time <= ?", today)
+	txIP := db.Table(tables.IPStatistics).Select("ip, visit_time, count(*) as count")
 	if param.PrimaryID == 0 {
 		return nil, nil, exception.New(response.ExceptionInvalidRequestParameters, "primary_id must choose")
 	}
@@ -264,8 +262,7 @@ func (dri *daRepoImpl) FromNowIPAndUVisit(db *gorm.DB, param *vo.JSFilterParams)
 	if txIP.Error != nil {
 		return nil, nil, exception.Wrap(response.ExceptionDatabase, txIP.Error)
 	}
-	txUV := db.Table(tables.UVStatistics).Select("cookie, visit_time, count(*) as count").
-		Where("visit_time <= ?", today)
+	txUV := db.Table(tables.UVStatistics).Select("cookie, visit_time, count(*) as count")
 	if param.PrimaryID == 0 {
 		return nil, nil, exception.New(response.ExceptionInvalidRequestParameters, "primary_id must choose")
 	}

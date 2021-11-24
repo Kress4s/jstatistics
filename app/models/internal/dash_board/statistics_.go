@@ -95,3 +95,10 @@ type FlowDataStatistic struct {
 	UVCount int64  `gorm:"column:uv_count"`
 	Title   string `gorm:"column:title"`
 }
+
+type FromAnalysisView struct {
+	Title   string `gorm:"title"`
+	FromURL string `gorm:"from_url"`
+	ToUrl   string `gorm:"to_url"`
+	Count   int64  `gorm:"count"`
+}

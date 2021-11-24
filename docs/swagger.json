@@ -33,6 +33,114 @@
                 ]
             }
         },
+        "/api/v1/analysis/flow/from/statistic": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询来路统计数据",
+                "tags": [
+                    "数据统计 - 来路统计"
+                ],
+                "summary": "来路统计数据查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "时间格式: 2021-08-24",
+                        "name": "begin_at",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "时间格式: 2021-08-31",
+                        "name": "end_at",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS主分类ID",
+                        "name": "pid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS分类ID",
+                        "name": "cid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS ID",
+                        "name": "jid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "请求页",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页大小",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询来路统计数据",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/vo.DataPagination"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/vo.FromAnalysisResp"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/analysis/flow/from_now/flowdata": {
             "get": {
                 "security": [
@@ -5669,6 +5777,23 @@
                 "uv": {
                     "description": "uv总数",
                     "type": "integer"
+                }
+            }
+        },
+        "vo.FromAnalysisResp": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "from": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "to": {
+                    "type": "string"
                 }
             }
         },

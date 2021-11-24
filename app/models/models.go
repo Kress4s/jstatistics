@@ -39,4 +39,6 @@ type (
 	// data flow view
 	FlowDataView      = dash_board.FlowDataView
 	FlowDataStatistic = dash_board.FlowDataStatistic
+
+	FromAnalysisView = dash_board.FromAnalysisView
 )
