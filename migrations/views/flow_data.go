@@ -20,7 +20,7 @@ SELECT
 FROM
 	%s
 GROUP BY
-	primary_id, js_id, category_id
+	primary_id, js_id, category_id, visit_time
 	),
 	uv_search as (
 SELECT
@@ -32,7 +32,7 @@ SELECT
 FROM
 	%s
 GROUP BY
-	js_id, category_id, primary_id
+	js_id, category_id, primary_id, visit_time
 	)
 SELECT 
 	ip.js_id as js_id,

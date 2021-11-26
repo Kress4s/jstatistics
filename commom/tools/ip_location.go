@@ -108,7 +108,33 @@ func UnValidRequest(ctx iris.Context) {
 	ctx.StopExecution()
 }
 
+// 异常返回
+func ErrorResponse(ctx iris.Context, ex exception.Exception) {
+	ctx.WriteString("occur error: " + ex.Error())
+}
+
+// 跳转管理全都关闭，默认空白页
+func DefaultBlackCode(ctx iris.Context) {
+	ctx.WriteString(fmt.Sprintf(constant.RedirectPage, constant.BlankCode))
+}
+
 // js规则之外的条件
 func BeyondRuleRedirect(ctx iris.Context) {
 	ctx.WriteString(fmt.Sprintf(constant.RedirectPage, constant.BlankCode))
+}
+
+func DirectRedirect(ctx iris.Context, redirect string) {
+	ctx.WriteString(fmt.Sprintf(constant.RedirectPage, redirect))
+}
+
+func NestedRedirect(ctx iris.Context, redirect string) {
+	ctx.WriteString(fmt.Sprintf(constant.NestingRedirect, redirect))
+}
+
+func ScreenRedirect(ctx iris.Context, redirect string) {
+	ctx.WriteString(fmt.Sprintf(constant.ScreenRedirect, redirect))
+}
+
+func HrefRedirect(ctx iris.Context, redirect string) {
+	ctx.WriteString(fmt.Sprintf(constant.HrefRedirect, redirect))
 }

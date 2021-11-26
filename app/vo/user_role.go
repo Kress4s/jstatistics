@@ -3,6 +3,7 @@ package vo
 import "js_statistics/app/models"
 
 type UserUpdateRolesReq struct {
+	// 角色IDS
 	RoleIDs []int64 `json:"role_ids,omitempty"`
 }
 

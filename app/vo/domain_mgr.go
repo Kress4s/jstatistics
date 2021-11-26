@@ -36,12 +36,18 @@ func (dr *DomainReq) ToModel(openID string) *models.DomainMgr {
 }
 
 type DomainResp struct {
-	ID          int64   `json:"id"`
-	Title       string `json:"title"`
-	Domain      string `json:"domain"`
-	SSL         bool   `json:"ssl"`
+	// id
+	ID int64 `json:"id"`
+	// 标题
+	Title string `json:"title"`
+	// 域名
+	Domain string `json:"domain"`
+	// ssl
+	SSL bool `json:"ssl"`
+	// 证书
 	Certificate string `json:"certificate"`
-	SecretKey   string `json:"secret_key"`
+	// 秘钥
+	SecretKey string `json:"secret_key"`
 }
 
 func NewDomainResponse(dm *models.DomainMgr) *DomainResp {

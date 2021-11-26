@@ -9,7 +9,7 @@ import (
 type JsManage struct {
 	ID            int64             `gorm:"column:id;primaryKey;unique;not null;comment:id"`
 	Title         string            `gorm:"column:title;type:varchar(50);not null;comment:标题"`
-	ShieldArea    string            `gorm:"column:shield_area;type:varchar(30);comment:屏蔽地区"`
+	ShieldArea    string            `gorm:"column:shield_area;type:varchar(300);comment:屏蔽地区"`
 	ClientType    types.BigintArray `gorm:"column:client_type;type:varchar(20)[];comment:客户端"`
 	RedirectCount int               `gorm:"column:redirect_count;type:integer;not null;comment:跳转次数"`
 	ReleaseTime   int               `gorm:"column:release_time;type:integer;not null;comment:封禁时间"`

@@ -37,6 +37,12 @@ type Config struct {
 			MaxIdleConns   int    `toml:"max_idle_conns"`
 		} `toml:"dsn"`
 	} `toml:"database"`
+	MinIO struct {
+		ADDR            string `toml:"addr"`
+		AccessKeyID     string `toml:"access_key_id"`
+		SecretAccessKey string `toml:"secret_access_key"`
+		SSL             bool   `toml:"ssl"`
+	} `toml:"minio"`
 }
 
 func GetConfig() *Config {

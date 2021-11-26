@@ -8,10 +8,11 @@ import (
 	"js_statistics/commom/drivers/database"
 	"js_statistics/commom/tools"
 	"js_statistics/constant"
-	"js_statistics/exception"
+	"strings"
 	"sync"
 	"time"
 
+	"github.com/kataras/iris/v12"
 	"gorm.io/gorm"
 )
 
@@ -21,70 +22,160 @@ var (
 )
 
 type stcServiceImpl struct {
-	db      *gorm.DB
-	repo    repositories.StcRepo
-	jscRepo repositories.JscRepo
-	jsRepo  repositories.JsmRepo
-	rmtRepo repositories.RmRepo
+	db        *gorm.DB
+	repo      repositories.StcRepo
+	blackRepo repositories.BlackIPRepo
+	wipRepo   repositories.IPRepo
+	jscRepo   repositories.JscRepo
+	jsRepo    repositories.JsmRepo
+	rmtRepo   repositories.RmRepo
 }
 
 func GetStcService() StcService {
 	stcOnce.Do(func() {
 		stcServiceInstance = &stcServiceImpl{
-			db:      database.GetDriver(),
-			repo:    repositories.GetStcRepo(),
-			jscRepo: repositories.GetJscRepo(),
-			jsRepo:  repositories.GetJsmRepo(),
-			rmtRepo: repositories.GetRmRepo(),
+			db:        database.GetDriver(),
+			repo:      repositories.GetStcRepo(),
+			blackRepo: repositories.GetBlackIPRepo(),
+			wipRepo:   repositories.GetIPRepo(),
+			jscRepo:   repositories.GetJscRepo(),
+			jsRepo:    repositories.GetJsmRepo(),
+			rmtRepo:   repositories.GetRmRepo(),
 		}
 	})
 	return stcServiceInstance
 }
 
 type StcService interface {
-	Process(sign, agent, origin, ip, cookie string, visitType int) (string, exception.Exception)
+	ProcessJsRequest(ctx iris.Context)
 }
 
-func (ssi *stcServiceImpl) Process(sign, agent, origin, ip, cookie string, visitType int) (string, exception.Exception) {
-	/*
-		8. 跳转管理的地址(保证开关是开启可用)
-		6. 脚本的封禁小时(记录保存时间) 替代为开关
-		4. 判断是pc端、移动端(安卓、ios)
-		7. 来源判断(无，关键词、搜索引擎 判断) // TODO
-		9. 跳转方式 --> 输出跳转代码
-		10. 条件不满足 --> 伪装内容设置 --> 空白页
-	*/
+func (ssi *stcServiceImpl) ProcessJsRequest(ctx iris.Context) {
+	ip := tools.GetRemoteAddr(ctx)
+	isBlack, ex := ssi.blackRepo.IsExistByIP(ssi.db, ip)
+	if ex != nil {
+		ctx.Application().Logger().Error(ex.Error())
+		tools.ErrorResponse(ctx, ex)
+	}
+	// 黑名单
+	if isBlack {
+		// TODO 伪装内容
+		tools.BeyondRuleRedirect(ctx)
+	}
+	sign := ctx.Params().Get("sign")
+	agent := ctx.Request().UserAgent()
+	origin := ctx.GetHeader("Origin")
+	if len(origin) == 0 {
+		origin = ctx.GetHeader("Referer")
+	}
+	// if len(sign) == 0 && len(agent) == 0 && len(origin) == 0 {
+	// 	// TODO 伪装内容
+	// 	tools.BeyondRuleRedirect(ctx)
+	// }
+	// 白名单
+	isWhite, ex := ssi.wipRepo.IsExistByIP(ssi.db, ip)
+	if ex != nil {
+		ctx.Application().Logger().Error(ex.Error())
+		tools.ErrorResponse(ctx, ex)
+	}
+	visitType, cookie := tools.GetVisitType(ctx)
 	js, ex := ssi.jsRepo.GetBySign(ssi.db, sign)
 	if ex != nil {
-		// TODO 日志记录
-		return "", ex
+		ctx.Application().Logger().Error(ex.Error())
+		tools.ErrorResponse(ctx, ex)
+		return
 	}
-	// 脚本开启状态 脚本的封禁小时(记录保存时间)
+	if isWhite {
+		//返回输出代码
+		ssi.GetRedirectInfo(ctx, js, sign, agent, ip, cookie, origin, visitType)
+	}
+	// js判断条件
+	pass := ssi.JSJudgeMent(ctx, js, ip, sign, agent, origin)
+	if !pass {
+		return
+	}
+	ssi.GetRedirectInfo(ctx, js, sign, agent, ip, cookie, origin, visitType)
+}
+
+func (ssi *stcServiceImpl) JSJudgeMent(ctx iris.Context, js *models.JsManage, ip, sign, agent, origin string) bool {
+	// 默认屏蔽国外、香港、澳门、台湾IP
+	if !ssi.IsValidLocation(ip) {
+		// TODO 伪装内容
+		tools.BeyondRuleRedirect(ctx)
+		return false
+	}
+	// 国内屏蔽地区
+	if len(js.ShieldArea) > 0 {
+		loc, ex := tools.OriginIPLocation(ip)
+		if ex != nil {
+			ctx.Application().Logger().Error(ex.Error())
+			tools.ErrorResponse(ctx, ex)
+			return false
+		}
+		shieldAreas := strings.Split(js.ShieldArea, "-")
+		region, ok := loc.Subdivisions[0].Names["zh-CN"]
+		if !ok {
+			ctx.Application().Logger().Error("get ip location failed")
+			tools.ErrorResponse(ctx, ex)
+			return false
+		}
+		for i := range shieldAreas {
+			if strings.Contains(shieldAreas[i], region) {
+				// TODO 伪装内容
+				tools.BeyondRuleRedirect(ctx)
+				return false
+			}
+		}
+	}
+
 	if !js.Status {
-		// TODO 日志记录
-		return "", ex
+		// TODO 伪装内容
+		tools.BeyondRuleRedirect(ctx)
+		return false
 	}
+
 	// 判断是pc端、移动端 是否合法
 	clientType := tools.GetClintType(agent)
 	if !tools.IsInRuleClient(int64(clientType), js.ClientType) {
-		// TODO 日志记录
-		return "", ex
+		tools.BeyondRuleRedirect(ctx)
+		return false
 	}
 
-	// TODO 跳转次数，目前待定
-
-	// TODO 封禁小时，目前待定 目前是根据开关
+	// 封禁小时 和 次数，为0不跳转
+	if js.RedirectCount == 0 {
+		// TODO 伪装内容
+		tools.BeyondRuleRedirect(ctx)
+		return false
+	}
+	// 规定时间内，跳转，次数减一，为0不跳转
+	if time.Since(js.UpdateAt) > time.Duration(js.ReleaseTime*int(time.Hour)) {
+		// 伪装内容
+		tools.BeyondRuleRedirect(ctx)
+		return false
+	}
+	if ex := ssi.jsRepo.DecreaseRedirectCount(ssi.db, js.ID); ex != nil {
+		ctx.Application().Logger().Error("get ip location failed")
+		tools.ErrorResponse(ctx, ex)
+		return false
+	}
 
 	// TODO 来源
 	switch js.FromMode {
 	case constant.FromTypeNone:
 		fmt.Println("来源无")
 	case constant.FromTypeKey:
-		fmt.Println("关键词")
+		// 判断origin是否匹配
+		keyWord := strings.ReplaceAll(js.KeyWord, ",", " & ")
+		if !strings.ContainsAny(origin, keyWord) {
+			// 伪装内容
+			tools.BeyondRuleRedirect(ctx)
+			return false
+		}
 	case constant.FromTypeEngine:
 		isExist, engineType := tools.GetEngineType(agent)
 		if !isExist {
-			return "", ex
+			tools.BeyondRuleRedirect(ctx)
+			return false
 		}
 		isInRule := false
 		for i := range js.SearchEngines {
@@ -94,26 +185,31 @@ func (ssi *stcServiceImpl) Process(sign, agent, origin, ip, cookie string, visit
 			}
 		}
 		if !isInRule {
-			return "", ex
+			tools.BeyondRuleRedirect(ctx)
+			return false
 		}
 	}
+	return true
+}
 
+func (ssi *stcServiceImpl) GetRedirectInfo(ctx iris.Context, js *models.JsManage, sign, agent, ip, cookie,
+	origin string, visitType int) {
+	redirectInfo, ex := ssi.rmtRepo.GetUsefulByCategoryID(ssi.db, js.CategoryID)
+	if ex != nil {
+		if ex.Type() == response.ExceptionRecordNotFound {
+			ctx.Application().Logger().Error(ex.Error())
+			tools.DefaultBlackCode(ctx)
+			return
+		}
+		ctx.Application().Logger().Error(ex.Error())
+		tools.ErrorResponse(ctx, ex)
+	}
 	// TODO 跳转代码 TOP/Windows 未定
 
-	// 跳转信息
-	redirectInfo, ex := ssi.rmtRepo.Get(ssi.db, js.CategoryID)
-	if ex != nil {
-		// TODO 日志记录
-		return "", ex
-	}
-	// 是否开启
-	if !redirectInfo.Status {
-		return "", ex
-	}
 	// 跳转时间区间是否合理
 	now := time.Now()
 	if !(now.Before(redirectInfo.OFF) && now.After(redirectInfo.ON)) {
-		return "", ex
+		tools.BeyondRuleRedirect(ctx)
 	}
 
 	var redirectURL string
@@ -126,17 +222,16 @@ func (ssi *stcServiceImpl) Process(sign, agent, origin, ip, cookie string, visit
 	default:
 		redirectURL = redirectInfo.PC
 	}
-
 	jp, ex := ssi.jscRepo.Get(ssi.db, js.CategoryID)
 	if ex != nil {
-		return "", ex
+		ctx.Application().Logger().Error(ex.Error())
+		tools.ErrorResponse(ctx, ex)
 	}
-
 	// 记录入库
 	tx := ssi.db.Begin()
 	defer tx.Rollback()
 	if tx.Error != nil {
-		return "", exception.Wrap(response.ExceptionDatabase, tx.Error)
+		tools.BeyondRuleRedirect(ctx)
 	}
 	if visitType == constant.IPVisit {
 		if ex := ssi.repo.CreateIPStatistics(tx, &models.IPStatistics{
@@ -146,7 +241,7 @@ func (ssi *stcServiceImpl) Process(sign, agent, origin, ip, cookie string, visit
 			PrimaryID:  jp.PrimaryID,
 			VisitTime:  time.Now(),
 		}); ex != nil {
-			return "", ex
+			tools.BeyondRuleRedirect(ctx)
 		}
 	} else {
 		if ex := ssi.repo.CreateUVStatistics(tx, &models.UVStatistics{
@@ -157,12 +252,13 @@ func (ssi *stcServiceImpl) Process(sign, agent, origin, ip, cookie string, visit
 			Cookie:     cookie,
 			VisitTime:  time.Now(),
 		}); ex != nil {
-			return "", ex
+			tools.BeyondRuleRedirect(ctx)
 		}
 	}
 	ipLocation, ex := tools.OriginIPLocation(ip)
 	if ex != nil {
-		return "", ex
+		ctx.Application().Logger().Error(ex.Error())
+		tools.ErrorResponse(ctx, ex)
 	}
 	region, ok := ipLocation.Subdivisions[0].Names["zh-CN"]
 	if !ok {
@@ -179,10 +275,12 @@ func (ssi *stcServiceImpl) Process(sign, agent, origin, ip, cookie string, visit
 		VisitType:  visitType,
 		VisitTime:  time.Now(),
 	}); ex != nil {
-		return "", ex
+		ctx.Application().Logger().Error(ex.Error())
+		tools.ErrorResponse(ctx, ex)
 	}
 	if res := tx.Commit(); res.Error != nil {
-		return "", exception.Wrap(response.ExceptionDatabase, tx.Error)
+		ctx.Application().Logger().Error(ex.Error())
+		tools.ErrorResponse(ctx, ex)
 	}
 
 	if js.WaitTime > 0 {
@@ -192,12 +290,20 @@ func (ssi *stcServiceImpl) Process(sign, agent, origin, ip, cookie string, visit
 	// TODO 返回内容未取伪装内容
 	switch js.RedirectMode {
 	case constant.Direct:
-		return fmt.Sprintf(constant.RedirectPage, redirectURL), nil
+		tools.DirectRedirect(ctx, redirectURL)
 	case constant.Nested:
-		return fmt.Sprintf(constant.NestingRedirect, redirectURL), nil
+		tools.NestedRedirect(ctx, redirectURL)
 	case constant.Screen:
-		return fmt.Sprintf(constant.ScreenRedirect, redirectURL), nil
+		tools.ScreenRedirect(ctx, redirectURL)
 	default:
-		return fmt.Sprintf(constant.HrefRedirect, redirectURL), nil
+		tools.HrefRedirect(ctx, redirectURL)
 	}
+}
+
+func (ssi *stcServiceImpl) IsValidLocation(ip string) bool {
+	location, ex := tools.OriginIPLocation(ip)
+	if ex != nil {
+		return false
+	}
+	return location.Country.IsoCode == constant.CN_ISO_CODE
 }

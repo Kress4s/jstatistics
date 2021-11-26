@@ -32,6 +32,7 @@ type BlackIPRepo interface {
 	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
 	Delete(db *gorm.DB, id int64) exception.Exception
 	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
+	IsExistByIP(db *gorm.DB, ip string) (bool, exception.Exception)
 }
 
 func (dri *BlackIPRepoImpl) Create(db *gorm.DB, domain *models.BlackIPMgr) exception.Exception {
@@ -73,4 +74,16 @@ func (dri *BlackIPRepoImpl) Delete(db *gorm.DB, id int64) exception.Exception {
 
 func (dri *BlackIPRepoImpl) MultiDelete(db *gorm.DB, ids []int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.BlackIPMgr{}, ids).Error)
+}
+
+func (dri *BlackIPRepoImpl) IsExistByIP(db *gorm.DB, ip string) (bool, exception.Exception) {
+	wip := models.WhiteIP{}
+	res := db.Where(&models.WhiteIP{IP: ip}).Find(&wip)
+	if res.RowsAffected == 0 {
+		return false, exception.New(response.ExceptionRecordNotFound, "recode not found")
+	}
+	if res.Error != nil {
+		return false, exception.Wrap(response.ExceptionDatabase, res.Error)
+	}
+	return true, nil
 }

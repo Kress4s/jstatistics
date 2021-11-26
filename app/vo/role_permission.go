@@ -5,6 +5,7 @@ import (
 )
 
 type RolePermissionReq struct {
+	// 角色ID
 	RoleID int64
 }
 

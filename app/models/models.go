@@ -29,6 +29,8 @@ type (
 	IPStatistics   = dash_board.IPStatistics
 	UVStatistics   = dash_board.UVStatistics
 	IPRecode       = dash_board.IPRecode
+	Object         = common.Object
+	Faker          = application.Faker
 
 	// view
 	IPVisitStatistic = dash_board.IPVisitStatistic

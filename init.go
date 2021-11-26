@@ -2,6 +2,7 @@ package main
 
 import (
 	"js_statistics/commom/drivers/database"
+	"js_statistics/commom/drivers/minio"
 	"js_statistics/migrations"
 )
 
@@ -17,6 +18,10 @@ import (
 func init() {
 	if database.GetDriver() == nil {
 		panic("connect database error")
+	}
+
+	if minio.GetDriver() == nil {
+		panic("connect minio error")
 	}
 
 	if err := migrations.Migrate(); err != nil {

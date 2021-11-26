@@ -32,6 +32,7 @@ type RmRepo interface {
 	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
 	Delete(db *gorm.DB, id int64) exception.Exception
 	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
+	GetUsefulByCategoryID(db *gorm.DB, id int64) (*models.RedirectManage, exception.Exception)
 }
 
 func (jsi *RmRepoImpl) Create(db *gorm.DB, rm *models.RedirectManage) exception.Exception {
@@ -73,4 +74,16 @@ func (jsi *RmRepoImpl) Delete(db *gorm.DB, id int64) exception.Exception {
 
 func (jsi *RmRepoImpl) MultiDelete(db *gorm.DB, ids []int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.RedirectManage{}, ids).Error)
+}
+
+func (jsi *RmRepoImpl) GetUsefulByCategoryID(db *gorm.DB, id int64) (*models.RedirectManage, exception.Exception) {
+	jsCategory := make([]models.RedirectManage, 0)
+	res := db.Where(&models.RedirectManage{CategoryID: id, Status: true}).Find(&jsCategory)
+	if res.RowsAffected == 0 {
+		return nil, exception.New(response.ExceptionRecordNotFound, "recode not found")
+	}
+	if res.Error != nil {
+		return nil, exception.Wrap(response.ExceptionDatabase, res.Error)
+	}
+	return &(jsCategory[0]), nil
 }

@@ -115,11 +115,11 @@ func (ih *IPHandler) Update(ctx iris.Context) mvc.Result {
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}
-	user := &vo.IPUpdateReq{}
-	if err := ctx.ReadJSON(user); err != nil {
+	ip := &vo.IPUpdateReq{}
+	if err := ctx.ReadJSON(ip); err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestBody, err))
 	}
-	ex := ih.Svc.Update(ih.UserName, id, user)
+	ex := ih.Svc.Update(ih.UserName, id, ip)
 	if ex != nil {
 		return response.Error(ex)
 	}

@@ -45,8 +45,10 @@ var (
 	ExceptionVo2Model                 exception.Type = &Exception{code: 500004, statusCode: iris.StatusInternalServerError}
 	ExceptionModel2Vo                 exception.Type = &Exception{code: 500005, statusCode: iris.StatusInternalServerError}
 	ExceptionGetUserInfo              exception.Type = &Exception{code: 500006, statusCode: iris.StatusInternalServerError}
+	ExceptionDeleteObject             exception.Type = &Exception{code: 500007, statusCode: iris.StatusInternalServerError}
 	ExceptionDownloadObject           exception.Type = &Exception{code: 500008, statusCode: iris.StatusInternalServerError}
 	ExceptionUploadObject             exception.Type = &Exception{code: 500009, statusCode: iris.StatusInternalServerError}
+	ExceptionGenerateID               exception.Type = &Exception{code: 500010, statusCode: iris.StatusInternalServerError}
 	ExceptionVo2Map                   exception.Type = &Exception{code: 500016, statusCode: iris.StatusInternalServerError}
 	ExceptionParseFloatError          exception.Type = &Exception{code: 500022, statusCode: iris.StatusInternalServerError}
 	ExceptionUnzipBundleError         exception.Type = &Exception{code: 500023, statusCode: iris.StatusInternalServerError}

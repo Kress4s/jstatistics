@@ -27,9 +27,13 @@ func (ir *BlackIPReq) ToModel(openID string) *models.BlackIPMgr {
 }
 
 type BlackIPResp struct {
-	ID       int64      `json:"id"`
-	Title    string    `json:"title"`
-	IP       string    `json:"ip"`
+	// id
+	ID int64 `json:"id"`
+	// 标题
+	Title string `json:"title"`
+	// ip
+	IP string `json:"ip"`
+	// 创建时间
 	CreateAt time.Time `json:"create_at"`
 }
 

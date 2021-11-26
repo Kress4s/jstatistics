@@ -52,15 +52,15 @@ func (iri *ipRepoImpl) List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []models
 }
 
 func (iri *ipRepoImpl) Get(db *gorm.DB, id int64) (*models.WhiteIP, exception.Exception) {
-	domain := models.WhiteIP{}
-	res := db.Where(&models.WhiteIP{ID: id}).Find(&domain)
+	wip := models.WhiteIP{}
+	res := db.Where(&models.WhiteIP{ID: id}).Find(&wip)
 	if res.RowsAffected == 0 {
 		return nil, exception.New(response.ExceptionRecordNotFound, "recode not found")
 	}
 	if res.Error != nil {
 		return nil, exception.Wrap(response.ExceptionDatabase, res.Error)
 	}
-	return &domain, nil
+	return &wip, nil
 }
 
 func (iri *ipRepoImpl) Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception {
@@ -80,7 +80,7 @@ func (iri *ipRepoImpl) IsExistByIP(db *gorm.DB, ip string) (bool, exception.Exce
 	wip := models.WhiteIP{}
 	res := db.Where(&models.WhiteIP{IP: ip}).Find(&wip)
 	if res.RowsAffected == 0 {
-		return false, exception.New(response.ExceptionRecordNotFound, "recode not found")
+		return false, nil
 	}
 	if res.Error != nil {
 		return false, exception.Wrap(response.ExceptionDatabase, res.Error)

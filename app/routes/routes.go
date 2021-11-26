@@ -47,6 +47,7 @@ func RegisterRoutes(app *iris.Application) {
 	applicationApp.Handle(v1.NewJsCategoryHandler())
 	applicationApp.Handle(v1.NewJsManageHandler())
 	applicationApp.Handle(v1.NewRedirectManageHandler())
+	applicationApp.Handle(v1.NewFakerHandler())
 
 	// 主页
 	homeParty := party.Party("/home")
@@ -59,7 +60,15 @@ func RegisterRoutes(app *iris.Application) {
 	analysisApp.Handle(v1.NewDataAnalysisHandler())
 	analysisApp.Handle(v1.NewFromAnalysisHandler())
 
+	// 文件上传
+	objectParty := party.Party("/faker")
+	objectApp := mvc.New(objectParty)
+	objectApp.Handle(v1.NewObjectHandler())
+
+	// 文件访问 无权限
+	// noAuthParty := app.Party("/object/v1")
 	app.Get("/{sign:string}", v1.NewStatisticHandler().FilterJS)
+	app.Get("/object/{id:string}", v1.NewObjectHandler().Get)
 
 	app.Get("/", func(ctx iris.Context) {
 		ctx.WriteString(fmt.Sprintf(constant.RedirectPage, constant.TestBaidu))

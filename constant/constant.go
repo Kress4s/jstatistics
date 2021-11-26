@@ -25,6 +25,7 @@ const (
 	Year       = "year"
 	Date       = "date"
 	TimeAt     = "time_at"
+	File       = "uploadfile"
 )
 
 // pagination key

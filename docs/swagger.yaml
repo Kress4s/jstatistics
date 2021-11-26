@@ -29,12 +29,16 @@ definitions:
   vo.BlackIPResp:
     properties:
       create_at:
+        description: 创建时间
         type: string
       id:
+        description: id
         type: integer
       ip:
+        description: ip
         type: string
       title:
+        description: 标题
         type: string
     type: object
   vo.BlackIPUpdateReq:
@@ -117,16 +121,22 @@ definitions:
   vo.DomainResp:
     properties:
       certificate:
+        description: 证书
         type: string
       domain:
+        description: 域名
         type: string
       id:
+        description: id
         type: integer
       secret_key:
+        description: 秘钥
         type: string
       ssl:
+        description: ssl
         type: boolean
       title:
+        description: 标题
         type: string
     type: object
   vo.DomainUpdateReq:
@@ -161,6 +171,63 @@ definitions:
         description: 错误消息
         type: string
     type: object
+  vo.FakerReq:
+    properties:
+      obj_id:
+        description: 上传文件接口返回的id
+        type: string
+      req_type:
+        description: 请求类型(type为文本情况下) 0:text/html,1:text/plain;2:text/xml,3:application/json
+        type: integer
+      status:
+        description: 开启状态
+        type: boolean
+      text:
+        description: 文本内容
+        type: string
+      type:
+        description: 类型 0:文本；1:图片 2：音频 3：视频
+        type: integer
+    type: object
+  vo.FakerResp:
+    properties:
+      id:
+        description: id
+        type: integer
+      obj_id:
+        description: 上传文件接口返回的id
+        type: string
+      req_type:
+        description: 请求类型(type为文本情况下) 0:text/html,1:text/plain;2:text/xml,3:application/json
+        type: integer
+      status:
+        description: 开启状态
+        type: boolean
+      text:
+        description: 文本内容
+        type: string
+      type:
+        description: 类型 0:文本；1:图片 2：音频 3：视频
+        type: integer
+    type: object
+  vo.FakerUpdateReq:
+    properties:
+      obj_id:
+        description: 上传文件接口返回的id
+        type: string
+      req_type:
+        description: 请求类型(type为文本情况下) 0:text/html,1:text/plain;2:text/xml,3:application/json
+        type: integer
+      status:
+        description: 开启状态
+        type: boolean
+      text:
+        description: 文本内容
+        type: string
+      type:
+        description: 类型 0:文本；1:图片 2：音频 3：视频
+        type: integer
+    type: object
   vo.FlowDataResp:
     properties:
       ip:
@@ -176,12 +243,16 @@ definitions:
   vo.FromAnalysisResp:
     properties:
       count:
+        description: 次数
         type: integer
       from:
+        description: 来路URL
         type: string
       title:
+        description: 标题
         type: string
       to:
+        description: 去路URL
         type: string
     type: object
   vo.HomeIPAndUVisit:
@@ -447,8 +518,10 @@ definitions:
   vo.LoginReq:
     properties:
       password:
+        description: 密码
         type: string
       user_name:
+        description: 用户名
         type: string
     type: object
   vo.LoginResponse:
@@ -576,6 +649,7 @@ definitions:
   vo.ProfileResp:
     properties:
       admin:
+        description: 是否是管理员
         type: boolean
       id:
         type: integer
@@ -765,6 +839,7 @@ definitions:
   vo.UserResp:
     properties:
       admin:
+        description: 是否是管理员
         type: boolean
       id:
         type: integer
@@ -799,6 +874,7 @@ definitions:
   vo.UserUpdateRolesReq:
     properties:
       role_ids:
+        description: 角色IDS
         items:
           type: integer
         type: array
@@ -2259,6 +2335,113 @@ paths:
       summary: 查询域名列表
       tags:
       - 应用管理 - 域名管理
+  /api/v1/application/faker:
+    post:
+      description: 创建伪装内容
+      parameters:
+      - description: FakerReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.FakerReq'
+      responses:
+        "200":
+          description: 创建伪装内容成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建伪装内容
+      tags:
+      - 应用管理 - 伪装内容
+  /api/v1/application/faker/{id}:
+    get:
+      description: 查询伪装内容信息
+      parameters:
+      - description: 伪装内容id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 查询伪装内容成功
+          schema:
+            $ref: '#/definitions/vo.FakerResp'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询伪装内容
+      tags:
+      - 应用管理 - 伪装内容
+    put:
+      description: 修改伪装内容信息
+      parameters:
+      - description: 伪装内容id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: FakerUpdateReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.FakerUpdateReq'
+      responses:
+        "200":
+          description: 修改伪装内容成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改伪装内容
+      tags:
+      - 应用管理 - 伪装内容
   /api/v1/application/ip:
     post:
       description: 创建ip白名单
@@ -3358,6 +3541,45 @@ paths:
       summary: 查询跳转管理列表
       tags:
       - 应用管理 - 跳转管理
+  /api/v1/faker/object:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 存储对象并返回对象的id
+      parameters:
+      - description: 文件
+        in: formData
+        name: uploadfile
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 响应成功
+          schema:
+            type: string
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 存储对象
+      tags:
+      - 应用管理 - 伪装内容 - 文件对象
   /api/v1/home/ip_uv/statistic:
     get:
       description: 访问量统计
@@ -4308,6 +4530,27 @@ paths:
       summary: 用户登出
       tags:
       - 登录
+  /object/{id}:
+    get:
+      description: 获取对象
+      parameters:
+      - description: 对象id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 获取文件成功
+          schema:
+            type: string
+        "500":
+          description: 服务器内部错误
+          schema:
+            type: string
+      summary: 获取对象
+      tags:
+      - 应用管理 - 伪装内容 - 文件对象
 schemes:
 - http
 - https

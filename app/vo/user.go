@@ -34,21 +34,25 @@ func (u UserReq) ToModel(openID string) models.User {
 }
 
 type LoginReq struct {
+	// 用户名
 	UserName string `json:"user_name"`
+	// 密码
 	Password string `json:"password"`
 }
 
 type ProfileResp struct {
-	ID    int64  `json:"id"`
-	Name  string `json:"name"`
-	Admin bool   `json:"admin"`
+	ID   int64  `json:"id"`
+	Name string `json:"name"`
+	// 是否是管理员
+	Admin bool `json:"admin"`
 }
 
 type UserResp struct {
 	ID       int64  `json:"id"`
 	UserName string `json:"user_name"`
-	Admin    bool   `json:"admin"`
-	Status   bool   `json:"status"`
+	// 是否是管理员
+	Admin  bool `json:"admin"`
+	Status bool `json:"status"`
 }
 
 type UserToMenusResp struct {

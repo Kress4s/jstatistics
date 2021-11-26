@@ -2307,6 +2307,174 @@ var doc = `{
                 }
             }
         },
+        "/api/v1/application/faker": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "创建伪装内容",
+                "tags": [
+                    "应用管理 - 伪装内容"
+                ],
+                "summary": "创建伪装内容",
+                "parameters": [
+                    {
+                        "description": "FakerReq",
+                        "name": "parameters",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vo.FakerReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建伪装内容成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/application/faker/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询伪装内容信息",
+                "tags": [
+                    "应用管理 - 伪装内容"
+                ],
+                "summary": "查询伪装内容",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "伪装内容id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询伪装内容成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.FakerResp"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "修改伪装内容信息",
+                "tags": [
+                    "应用管理 - 伪装内容"
+                ],
+                "summary": "修改伪装内容",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "伪装内容id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "FakerUpdateReq",
+                        "name": "parameters",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vo.FakerUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "修改伪装内容成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/application/ip": {
             "post": {
                 "security": [
@@ -4047,6 +4215,67 @@ var doc = `{
                 }
             }
         },
+        "/api/v1/faker/object": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "存储对象并返回对象的id",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "应用管理 - 伪装内容 - 文件对象"
+                ],
+                "summary": "存储对象",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "文件",
+                        "name": "uploadfile",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "响应成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/home/ip_uv/statistic": {
             "get": {
                 "security": [
@@ -5546,6 +5775,38 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/object/{id}": {
+            "get": {
+                "description": "获取对象",
+                "tags": [
+                    "应用管理 - 伪装内容 - 文件对象"
+                ],
+                "summary": "获取对象",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "对象id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取文件成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -5583,15 +5844,19 @@ var doc = `{
             "type": "object",
             "properties": {
                 "create_at": {
+                    "description": "创建时间",
                     "type": "string"
                 },
                 "id": {
+                    "description": "id",
                     "type": "integer"
                 },
                 "ip": {
+                    "description": "ip",
                     "type": "string"
                 },
                 "title": {
+                    "description": "标题",
                     "type": "string"
                 }
             }
@@ -5710,21 +5975,27 @@ var doc = `{
             "type": "object",
             "properties": {
                 "certificate": {
+                    "description": "证书",
                     "type": "string"
                 },
                 "domain": {
+                    "description": "域名",
                     "type": "string"
                 },
                 "id": {
+                    "description": "id",
                     "type": "integer"
                 },
                 "secret_key": {
+                    "description": "秘钥",
                     "type": "string"
                 },
                 "ssl": {
+                    "description": "ssl",
                     "type": "boolean"
                 },
                 "title": {
+                    "description": "标题",
                     "type": "string"
                 }
             }
@@ -5774,6 +6045,85 @@ var doc = `{
                 }
             }
         },
+        "vo.FakerReq": {
+            "type": "object",
+            "properties": {
+                "obj_id": {
+                    "description": "上传文件接口返回的id",
+                    "type": "string"
+                },
+                "req_type": {
+                    "description": "请求类型(type为文本情况下) 0:text/html,1:text/plain;2:text/xml,3:application/json",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "开启状态",
+                    "type": "boolean"
+                },
+                "text": {
+                    "description": "文本内容",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "类型 0:文本；1:图片 2：音频 3：视频",
+                    "type": "integer"
+                }
+            }
+        },
+        "vo.FakerResp": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "id",
+                    "type": "integer"
+                },
+                "obj_id": {
+                    "description": "上传文件接口返回的id",
+                    "type": "string"
+                },
+                "req_type": {
+                    "description": "请求类型(type为文本情况下) 0:text/html,1:text/plain;2:text/xml,3:application/json",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "开启状态",
+                    "type": "boolean"
+                },
+                "text": {
+                    "description": "文本内容",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "类型 0:文本；1:图片 2：音频 3：视频",
+                    "type": "integer"
+                }
+            }
+        },
+        "vo.FakerUpdateReq": {
+            "type": "object",
+            "properties": {
+                "obj_id": {
+                    "description": "上传文件接口返回的id",
+                    "type": "string"
+                },
+                "req_type": {
+                    "description": "请求类型(type为文本情况下) 0:text/html,1:text/plain;2:text/xml,3:application/json",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "开启状态",
+                    "type": "boolean"
+                },
+                "text": {
+                    "description": "文本内容",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "类型 0:文本；1:图片 2：音频 3：视频",
+                    "type": "integer"
+                }
+            }
+        },
         "vo.FlowDataResp": {
             "type": "object",
             "properties": {
@@ -5795,15 +6145,19 @@ var doc = `{
             "type": "object",
             "properties": {
                 "count": {
+                    "description": "次数",
                     "type": "integer"
                 },
                 "from": {
+                    "description": "来路URL",
                     "type": "string"
                 },
                 "title": {
+                    "description": "标题",
                     "type": "string"
                 },
                 "to": {
+                    "description": "去路URL",
                     "type": "string"
                 }
             }
@@ -6179,9 +6533,11 @@ var doc = `{
             "type": "object",
             "properties": {
                 "password": {
+                    "description": "密码",
                     "type": "string"
                 },
                 "user_name": {
+                    "description": "用户名",
                     "type": "string"
                 }
             }
@@ -6359,6 +6715,7 @@ var doc = `{
             "type": "object",
             "properties": {
                 "admin": {
+                    "description": "是否是管理员",
                     "type": "boolean"
                 },
                 "id": {
@@ -6626,6 +6983,7 @@ var doc = `{
             "type": "object",
             "properties": {
                 "admin": {
+                    "description": "是否是管理员",
                     "type": "boolean"
                 },
                 "id": {
@@ -6677,6 +7035,7 @@ var doc = `{
             "type": "object",
             "properties": {
                 "role_ids": {
+                    "description": "角色IDS",
                     "type": "array",
                     "items": {
                         "type": "integer"

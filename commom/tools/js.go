@@ -69,7 +69,7 @@ func GetVisitType(ctx iris.Context) (int, string) {
 	if len(cookie) == 0 {
 		ctx.SetCookie(&http.Cookie{
 			Name:    constant.CookieKey,
-			Value:   "LAKJFD098afj0jasdf08jad08AJFs9aj2ASfd1",
+			Value:   RandCookie(15),
 			Path:    "/",
 			Expires: time.Now().Add(24 * time.Hour),
 		})

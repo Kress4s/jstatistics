@@ -29,6 +29,10 @@ const (
 	JsManage = "js_manager"
 	// 跳转管理
 	RedirectManage = "js_redirect_manage"
+	// 文件
+	Object = "js_object"
+	// 伪装内容
+	Faker = "js_faker"
 
 	// ip 访问类型
 	IPStatistics = "js_ip_statistics"
