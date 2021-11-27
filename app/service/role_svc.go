@@ -6,6 +6,8 @@ import (
 	"js_statistics/app/vo"
 	"js_statistics/commom/drivers/database"
 	"js_statistics/exception"
+	"strconv"
+	"strings"
 	"sync"
 
 	"gorm.io/gorm"
@@ -41,6 +43,7 @@ type RoleService interface {
 	List(page *vo.PageInfo) (*vo.DataPagination, exception.Exception)
 	Update(openID string, id int64, param *vo.RoleUpdateReq) exception.Exception
 	Delete(id int64) exception.Exception
+	MultiDelete(ids string) exception.Exception
 }
 
 func (rsi *roleServiceImpl) Create(openID string, param *vo.RoleReq) exception.Exception {
@@ -154,4 +157,20 @@ func (rsi *roleServiceImpl) Delete(id int64) exception.Exception {
 		return exception.Wrap(response.ExceptionDatabase, tx.Error)
 	}
 	return nil
+}
+
+func (rsi *roleServiceImpl) MultiDelete(ids string) exception.Exception {
+	idslice := strings.Split(ids, ",")
+	if len(idslice) == 0 {
+		return exception.New(response.ExceptionInvalidRequestParameters, "无效参数")
+	}
+	did := make([]int64, 0, len(idslice))
+	for i := range idslice {
+		id, err := strconv.ParseUint(idslice[i], 10, 0)
+		if err != nil {
+			return exception.Wrap(response.ExceptionParseStringToInt64Error, err)
+		}
+		did = append(did, int64(id))
+	}
+	return rsi.repo.MultiDelete(rsi.db, did)
 }

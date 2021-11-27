@@ -34,6 +34,8 @@ type JsManageReq struct {
 	WaitTime int `json:"wait_time"`
 	// 所属js分类的ID
 	CategoryID int64 `json:"category_id"`
+	// 状态
+	Status bool `json:"status"`
 }
 
 func (jm *JsManageReq) ToModel(openID string) *models.JsManage {
@@ -53,6 +55,7 @@ func (jm *JsManageReq) ToModel(openID string) *models.JsManage {
 		HrefID:        jm.HrefID,
 		WaitTime:      jm.WaitTime,
 		CategoryID:    jm.CategoryID,
+		Status:        jm.Status,
 		Sign:          sign,
 		Base: models.Base{
 			CreateBy: openID,
@@ -92,8 +95,10 @@ type JsManageResp struct {
 	HrefID string `json:"href_id"`
 	// 等待时间
 	WaitTime int `json:"wait_time"`
-	// Js地址
-	JSite string `json:"js_site"`
+	// 分类ID
+	CategoryID int64 `json:"category_id"`
+	// 状态
+	Status bool `json:"status"`
 }
 
 func NewJsManageResponse(jm *models.JsManage) *JsManageResp {
@@ -113,6 +118,8 @@ func NewJsManageResponse(jm *models.JsManage) *JsManageResp {
 		RedirectCode:  jm.RedirectCode,
 		HrefID:        jm.HrefID,
 		WaitTime:      jm.WaitTime,
+		CategoryID:    jm.CategoryID,
+		Status:        jm.Status,
 	}
 }
 
@@ -139,6 +146,8 @@ type JsManageUpdateReq struct {
 	HrefID string `json:"href_id"`
 	// 等待时间
 	WaitTime int `json:"wait_time"`
+	// 分类ID
+	CategoryID int64 `json:"category_id"`
 }
 
 func (jum *JsManageUpdateReq) ToMap(openID string) map[string]interface{} {
@@ -154,6 +163,7 @@ func (jum *JsManageUpdateReq) ToMap(openID string) map[string]interface{} {
 		"redirect_code":  jum.RedirectCode,
 		"href_id":        jum.HrefID,
 		"wait_time":      jum.WaitTime,
+		"category_id":    jum.CategoryID,
 		"update_by":      openID,
 		"update_at":      time.Now(),
 	}

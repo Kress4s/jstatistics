@@ -2,6 +2,7 @@ package v1
 
 import (
 	"js_statistics/app/handlers"
+	"js_statistics/app/middlewares"
 	"js_statistics/app/response"
 	"js_statistics/app/service"
 	"js_statistics/app/vo"
@@ -47,7 +48,7 @@ func (ih *IPHandler) Create(ctx iris.Context) mvc.Result {
 	return response.OK()
 }
 
-// Create godoc
+// List godoc
 // @Summary 查询ip白名单
 // @Description 查询ip白名单列表
 // @Tags 应用管理 - ip白名单
@@ -73,7 +74,7 @@ func (ih *IPHandler) List(ctx iris.Context) mvc.Result {
 	return response.JSON(resp)
 }
 
-// Create godoc
+// Get godoc
 // @Summary 查询ip白名单
 // @Description 查询ip白名单信息
 // @Tags 应用管理 - ip白名单
@@ -97,7 +98,7 @@ func (ih *IPHandler) Get(ctx iris.Context) mvc.Result {
 	return response.JSON(resp)
 }
 
-// Create godoc
+// Update godoc
 // @Summary 修改ip白名单
 // @Description 修改ip白名单信息
 // @Tags 应用管理 - ip白名单
@@ -126,7 +127,7 @@ func (ih *IPHandler) Update(ctx iris.Context) mvc.Result {
 	return response.OK()
 }
 
-// Create godoc
+// Delete godoc
 // @Summary 删除ip白名单
 // @Description 删除ip白名单信息
 // @Tags 应用管理 - ip白名单
@@ -150,7 +151,7 @@ func (ih *IPHandler) Delete(ctx iris.Context) mvc.Result {
 	return response.OK()
 }
 
-// Create godoc
+// MultiDelete godoc
 // @Summary 批量删除ip白名单
 // @Description 批量删除ip白名单信息
 // @Tags 应用管理 - ip白名单
@@ -173,10 +174,10 @@ func (ih *IPHandler) MultiDelete(ctx iris.Context) mvc.Result {
 
 // BeforeActivation 初始化路由
 func (ih *IPHandler) BeforeActivation(b mvc.BeforeActivation) {
-	b.Handle(iris.MethodPost, "/ip", "Create")
+	b.Handle(iris.MethodPost, "/ip", "Create", middlewares.RecordSystemLog("Create", "", "创建ip白名单成功"))
 	b.Handle(iris.MethodGet, "/ips", "List")
 	b.Handle(iris.MethodGet, "/ip/{id:string}", "Get")
-	b.Handle(iris.MethodPut, "/ip/{id:string}", "Update")
-	b.Handle(iris.MethodDelete, "/ip/{id:string}", "Delete")
-	b.Handle(iris.MethodDelete, "/ip/multi", "MultiDelete")
+	b.Handle(iris.MethodPut, "/ip/{id:string}", "Update", middlewares.RecordSystemLog("Update", "id", "更新ip白名单成功"))
+	b.Handle(iris.MethodDelete, "/ip/{id:string}", "Delete", middlewares.RecordSystemLog("Delete", "id", "删除ip白名单成功"))
+	b.Handle(iris.MethodDelete, "/ip/multi", "MultiDelete", middlewares.RecordSystemLog("MultiDelete", "ids", "批量删除ip白名单成功"))
 }

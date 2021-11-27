@@ -3597,6 +3597,65 @@ var doc = `{
                 }
             }
         },
+        "/api/v1/application/js_manage/{id}/status": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "修改js管理状态信息",
+                "tags": [
+                    "应用管理 - js管理"
+                ],
+                "summary": "修改js管理状态",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "js管理id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "js管理修改的状态",
+                        "name": "status",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "修改js管理状态成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/application/js_primaries": {
             "get": {
                 "security": [
@@ -4669,6 +4728,58 @@ var doc = `{
                 }
             }
         },
+        "/api/v1/permission/role/multi": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "批量删除角色信息",
+                "tags": [
+                    "权限管理 - 管理组"
+                ],
+                "summary": "批量删除角色",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "角色ids, ` + "`" + `,` + "`" + ` 连接",
+                        "name": "ids",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "批量删除角色成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/permission/role/{id}": {
             "get": {
                 "security": [
@@ -5356,6 +5467,58 @@ var doc = `{
                 }
             }
         },
+        "/api/v1/permission/user/multi": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "批量删除用户信息",
+                "tags": [
+                    "权限管理 - 管理员"
+                ],
+                "summary": "批量删除用户",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户ids, ` + "`" + `,` + "`" + ` 连接",
+                        "name": "ids",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "批量删除用户成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/permission/user/profile": {
             "get": {
                 "security": [
@@ -5538,6 +5701,63 @@ var doc = `{
                 "responses": {
                     "200": {
                         "description": "删除用户成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "修改用户状态信息",
+                "tags": [
+                    "权限管理 - 管理员"
+                ],
+                "summary": "修改用户状态",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "用户修改的状态",
+                        "name": "status",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "修改用户状态成功"
                     },
                     "400": {
                         "description": "请求参数错误",
@@ -6428,6 +6648,10 @@ var doc = `{
                     "description": "屏蔽地区，多个用 ”-“ 相连；eg：北京市-上海市-...",
                     "type": "string"
                 },
+                "status": {
+                    "description": "状态",
+                    "type": "boolean"
+                },
                 "title": {
                     "description": "标题",
                     "type": "string"
@@ -6441,6 +6665,10 @@ var doc = `{
         "vo.JsManageResp": {
             "type": "object",
             "properties": {
+                "category_id": {
+                    "description": "分类ID",
+                    "type": "integer"
+                },
                 "client_type": {
                     "description": "客户端 0：移动端； 1：PC端",
                     "type": "array",
@@ -6463,10 +6691,6 @@ var doc = `{
                 "ip": {
                     "description": "今日IP数",
                     "type": "integer"
-                },
-                "js_site": {
-                    "description": "Js地址",
-                    "type": "string"
                 },
                 "key_word": {
                     "description": "关键词",
@@ -6499,6 +6723,10 @@ var doc = `{
                     "description": "屏蔽地区，多个用 ”-“ 相连；eg：北京市-上海市-...",
                     "type": "string"
                 },
+                "status": {
+                    "description": "状态",
+                    "type": "boolean"
+                },
                 "title": {
                     "description": "标题",
                     "type": "string"
@@ -6512,6 +6740,10 @@ var doc = `{
         "vo.JsManageUpdateReq": {
             "type": "object",
             "properties": {
+                "category_id": {
+                    "description": "分类ID",
+                    "type": "integer"
+                },
                 "client_type": {
                     "description": "客户端 0：移动端； 1：PC端",
                     "type": "array",

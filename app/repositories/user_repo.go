@@ -36,6 +36,7 @@ type UserRepo interface {
 	Delete(db *gorm.DB, id int64) exception.Exception
 	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
 	GetUserMenus(db *gorm.DB, userID int64) ([]models.UserToMenus, exception.Exception)
+	StatusChange(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
 }
 
 func (u *UserRepoImpl) Profile(db *gorm.DB, id int64) (*models.User, exception.Exception) {
@@ -119,4 +120,9 @@ func (u *UserRepoImpl) GetUserMenus(db *gorm.DB, userID int64) ([]models.UserToM
 		return nil, exception.Wrap(response.ExceptionDatabase, tx.Error)
 	}
 	return menus, nil
+}
+
+func (u *UserRepoImpl) StatusChange(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception {
+	return exception.Wrap(response.ExceptionDatabase,
+		db.Model(&models.User{}).Where(&models.User{ID: id}).Updates(param).Error)
 }

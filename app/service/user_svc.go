@@ -8,6 +8,8 @@ import (
 	"js_statistics/commom/drivers/database"
 	"js_statistics/commom/tools"
 	"js_statistics/exception"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -38,6 +40,8 @@ type UserService interface {
 	GetRolesByUserID(openID string, uid int64) ([]vo.RoleBriefResp, exception.Exception)
 	// MultiDelete(openID string, ids string) exception.Exception
 	GetUserMenus(openID int64) ([]vo.UserToMenusResp, exception.Exception)
+	StatusChange(openID string, id int64, status bool) exception.Exception
+	MultiDelete(ids string) exception.Exception
 }
 
 func GetUserService() UserService {
@@ -218,4 +222,28 @@ func (us *userServiceImpl) GetUserMenus(userID int64) ([]vo.UserToMenusResp, exc
 		)
 	}
 	return menus, nil
+}
+
+func (us *userServiceImpl) StatusChange(openID string, id int64, status bool) exception.Exception {
+	return us.repo.StatusChange(us.db, id, map[string]interface{}{
+		"status":    status,
+		"update_by": openID,
+		"update_at": time.Now(),
+	})
+}
+
+func (us *userServiceImpl) MultiDelete(ids string) exception.Exception {
+	idslice := strings.Split(ids, ",")
+	if len(idslice) == 0 {
+		return exception.New(response.ExceptionInvalidRequestParameters, "无效参数")
+	}
+	did := make([]int64, 0, len(idslice))
+	for i := range idslice {
+		id, err := strconv.ParseUint(idslice[i], 10, 0)
+		if err != nil {
+			return exception.Wrap(response.ExceptionParseStringToInt64Error, err)
+		}
+		did = append(did, int64(id))
+	}
+	return us.repo.MultiDelete(us.db, did)
 }

@@ -2,6 +2,7 @@ package v1
 
 import (
 	"js_statistics/app/handlers"
+	"js_statistics/app/middlewares"
 	"js_statistics/app/response"
 	"js_statistics/app/service"
 	"js_statistics/app/vo"
@@ -150,11 +151,33 @@ func (rh *RoleHandler) Delete(ctx iris.Context) mvc.Result {
 	return response.OK()
 }
 
+// MultiDelete godoc
+// @Summary 批量删除角色
+// @Description 批量删除角色信息
+// @Tags 权限管理 - 管理组
+// @Param ids query string true "角色ids, `,` 连接"
+// @Success 200 "批量删除角色成功"
+// @Failure 400 {object} vo.Error "请求参数错误"
+// @Failure 401 {object} vo.Error "当前用户登录令牌失效"
+// @Failure 403 {object} vo.Error "当前操作无权限"
+// @Failure 500 {object} vo.Error "服务器内部错误"
+// @Security ApiKeyAuth
+// @Router /api/v1/permission/role/multi [delete]
+func (rh *RoleHandler) MultiDelete(ctx iris.Context) mvc.Result {
+	ids := ctx.URLParam(constant.IDS)
+	ex := rh.Svc.MultiDelete(ids)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	return response.OK()
+}
+
 // BeforeActivation 初始化路由
 func (rh *RoleHandler) BeforeActivation(b mvc.BeforeActivation) {
-	b.Handle(iris.MethodPost, "/role", "Create")
+	b.Handle(iris.MethodPost, "/role", "Create", middlewares.RecordSystemLog("Create", "", "创建角色成功"))
 	b.Handle(iris.MethodGet, "/role/{id:string}", "Get")
 	b.Handle(iris.MethodGet, "/roles", "List")
-	b.Handle(iris.MethodPut, "/role/{id:string}", "Update")
-	b.Handle(iris.MethodDelete, "/role/{id:string}", "Delete")
+	b.Handle(iris.MethodPut, "/role/{id:string}", "Update", middlewares.RecordSystemLog("Update", "id", "更新角色成功"))
+	b.Handle(iris.MethodDelete, "/role/{id:string}", "Delete", middlewares.RecordSystemLog("Delete", "id", "删除角色成功"))
+	b.Handle(iris.MethodDelete, "/role/multi", "MultiDelete", middlewares.RecordSystemLog("MultiDelete", "ids", "批量删除角色成功"))
 }

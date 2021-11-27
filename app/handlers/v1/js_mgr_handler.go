@@ -200,6 +200,35 @@ func (jmh *JsmHandler) GetJSiteByID(ctx iris.Context) mvc.Result {
 	return response.JSON(resp)
 }
 
+// StatusChange godoc
+// @Summary 修改js管理状态
+// @Description 修改js管理状态信息
+// @Tags 应用管理 - js管理
+// @Param id path string true "js管理id"
+// @Param status query bool true "js管理修改的状态"
+// @Success 200 "修改js管理状态成功"
+// @Failure 400 {object} vo.Error "请求参数错误"
+// @Failure 401 {object} vo.Error "当前用户登录令牌失效"
+// @Failure 403 {object} vo.Error "当前操作无权限"
+// @Failure 500 {object} vo.Error "服务器内部错误"
+// @Security ApiKeyAuth
+// @Router /api/v1/application/js_manage/{id}/status [patch]
+func (jmh *JsmHandler) StatusChange(ctx iris.Context) mvc.Result {
+	status, err := ctx.URLParamBool(constant.Status)
+	if err != nil {
+		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
+	}
+	id, err := ctx.Params().GetInt64(constant.ID)
+	if err != nil {
+		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
+	}
+	ex := jmh.Svc.StatusChange(jmh.UserName, id, status)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	return response.OK()
+}
+
 // BeforeActivation 初始化路由
 func (jmh *JsmHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodPost, "/js_manage", "Create")
@@ -209,4 +238,5 @@ func (jmh *JsmHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodDelete, "/js_manage/{id:string}", "Delete")
 	b.Handle(iris.MethodDelete, "/js_manage/multi", "MultiDelete")
 	b.Handle(iris.MethodGet, "/js_manage/js_site/{id:string}", "GetJSiteByID")
+	b.Handle(iris.MethodPatch, "/js_manage/{id:string}/status", "StatusChange")
 }

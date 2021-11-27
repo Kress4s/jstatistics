@@ -2,6 +2,7 @@ package v1
 
 import (
 	"js_statistics/app/handlers"
+	"js_statistics/app/middlewares"
 	"js_statistics/app/response"
 	"js_statistics/app/service"
 	"js_statistics/app/vo"
@@ -47,7 +48,7 @@ func (dh *DomainHandler) Create(ctx iris.Context) mvc.Result {
 	return response.OK()
 }
 
-// Create godoc
+// List godoc
 // @Summary 查询域名列表
 // @Description 查询域名管理列表
 // @Tags 应用管理 - 域名管理
@@ -73,7 +74,7 @@ func (dh *DomainHandler) List(ctx iris.Context) mvc.Result {
 	return response.JSON(resp)
 }
 
-// Create godoc
+// Get godoc
 // @Summary 查询域名
 // @Description 查询域名信息
 // @Tags 应用管理 - 域名管理
@@ -97,7 +98,7 @@ func (dh *DomainHandler) Get(ctx iris.Context) mvc.Result {
 	return response.JSON(resp)
 }
 
-// Create godoc
+// Update godoc
 // @Summary 修改域名管理
 // @Description 修改域名管理信息
 // @Tags 应用管理 - 域名管理
@@ -126,7 +127,7 @@ func (dh *DomainHandler) Update(ctx iris.Context) mvc.Result {
 	return response.OK()
 }
 
-// Create godoc
+// Delete godoc
 // @Summary 删除域名管理
 // @Description 删除域名管理信息
 // @Tags 应用管理 - 域名管理
@@ -150,7 +151,7 @@ func (dh *DomainHandler) Delete(ctx iris.Context) mvc.Result {
 	return response.OK()
 }
 
-// Create godoc
+// MultiDelete godoc
 // @Summary 批量删除域名管理
 // @Description 批量删除域名管理信息
 // @Tags 应用管理 - 域名管理
@@ -171,7 +172,7 @@ func (dh *DomainHandler) MultiDelete(ctx iris.Context) mvc.Result {
 	return response.OK()
 }
 
-// Create godoc
+// ListAll godoc
 // @Summary 查询所有无分页域名
 // @Description 查询所有无分页域名
 // @Tags 应用管理 - 域名管理
@@ -192,11 +193,11 @@ func (dh *DomainHandler) ListAll(ctx iris.Context) mvc.Result {
 
 // BeforeActivation 初始化路由
 func (dh *DomainHandler) BeforeActivation(b mvc.BeforeActivation) {
-	b.Handle(iris.MethodPost, "/domain", "Create")
+	b.Handle(iris.MethodPost, "/domain", "Create", middlewares.RecordSystemLog("Create", "", "创建域名成功"))
 	b.Handle(iris.MethodGet, "/domains", "List")
 	b.Handle(iris.MethodGet, "/domain/{id:string}", "Get")
-	b.Handle(iris.MethodPut, "/domain/{id:string}", "Update")
-	b.Handle(iris.MethodDelete, "/domain/{id:string}", "Delete")
-	b.Handle(iris.MethodDelete, "/domain/multi", "MultiDelete")
+	b.Handle(iris.MethodPut, "/domain/{id:string}", "Update", middlewares.RecordSystemLog("Update", "id", "更新域名成功"))
+	b.Handle(iris.MethodDelete, "/domain/{id:string}", "Delete", middlewares.RecordSystemLog("Delete", "id", "删除域名成功"))
+	b.Handle(iris.MethodDelete, "/domain/multi", "MultiDelete", middlewares.RecordSystemLog("MultiDelete", "ids", "批量删除域名成功"))
 	b.Handle(iris.MethodGet, "/all/domains", "ListAll")
 }

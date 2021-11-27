@@ -2,6 +2,7 @@ package v1
 
 import (
 	"js_statistics/app/handlers"
+	"js_statistics/app/middlewares"
 	"js_statistics/app/response"
 	"js_statistics/app/service"
 	"js_statistics/app/vo"
@@ -233,7 +234,7 @@ func (u *UserHandler) GetRolesByUserID(ctx iris.Context) mvc.Result {
 // @Failure 500 {object} vo.Error "服务器内部错误"
 // @Security ApiKeyAuth
 // @Router /api/v1/permission/user/menus [get]
-func (u *UserHandler) GetUserMenus(iris.Context) mvc.Result {
+func (u *UserHandler) GetUserMenus(ctx iris.Context) mvc.Result {
 	resp, ex := u.Svc.GetUserMenus(u.UserID)
 	if ex != nil {
 		return response.Error(ex)
@@ -241,15 +242,67 @@ func (u *UserHandler) GetUserMenus(iris.Context) mvc.Result {
 	return response.JSON(resp)
 }
 
+// StatusChange godoc
+// @Summary 修改用户状态
+// @Description 修改用户状态信息
+// @Tags 权限管理 - 管理员
+// @Param id path string true "用户id"
+// @Param status query bool true "用户修改的状态"
+// @Success 200 "修改用户状态成功"
+// @Failure 400 {object} vo.Error "请求参数错误"
+// @Failure 401 {object} vo.Error "当前用户登录令牌失效"
+// @Failure 403 {object} vo.Error "当前操作无权限"
+// @Failure 500 {object} vo.Error "服务器内部错误"
+// @Security ApiKeyAuth
+// @Router /api/v1/permission/user/{id} [patch]
+func (u *UserHandler) StatusChange(ctx iris.Context) mvc.Result {
+	status, err := ctx.URLParamBool(constant.Status)
+	if err != nil {
+		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
+	}
+	id, err := ctx.Params().GetInt64(constant.ID)
+	if err != nil {
+		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
+	}
+	ex := u.Svc.StatusChange(u.UserName, id, status)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	return response.OK()
+}
+
+// MultiDelete godoc
+// @Summary 批量删除用户
+// @Description 批量删除用户信息
+// @Tags 权限管理 - 管理员
+// @Param ids query string true "用户ids, `,` 连接"
+// @Success 200 "批量删除用户成功"
+// @Failure 400 {object} vo.Error "请求参数错误"
+// @Failure 401 {object} vo.Error "当前用户登录令牌失效"
+// @Failure 403 {object} vo.Error "当前操作无权限"
+// @Failure 500 {object} vo.Error "服务器内部错误"
+// @Security ApiKeyAuth
+// @Router /api/v1/permission/user/multi [delete]
+func (u *UserHandler) MultiDelete(ctx iris.Context) mvc.Result {
+	ids := ctx.URLParam(constant.IDS)
+	ex := u.Svc.MultiDelete(ids)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	return response.OK()
+}
+
 // BeforeActivation 初始化路由
 func (u *UserHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodGet, "/user/profile", "Profile")
-	b.Handle(iris.MethodPost, "/user", "Create")
+	b.Handle(iris.MethodPost, "/user", "Create", middlewares.RecordSystemLog("Create", "", "创建用户成功"))
 	b.Handle(iris.MethodGet, "/user/{id:string}", "Get")
 	b.Handle(iris.MethodGet, "/users", "List")
-	b.Handle(iris.MethodPut, "/user/{id:string}", "Update")
-	b.Handle(iris.MethodDelete, "/user/{id:string}", "Delete")
-	b.Handle(iris.MethodPut, "/user/{id:string}/roles", "UpdateRoles")
+	b.Handle(iris.MethodPut, "/user/{id:string}", "Update", middlewares.RecordSystemLog("Update", "id", "更新用户成功"))
+	b.Handle(iris.MethodDelete, "/user/{id:string}", "Delete", middlewares.RecordSystemLog("Delete", "id", "删除用户成功"))
+	b.Handle(iris.MethodDelete, "/user/multi", "MultiDelete", middlewares.RecordSystemLog("Delete", "ids", "批量删除用户成功"))
+	b.Handle(iris.MethodPut, "/user/{id:string}/roles", "UpdateRoles", middlewares.RecordSystemLog("Update", "id", "更新用户成功"))
 	b.Handle(iris.MethodGet, "/user/{id:string}/roles", "GetRolesByUserID")
-	b.Handle(iris.MethodGet, "//user/menus", "GetUserMenus")
+	b.Handle(iris.MethodGet, "/user/menus", "GetUserMenus")
+	b.Handle(iris.MethodPatch, "/user/{id:string}", "StatusChange", middlewares.RecordSystemLog("Update", "id", "更新用户成功"))
 }

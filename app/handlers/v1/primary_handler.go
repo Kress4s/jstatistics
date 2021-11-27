@@ -2,6 +2,7 @@ package v1
 
 import (
 	"js_statistics/app/handlers"
+	"js_statistics/app/middlewares"
 	"js_statistics/app/response"
 	"js_statistics/app/service"
 	"js_statistics/app/vo"
@@ -145,9 +146,9 @@ func (ch *JspHandler) Delete(ctx iris.Context) mvc.Result {
 
 // BeforeActivation 初始化路由
 func (ch *JspHandler) BeforeActivation(b mvc.BeforeActivation) {
-	b.Handle(iris.MethodPost, "/js_primary", "Create")
+	b.Handle(iris.MethodPost, "/js_primary", "Create", middlewares.RecordSystemLog("Create", "", "创建JS分类成功"))
 	b.Handle(iris.MethodGet, "/js_primaries", "List")
 	b.Handle(iris.MethodGet, "/js_primary/{id:string}", "Get")
-	b.Handle(iris.MethodPut, "/js_primary/{id:string}", "Update")
-	b.Handle(iris.MethodDelete, "/js_primary/{id:string}", "Delete")
+	b.Handle(iris.MethodPut, "/js_primary/{id:string}", "Update", middlewares.RecordSystemLog("Update", "id", "更新JS分类成功"))
+	b.Handle(iris.MethodDelete, "/js_primary/{id:string}", "Delete", middlewares.RecordSystemLog("Delete", "id", "删除JS分类成功"))
 }

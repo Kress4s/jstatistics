@@ -34,6 +34,7 @@ type JsmRepo interface {
 	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
 	GetBySign(db *gorm.DB, sign string) (*models.JsManage, exception.Exception)
 	DecreaseRedirectCount(db *gorm.DB, id int64) exception.Exception
+	StatusChange(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
 }
 
 func (jsi *JsmRepoImpl) Create(db *gorm.DB, jsm *models.JsManage) exception.Exception {
@@ -93,4 +94,9 @@ func (jsi *JsmRepoImpl) DecreaseRedirectCount(db *gorm.DB, id int64) exception.E
 	return exception.Wrap(response.ExceptionDatabase, db.Model(&models.JsManage{}).Updates(map[string]interface{}{
 		"redirect_count": gorm.Expr("redirect_count - ?", 1),
 	}).Error)
+}
+
+func (jsi *JsmRepoImpl) StatusChange(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception {
+	return exception.Wrap(response.ExceptionDatabase,
+		db.Model(&models.JsManage{}).Where(&models.JsManage{ID: id}).Updates(param).Error)
 }

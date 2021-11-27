@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -47,6 +48,15 @@ type JsmService interface {
 	Delete(id int64) exception.Exception
 	MultiDelete(ids string) exception.Exception
 	GetJSiteByID(id int64) (*vo.JSiteResp, exception.Exception)
+	StatusChange(openID string, id int64, status bool) exception.Exception
+}
+
+func (jsi *jsmServiceImpl) StatusChange(openID string, id int64, status bool) exception.Exception {
+	return jsi.repo.StatusChange(jsi.db, id, map[string]interface{}{
+		"status":    status,
+		"update_by": openID,
+		"update_at": time.Now(),
+	})
 }
 
 func (jsi *jsmServiceImpl) Create(openID string, param *vo.JsManageReq) exception.Exception {

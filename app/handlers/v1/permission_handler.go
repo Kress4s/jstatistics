@@ -2,6 +2,7 @@ package v1
 
 import (
 	"js_statistics/app/handlers"
+	"js_statistics/app/middlewares"
 	"js_statistics/app/response"
 	"js_statistics/app/service"
 	"js_statistics/app/vo"
@@ -145,9 +146,9 @@ func (ph *PermissionHandler) Delete(ctx iris.Context) mvc.Result {
 
 // BeforeActivation 初始化路由
 func (ph *PermissionHandler) BeforeActivation(b mvc.BeforeActivation) {
-	b.Handle(iris.MethodPost, "/rule", "Create")
+	b.Handle(iris.MethodPost, "/rule", "Create", middlewares.RecordSystemLog("Create", "", "创建权限规则成功"))
 	b.Handle(iris.MethodGet, "/rule/{id:string}", "Get")
 	b.Handle(iris.MethodGet, "/rules", "GetPermissionTree")
-	b.Handle(iris.MethodPut, "/rule/{id:string}", "Update")
-	b.Handle(iris.MethodDelete, "/rule/{id:string}", "Delete")
+	b.Handle(iris.MethodPut, "/rule/{id:string}", "Update", middlewares.RecordSystemLog("Update", "id", "更新权限规则成功"))
+	b.Handle(iris.MethodDelete, "/rule/{id:string}", "Delete", middlewares.RecordSystemLog("Delete", "id", "删除权限规则成功"))
 }

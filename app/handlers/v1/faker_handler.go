@@ -2,6 +2,7 @@ package v1
 
 import (
 	"js_statistics/app/handlers"
+	"js_statistics/app/middlewares"
 	"js_statistics/app/response"
 	"js_statistics/app/service"
 	"js_statistics/app/vo"
@@ -102,7 +103,7 @@ func (fh *FakerHandler) Update(ctx iris.Context) mvc.Result {
 
 // BeforeActivation 初始化路由
 func (fh *FakerHandler) BeforeActivation(b mvc.BeforeActivation) {
-	b.Handle(iris.MethodPost, "/faker", "Create")
+	b.Handle(iris.MethodPost, "/faker", "Create", middlewares.RecordSystemLog("Create", "", "创建伪装内容成功"))
 	b.Handle(iris.MethodGet, "/faker/{id:string}", "Get")
-	b.Handle(iris.MethodPut, "/faker/{id:string}", "Update")
+	b.Handle(iris.MethodPut, "/faker/{id:string}", "Update", middlewares.RecordSystemLog("Update", "id", "更新伪装内容成功"))
 }

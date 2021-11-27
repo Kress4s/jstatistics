@@ -2,6 +2,7 @@ package v1
 
 import (
 	"js_statistics/app/handlers"
+	"js_statistics/app/middlewares"
 	"js_statistics/app/response"
 	"js_statistics/app/service"
 	"js_statistics/app/vo"
@@ -173,10 +174,10 @@ func (ch *CdnHandler) MultiDelete(ctx iris.Context) mvc.Result {
 
 // BeforeActivation 初始化路由
 func (ch *CdnHandler) BeforeActivation(b mvc.BeforeActivation) {
-	b.Handle(iris.MethodPost, "/cdn", "Create")
+	b.Handle(iris.MethodPost, "/cdn", "Create", middlewares.RecordSystemLog("Create", "", "创建cdn成功"))
 	b.Handle(iris.MethodGet, "/cdns", "List")
 	b.Handle(iris.MethodGet, "/cdn/{id:string}", "Get")
-	b.Handle(iris.MethodPut, "/cdn/{id:string}", "Update")
-	b.Handle(iris.MethodDelete, "/cdn/{id:string}", "Delete")
-	b.Handle(iris.MethodDelete, "/cdn/multi", "MultiDelete")
+	b.Handle(iris.MethodPut, "/cdn/{id:string}", "Update", middlewares.RecordSystemLog("Update", "id", "更新cdn成功"))
+	b.Handle(iris.MethodDelete, "/cdn/{id:string}", "Delete", middlewares.RecordSystemLog("Delete", "id", "删除cdn成功"))
+	b.Handle(iris.MethodDelete, "/cdn/multi", "MultiDelete", middlewares.RecordSystemLog("MultiDelete", "ids", "批量删除cdn成功"))
 }

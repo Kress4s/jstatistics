@@ -2,6 +2,7 @@ package v1
 
 import (
 	"js_statistics/app/handlers"
+	"js_statistics/app/middlewares"
 	"js_statistics/app/response"
 	"js_statistics/app/service"
 	"js_statistics/app/vo"
@@ -173,10 +174,10 @@ func (jmh *RmHandler) MultiDelete(ctx iris.Context) mvc.Result {
 
 // BeforeActivation 初始化路由
 func (jmh *RmHandler) BeforeActivation(b mvc.BeforeActivation) {
-	b.Handle(iris.MethodPost, "/redirect", "Create")
+	b.Handle(iris.MethodPost, "/redirect", "Create", middlewares.RecordSystemLog("Create", "", "创建跳转信息成功"))
 	b.Handle(iris.MethodGet, "/redirects", "List")
 	b.Handle(iris.MethodGet, "/redirect/{id:string}", "Get")
-	b.Handle(iris.MethodPut, "/redirect/{id:string}", "Update")
-	b.Handle(iris.MethodDelete, "/redirect/{id:string}", "Delete")
-	b.Handle(iris.MethodDelete, "/redirect/multi", "MultiDelete")
+	b.Handle(iris.MethodPut, "/redirect/{id:string}", "Update", middlewares.RecordSystemLog("Update", "id", "更新跳转信息成功"))
+	b.Handle(iris.MethodDelete, "/redirect/{id:string}", "Delete", middlewares.RecordSystemLog("Delete", "id", "删除跳转信息成功"))
+	b.Handle(iris.MethodDelete, "/redirect/multi", "MultiDelete", middlewares.RecordSystemLog("MultiDelete", "ids", "批量删除跳转信息成功"))
 }

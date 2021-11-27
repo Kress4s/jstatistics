@@ -32,6 +32,7 @@ type RoleRepo interface {
 	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
 	Delete(db *gorm.DB, id int64) exception.Exception
 	GetByIDs(db *gorm.DB, ids []int64) ([]models.Role, exception.Exception)
+	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
 }
 
 func (rri *RoleRepoImpl) Creat(db *gorm.DB, role *models.Role) exception.Exception {
@@ -78,4 +79,8 @@ func (rri *RoleRepoImpl) GetByIDs(db *gorm.DB, ids []int64) ([]models.Role, exce
 		return nil, exception.Wrap(response.ExceptionDatabase, tx.Error)
 	}
 	return roles, nil
+}
+
+func (rri *RoleRepoImpl) MultiDelete(db *gorm.DB, ids []int64) exception.Exception {
+	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.Role{}, ids).Error)
 }

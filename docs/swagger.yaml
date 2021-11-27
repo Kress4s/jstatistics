@@ -389,6 +389,9 @@ definitions:
       shield_area:
         description: 屏蔽地区，多个用 ”-“ 相连；eg：北京市-上海市-...
         type: string
+      status:
+        description: 状态
+        type: boolean
       title:
         description: 标题
         type: string
@@ -398,6 +401,9 @@ definitions:
     type: object
   vo.JsManageResp:
     properties:
+      category_id:
+        description: 分类ID
+        type: integer
       client_type:
         description: 客户端 0：移动端； 1：PC端
         items:
@@ -415,9 +421,6 @@ definitions:
       ip:
         description: 今日IP数
         type: integer
-      js_site:
-        description: Js地址
-        type: string
       key_word:
         description: 关键词
         type: string
@@ -441,6 +444,9 @@ definitions:
       shield_area:
         description: 屏蔽地区，多个用 ”-“ 相连；eg：北京市-上海市-...
         type: string
+      status:
+        description: 状态
+        type: boolean
       title:
         description: 标题
         type: string
@@ -450,6 +456,9 @@ definitions:
     type: object
   vo.JsManageUpdateReq:
     properties:
+      category_id:
+        description: 分类ID
+        type: integer
       client_type:
         description: 客户端 0：移动端； 1：PC端
         items:
@@ -3097,6 +3106,44 @@ paths:
       summary: 修改js管理
       tags:
       - 应用管理 - js管理
+  /api/v1/application/js_manage/{id}/status:
+    patch:
+      description: 修改js管理状态信息
+      parameters:
+      - description: js管理id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: js管理修改的状态
+        in: query
+        name: status
+        required: true
+        type: boolean
+      responses:
+        "200":
+          description: 修改js管理状态成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改js管理状态
+      tags:
+      - 应用管理 - js管理
   /api/v1/application/js_manage/js_site/{id}:
     get:
       description: 查询js地址信息
@@ -3948,6 +3995,39 @@ paths:
       summary: 修改角色
       tags:
       - 权限管理 - 管理组
+  /api/v1/permission/role/multi:
+    delete:
+      description: 批量删除角色信息
+      parameters:
+      - description: 角色ids, `,` 连接
+        in: query
+        name: ids
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 批量删除角色成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除角色
+      tags:
+      - 权限管理 - 管理组
   /api/v1/permission/roles:
     get:
       description: 查询角色列表信息
@@ -4311,6 +4391,43 @@ paths:
       summary: 查询用户
       tags:
       - 权限管理 - 管理员
+    patch:
+      description: 修改用户状态信息
+      parameters:
+      - description: 用户id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 用户修改的状态
+        in: query
+        name: status
+        required: true
+        type: boolean
+      responses:
+        "200":
+          description: 修改用户状态成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改用户状态
+      tags:
+      - 权限管理 - 管理员
     put:
       description: 修改用户
       parameters:
@@ -4451,6 +4568,39 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 查询(动态菜单)当前用户可展示的菜单权限
+      tags:
+      - 权限管理 - 管理员
+  /api/v1/permission/user/multi:
+    delete:
+      description: 批量删除用户信息
+      parameters:
+      - description: 用户ids, `,` 连接
+        in: query
+        name: ids
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 批量删除用户成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除用户
       tags:
       - 权限管理 - 管理员
   /api/v1/permission/user/profile:

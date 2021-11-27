@@ -2,6 +2,7 @@ package v1
 
 import (
 	"js_statistics/app/handlers"
+	"js_statistics/app/middlewares"
 	"js_statistics/app/response"
 	"js_statistics/app/service"
 	"js_statistics/app/vo"
@@ -47,7 +48,7 @@ func (jh *JscHandler) Create(ctx iris.Context) mvc.Result {
 	return response.OK()
 }
 
-// Create godoc
+// ListByPrimaryID godoc
 // @Summary 查询js分类列表通过js主分类ID
 // @Description 查询js分类列表通过js主分类ID
 // @Tags 应用管理 - js分类
@@ -78,7 +79,7 @@ func (jh *JscHandler) ListByPrimaryID(ctx iris.Context) mvc.Result {
 	return response.JSON(resp)
 }
 
-// Create godoc
+// Get godoc
 // @Summary 查询js分类
 // @Description 查询js分类信息
 // @Tags 应用管理 - js分类
@@ -102,7 +103,7 @@ func (jh *JscHandler) Get(ctx iris.Context) mvc.Result {
 	return response.JSON(resp)
 }
 
-// Create godoc
+// Update godoc
 // @Summary 修改js分类
 // @Description 修改js分类信息
 // @Tags 应用管理 - js分类
@@ -131,7 +132,7 @@ func (jh *JscHandler) Update(ctx iris.Context) mvc.Result {
 	return response.OK()
 }
 
-// Create godoc
+// Delete godoc
 // @Summary 删除js分类
 // @Description 删除js分类信息
 // @Tags 应用管理 - js分类
@@ -155,7 +156,7 @@ func (jh *JscHandler) Delete(ctx iris.Context) mvc.Result {
 	return response.OK()
 }
 
-// Create godoc
+// MultiDelete godoc
 // @Summary 批量删除js分类
 // @Description 批量删除js分类信息
 // @Tags 应用管理 - js分类
@@ -176,7 +177,7 @@ func (jh *JscHandler) MultiDelete(ctx iris.Context) mvc.Result {
 	return response.OK()
 }
 
-// Create godoc
+// ListAllByvPrimaryID godoc
 // @Summary 查询js所有无分页分类通过js主分类ID(js管理table表头使用)
 // @Description 查询js所有无分页分类通过js主分类ID
 // @Tags 应用管理 - js分类
@@ -202,11 +203,11 @@ func (jh *JscHandler) ListAllByvPrimaryID(ctx iris.Context) mvc.Result {
 
 // BeforeActivation 初始化路由
 func (jh *JscHandler) BeforeActivation(b mvc.BeforeActivation) {
-	b.Handle(iris.MethodPost, "/js_category", "Create")
+	b.Handle(iris.MethodPost, "/js_category", "Create", middlewares.RecordSystemLog("Create", "", "创建js分类成功"))
 	b.Handle(iris.MethodGet, "/js_categories/primary/{pid:string}", "ListByPrimaryID")
 	b.Handle(iris.MethodGet, "/js_category/{id:string}", "Get")
-	b.Handle(iris.MethodPut, "/js_category/{id:string}", "Update")
-	b.Handle(iris.MethodDelete, "/js_category/{id:string}", "Delete")
-	b.Handle(iris.MethodDelete, "/js_category/multi", "MultiDelete")
+	b.Handle(iris.MethodPut, "/js_category/{id:string}", "Update", middlewares.RecordSystemLog("Update", "id", "更新js分类成功"))
+	b.Handle(iris.MethodDelete, "/js_category/{id:string}", "Delete", middlewares.RecordSystemLog("Delete", "id", "删除js分类成功"))
+	b.Handle(iris.MethodDelete, "/js_category/multi", "MultiDelete", middlewares.RecordSystemLog("MultiDelete", "ids", "批量删除js分类成功"))
 	b.Handle(iris.MethodGet, "/all/js_categories/primary/{pid:string}", "ListAllByvPrimaryID")
 }
