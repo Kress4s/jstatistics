@@ -38,6 +38,8 @@ var migrations = []*gormigrate.Migration{
 	versions.V0002InitViews,
 	// init product data
 	versions.V0003InitProjectData,
+	// init sys log table
+	versions.V0004InitLogTables,
 }
 
 func Migrate() error {

@@ -40,4 +40,7 @@ const (
 	UVStatistics = "js_uv_statistics"
 	// ip记录
 	IPRecode = "js_ip_recode"
+
+	// 日志
+	SystemLog = "js_system_log"
 )

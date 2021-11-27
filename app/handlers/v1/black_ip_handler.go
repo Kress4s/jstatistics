@@ -2,6 +2,7 @@ package v1
 
 import (
 	"js_statistics/app/handlers"
+	"js_statistics/app/middlewares"
 	"js_statistics/app/response"
 	"js_statistics/app/service"
 	"js_statistics/app/vo"
@@ -198,11 +199,11 @@ func (ih *BlackIPHandler) IPLocationSearch(ctx iris.Context) mvc.Result {
 
 // BeforeActivation 初始化路由
 func (ih *BlackIPHandler) BeforeActivation(b mvc.BeforeActivation) {
-	b.Handle(iris.MethodPost, "/black/ip", "Create")
+	b.Handle(iris.MethodPost, "/black/ip", "Create", middlewares.RecordSystemLog("Create", "", "创建黑名单成功"))
 	b.Handle(iris.MethodGet, "/black/ips", "List")
 	b.Handle(iris.MethodGet, "/black/ip/{id:string}", "Get")
-	b.Handle(iris.MethodPut, "/black/ip/{id:string}", "Update")
-	b.Handle(iris.MethodDelete, "/black/ip/{id:string}", "Delete")
-	b.Handle(iris.MethodDelete, "/black/ip/multi", "MultiDelete")
+	b.Handle(iris.MethodPut, "/black/ip/{id:string}", "Update", middlewares.RecordSystemLog("Update", "id", "更新黑名单成功"))
+	b.Handle(iris.MethodDelete, "/black/ip/{id:string}", "Delete", middlewares.RecordSystemLog("Delete", "id", "删除黑名单成功"))
+	b.Handle(iris.MethodDelete, "/black/ip/multi", "MultiDelete", middlewares.RecordSystemLog("MultiDelete", "ids", "批量删除黑名单成功"))
 	b.Handle(iris.MethodGet, "/black/ip/where", "IPLocationSearch")
 }

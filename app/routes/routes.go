@@ -35,6 +35,7 @@ func RegisterRoutes(app *iris.Application) {
 	permissionApp.Handle(v1.NewUserHandler())
 	permissionApp.Handle(v1.NewPermissionHandler())
 	permissionApp.Handle(v1.NewRoleHandler())
+	permissionApp.Handle(v1.NewSyslogHandler())
 
 	// 应用管理
 	applicationParty := party.Party("/application")

@@ -31,6 +31,7 @@ type (
 	IPRecode       = dash_board.IPRecode
 	Object         = common.Object
 	Faker          = application.Faker
+	SystemLog      = common.SystemLog
 
 	// view
 	IPVisitStatistic = dash_board.IPVisitStatistic

@@ -800,6 +800,21 @@ definitions:
           type: integer
         type: array
     type: object
+  vo.SystemLogResp:
+    properties:
+      address:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      ip:
+        type: string
+      operateAt:
+        type: string
+      user_name:
+        type: string
+    type: object
   vo.ThisMonthIP:
     properties:
       count:
@@ -4150,6 +4165,51 @@ paths:
       summary: 获取权限规则树
       tags:
       - 权限管理 - 权限规则
+  /api/v1/permission/systemlogs:
+    get:
+      description: 查询操作日志列表
+      parameters:
+      - description: 请求页
+        in: query
+        name: page
+        type: integer
+      - description: 页大小
+        in: query
+        name: page_size
+        type: integer
+      responses:
+        "200":
+          description: 查询操作日志列表成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/vo.DataPagination'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/vo.SystemLogResp'
+                  type: array
+              type: object
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询操作日志
+      tags:
+      - 权限管理 - 操作日志
   /api/v1/permission/user:
     post:
       description: 创建用户

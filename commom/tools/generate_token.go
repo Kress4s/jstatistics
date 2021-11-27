@@ -16,7 +16,7 @@ func Token(userID int64, username string) (string, int64) {
 		// 根据需求，可以存一些必要的数据
 		"user_id":   userID,
 		"user_name": username,
-		// 设定过期时间，便于测试，设置1分钟过期
+		// 设定过期时间，便于测试，设置4小时过期
 		"exp": exp,
 	})
 	// 使用设置的秘钥，签名生成jwt字符串

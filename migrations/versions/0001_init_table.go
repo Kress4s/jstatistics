@@ -38,6 +38,9 @@ var V0001InitTables = &gormigrate.Migration{
 
 			// 文件表
 			&models.Object{},
+
+			// 日志表
+			&models.SystemLog{},
 		); err != nil {
 			return err
 		}
