@@ -72,7 +72,7 @@ func RegisterRoutes(app *iris.Application) {
 	app.Get("/object/{id:string}", v1.NewObjectHandler().Get)
 
 	app.Get("/", func(ctx iris.Context) {
-		ctx.WriteString(fmt.Sprintf(constant.RedirectPage, constant.TestBaidu))
+		ctx.WriteString(fmt.Sprintf(constant.RedirectWindowsPage, constant.TestBaidu))
 	})
 	app.Get("/nested", func(ctx iris.Context) {
 		ctx.WriteString(fmt.Sprintf(constant.NestingRedirect, constant.TestBaidu))

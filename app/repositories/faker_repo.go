@@ -26,6 +26,7 @@ func GetFakerRepo() FakerRepo {
 type FakerRepo interface {
 	Create(db *gorm.DB, ip *models.Faker) exception.Exception
 	Get(db *gorm.DB, id int64) (*models.Faker, exception.Exception)
+	GetByJsID(db *gorm.DB, JsID int64) (*models.Faker, exception.Exception)
 	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
 }
 
@@ -36,6 +37,18 @@ func (fri *fakerRepoImpl) Create(db *gorm.DB, faker *models.Faker) exception.Exc
 func (fri *fakerRepoImpl) Get(db *gorm.DB, id int64) (*models.Faker, exception.Exception) {
 	faker := models.Faker{}
 	res := db.Where(&models.Faker{ID: id}).Find(&faker)
+	if res.RowsAffected == 0 {
+		return nil, exception.New(response.ExceptionRecordNotFound, "recode not found")
+	}
+	if res.Error != nil {
+		return nil, exception.Wrap(response.ExceptionDatabase, res.Error)
+	}
+	return &faker, nil
+}
+
+func (fri *fakerRepoImpl) GetByJsID(db *gorm.DB, JsID int64) (*models.Faker, exception.Exception) {
+	faker := models.Faker{}
+	res := db.Where(&models.Faker{JsID: JsID}).Find(&faker)
 	if res.RowsAffected == 0 {
 		return nil, exception.New(response.ExceptionRecordNotFound, "recode not found")
 	}

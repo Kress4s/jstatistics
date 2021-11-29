@@ -50,14 +50,102 @@ const (
 )
 
 const (
-	RedirectBlank = "window.open(%s);"
+	RedirectBlank = `window.location.href="%s";`
 	BlankCode     = "about:blank"
 	TestBaidu     = "https://www.baidu.com"
 
-	RedirectPage    = `window.location.href="%s"`
-	NestingRedirect = `<iframe src="%s"></iframe>`
-	ScreenRedirect  = `window.open("%s")`
-	HrefRedirect    = `<a href="%s">`
+	// 直接跳转 windows
+	RedirectWindowsPage = `window.location.href="%s"`
+	// 直接跳转 top
+	RedirectTopPage = `window.top.location.href="%s"`
+	// 嵌套跳转
+	NestingRedirect = `</head>
+	<body>
+		<script>
+			window.onload = function () {
+				// 创建div标签
+				var div = document.createElement("div");
+				// 给标签添加id
+				div.setAttribute("id", "container");
+				// 将div标签插入到body
+				document.body.appendChild(div);
+		
+				// 渲染
+				let url = "%s";
+				document.getElementById("container").innerHTML = "<iframe src=${url}></iframe>";
+			}
+		</script>
+	</body>
+	</html>`
+	// 屏幕跳转
+	ScreenRedirect = `<!DOCTYPE html>
+	<html lang="zh">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>屏幕跳转</title></head><body>
+	 <script>
+			window.open('%s')
+		</script>
+	</body>
+	</html>`
+
+	// href 跳转
+	HrefRedirect = `<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>href跳转</title>
+    <script>
+        window.onload = function () {
+            let url = "%s";
+            // 创建div标签
+            var a = document.createElement("a");
+            // 给标签添加id
+            a.setAttribute("id", "a-link");
+            // 给标签添加href
+            a.setAttribute("href", url);
+            // 将div标签插入到body
+            document.body.appendChild(a);
+
+            document.getElementById("a-link").click();
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>`
+)
+
+// 伪装内容类型
+const (
+	TextHtml = `<html>  
+	<head>  
+	<title>text/html</title>  
+	<meta http-equiv="Content-Type" content="text/html"; charset=gb2312" /> 
+	</head> 
+	<body> 
+		<h1>%s</h1>
+	</body> 
+	</html>`
+
+	TextPlain = `%s`
+
+	TextXml = `<?xml version="1.0" encoding="UTF-8"?>
+	<text>%s</text>`
+
+	ApplicationJson = `<html>
+	<head>  
+	<title>application/json</title>  
+	<meta http-equiv="Content-Type" content="application/json"; charset=gb2312" /> 
+	</head> 
+	<body> 
+		<h1>{"text": %s}</h1>
+	</body> 
+	</html>`
 )
 
 const (
@@ -142,4 +230,8 @@ const (
 const (
 	DateTimeFormat = "2006-01-02 15:04:05"
 	DateFormat     = "2006-01-02"
+)
+
+const (
+	MINIO_URL = "121.41.38.13:9090/object/%s"
 )

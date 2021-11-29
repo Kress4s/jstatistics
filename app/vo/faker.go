@@ -14,6 +14,8 @@ type FakerReq struct {
 	Text string `json:"text"`
 	// 上传文件接口返回的id
 	ObjID string `json:"obj_id"`
+	// js id
+	JsID int64 `json:"js_id"`
 	// 开启状态
 	Status bool `json:"status"`
 }
@@ -29,6 +31,8 @@ type FakerResp struct {
 	Text string `json:"text"`
 	// 上传文件接口返回的id
 	ObjID string `json:"obj_id"`
+	// js id
+	JsID int64 `json:"js_id"`
 	// 开启状态
 	Status bool `json:"status"`
 }
@@ -40,6 +44,7 @@ func NewFakerResponse(f *models.Faker) *FakerResp {
 		ReqType: f.ReqType,
 		Text:    f.Text,
 		ObjID:   f.ObjID,
+		JsID:    f.JsID,
 		Status:  f.Status,
 	}
 }
@@ -51,6 +56,7 @@ func (fr *FakerReq) ToModel(openID string) *models.Faker {
 		ReqType: fr.ReqType,
 		Text:    fr.Text,
 		ObjID:   fr.ObjID,
+		JsID:    fr.JsID,
 		Status:  fr.Status,
 		Base: models.Base{
 			CreateBy: openID,
@@ -70,6 +76,8 @@ type FakerUpdateReq struct {
 	Text string `json:"text"`
 	// 上传文件接口返回的id
 	ObjID string `json:"obj_id"`
+	// js id
+	JsID int64 `json:"js_id"`
 	// 开启状态
 	Status bool `json:"status"`
 }
@@ -80,6 +88,7 @@ func (fuq *FakerUpdateReq) ToMap(openID string) map[string]interface{} {
 		"req_type": fuq.ReqType,
 		"text":     fuq.Text,
 		"obj_id":   fuq.ObjID,
+		"js_id":    fuq.JsID,
 		"status":   fuq.Status,
 	}
 }

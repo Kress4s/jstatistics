@@ -15,22 +15,23 @@ func RecordSystemLog(funcName, param, content string) context.Handler {
 		userName := userInfo["user_name"].(string)
 		ip := ctx.RemoteAddr()
 		address := ctx.Path()
+		var description string
 		switch funcName {
 		case "Update":
 			id := ctx.Params().GetString(param)
-			content = content + param + ": " + id
+			description = content + param + ": " + id
 		case "Delete":
 			id := ctx.Params().GetString(param)
-			content = content + param + ": " + id
+			description = content + param + ": " + id
 		case "MultiDelete":
 			ids := ctx.URLParam(param)
-			content = content + param + ": " + ids
+			description = content + param + ": " + ids
 		}
 		if err := service.GetSyslogService().Create(&vo.SystemLogReq{
 			UserName:    userName,
 			IP:          ip,
 			Address:     address,
-			Description: content,
+			Description: description,
 		}); err != nil {
 			ctx.Application().Logger().Error("failed to record system log: ", err)
 		}
