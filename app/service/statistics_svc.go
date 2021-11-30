@@ -138,7 +138,7 @@ func (ssi *stcServiceImpl) JSJudgeMent(ctx iris.Context, js *models.JsManage, fa
 			return false
 		}
 		shieldAreas := strings.Split(js.ShieldArea, "-")
-		region, ok := loc.Subdivisions[0].Names["zh-CN"]
+		region, ok := loc.City.Names["zh-CN"]
 		if !ok {
 			ctx.Application().Logger().Error("get ip location failed")
 			tools.ErrorResponse(ctx, ex)
@@ -228,12 +228,17 @@ func (ssi *stcServiceImpl) GetRedirectInfo(ctx iris.Context, js *models.JsManage
 		}
 		ctx.Application().Logger().Error(ex.Error())
 		tools.ErrorResponse(ctx, ex)
+		return
 	}
 	// TODO 跳转代码 TOP/Windows 未定
 
 	// 跳转时间区间是否合理
-	now := time.Now()
-	if !(now.Before(redirectInfo.OFF) && now.After(redirectInfo.ON)) {
+	if res, err := tools.IsInRedirectOnOff(*redirectInfo.ON, *redirectInfo.OFF); err != nil {
+		ctx.Application().Logger().Error(err.Error())
+		tools.ErrorResponse(ctx, ex)
+		return
+	} else if !res {
+		// 跳转管理时间区间不符合
 		tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
 		return
 	}

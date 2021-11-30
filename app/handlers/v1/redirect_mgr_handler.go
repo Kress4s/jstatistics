@@ -209,6 +209,35 @@ func (jmh *RmHandler) ListLogByCategoryID(ctx iris.Context) mvc.Result {
 	return response.JSON(resp)
 }
 
+// StatusChange godoc
+// @Summary 修改跳转管理状态
+// @Description 修改跳转管理状态信息
+// @Tags 应用管理 - 跳转管理
+// @Param id path string true "跳转管理id"
+// @Param status query bool true "跳转管理修改的状态"
+// @Success 200 "修改跳转管理状态成功"
+// @Failure 400 {object} vo.Error "请求参数错误"
+// @Failure 401 {object} vo.Error "当前用户登录令牌失效"
+// @Failure 403 {object} vo.Error "当前操作无权限"
+// @Failure 500 {object} vo.Error "服务器内部错误"
+// @Security ApiKeyAuth
+// @Router /api/v1/application/redirect/{id}/status [patch]
+func (jmh *RmHandler) StatusChange(ctx iris.Context) mvc.Result {
+	status, err := ctx.URLParamBool(constant.Status)
+	if err != nil {
+		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
+	}
+	id, err := ctx.Params().GetInt64(constant.ID)
+	if err != nil {
+		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
+	}
+	ex := jmh.Svc.StatusChange(jmh.UserName, id, status)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	return response.OK()
+}
+
 // BeforeActivation 初始化路由
 func (jmh *RmHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodPost, "/redirect", "Create", middlewares.RecordSystemLog("Create", "", "创建跳转信息成功"))
@@ -218,4 +247,5 @@ func (jmh *RmHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodPut, "/redirect/{id:string}", "Update", middlewares.RecordSystemLog("Update", "id", "更新跳转信息成功"))
 	b.Handle(iris.MethodDelete, "/redirect/{id:string}", "Delete", middlewares.RecordSystemLog("Delete", "id", "删除跳转信息成功"))
 	b.Handle(iris.MethodDelete, "/redirect/multi", "MultiDelete", middlewares.RecordSystemLog("MultiDelete", "ids", "批量删除跳转信息成功"))
+	b.Handle(iris.MethodPatch, "/redirect/{id:string}/status", "StatusChange")
 }

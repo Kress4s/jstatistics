@@ -2318,7 +2318,7 @@ var doc = `{
                 "tags": [
                     "应用管理 - 伪装内容"
                 ],
-                "summary": "创建伪装内容",
+                "summary": "创建伪装内容(注意当 /application/faker/js/{js_id} 接口返回状态码404，才调用；否则Update 接口)",
                 "parameters": [
                     {
                         "description": "FakerReq",
@@ -2333,6 +2333,61 @@ var doc = `{
                 "responses": {
                     "200": {
                         "description": "创建伪装内容成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/application/faker/js/{js_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询js下伪装内容信息",
+                "tags": [
+                    "应用管理 - 伪装内容"
+                ],
+                "summary": "查询js下的伪装内容",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "伪装内容的js ID",
+                        "name": "js_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询伪装内容成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.FakerResp"
+                        }
                     },
                     "400": {
                         "description": "请求参数错误",
@@ -2425,7 +2480,7 @@ var doc = `{
                 "tags": [
                     "应用管理 - 伪装内容"
                 ],
-                "summary": "修改伪装内容",
+                "summary": "修改伪装内容(注意当 /application/faker/js/{js_id} 接口返回状态码200，才调用；否则Create 接口)",
                 "parameters": [
                     {
                         "type": "string",
@@ -3977,6 +4032,88 @@ var doc = `{
                 }
             }
         },
+        "/api/v1/application/redirect/logs/category/{cid}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询跳转管理日志列表",
+                "tags": [
+                    "应用管理 - 跳转管理 - 操作日志"
+                ],
+                "summary": "查询跳转管理日志列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "js分类id",
+                        "name": "cid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "请求页",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页大小",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询跳转管理日志列表成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/vo.DataPagination"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/vo.RedirectLogResp"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/application/redirect/multi": {
             "delete": {
                 "security": [
@@ -4193,7 +4330,66 @@ var doc = `{
                 }
             }
         },
-        "/api/v1/application/redirects": {
+        "/api/v1/application/redirect/{id}/status": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "修改跳转管理状态信息",
+                "tags": [
+                    "应用管理 - 跳转管理"
+                ],
+                "summary": "修改跳转管理状态",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "跳转管理id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "跳转管理修改的状态",
+                        "name": "status",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "修改跳转管理状态成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/application/redirects/category/{cid}": {
             "get": {
                 "security": [
                     {
@@ -4206,6 +4402,13 @@ var doc = `{
                 ],
                 "summary": "查询跳转管理列表",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "js分类id",
+                        "name": "cid",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "type": "integer",
                         "description": "请求页",
@@ -6139,19 +6342,15 @@ var doc = `{
             "type": "object",
             "properties": {
                 "create_at": {
-                    "description": "创建时间",
                     "type": "string"
                 },
                 "id": {
-                    "description": "id",
                     "type": "integer"
                 },
                 "ip": {
-                    "description": "ip",
                     "type": "string"
                 },
                 "title": {
-                    "description": "标题",
                     "type": "string"
                 }
             }
@@ -6186,19 +6385,15 @@ var doc = `{
             "type": "object",
             "properties": {
                 "create_at": {
-                    "description": "创建时间",
                     "type": "string"
                 },
                 "id": {
-                    "description": "ID",
                     "type": "integer"
                 },
                 "ip": {
-                    "description": "cdn",
                     "type": "string"
                 },
                 "title": {
-                    "description": "标题",
                     "type": "string"
                 }
             }
@@ -6232,11 +6427,9 @@ var doc = `{
             "type": "object",
             "properties": {
                 "id": {
-                    "description": "域名配置的id",
                     "type": "integer"
                 },
                 "title": {
-                    "description": "域名配置的标题",
                     "type": "string"
                 }
             }
@@ -6245,23 +6438,18 @@ var doc = `{
             "type": "object",
             "properties": {
                 "certificate": {
-                    "description": "证书",
                     "type": "string"
                 },
                 "domain": {
-                    "description": "域名",
                     "type": "string"
                 },
                 "secret_key": {
-                    "description": "秘钥",
                     "type": "string"
                 },
                 "ssl": {
-                    "description": "ssl",
                     "type": "boolean"
                 },
                 "title": {
-                    "description": "标题",
                     "type": "string"
                 }
             }
@@ -6270,27 +6458,21 @@ var doc = `{
             "type": "object",
             "properties": {
                 "certificate": {
-                    "description": "证书",
                     "type": "string"
                 },
                 "domain": {
-                    "description": "域名",
                     "type": "string"
                 },
                 "id": {
-                    "description": "id",
                     "type": "integer"
                 },
                 "secret_key": {
-                    "description": "秘钥",
                     "type": "string"
                 },
                 "ssl": {
-                    "description": "ssl",
                     "type": "boolean"
                 },
                 "title": {
-                    "description": "标题",
                     "type": "string"
                 }
             }
@@ -6299,23 +6481,18 @@ var doc = `{
             "type": "object",
             "properties": {
                 "certificate": {
-                    "description": "证书",
                     "type": "string"
                 },
                 "domain": {
-                    "description": "域名",
                     "type": "string"
                 },
                 "secret_key": {
-                    "description": "秘钥",
                     "type": "string"
                 },
                 "ssl": {
-                    "description": "ssl",
                     "type": "boolean"
                 },
                 "title": {
-                    "description": "标题",
                     "type": "string"
                 }
             }
@@ -6324,18 +6501,15 @@ var doc = `{
             "type": "object",
             "properties": {
                 "args": {
-                    "description": "参数",
                     "type": "array",
                     "items": {
                         "type": "string"
                     }
                 },
                 "code": {
-                    "description": "错误码",
                     "type": "integer"
                 },
                 "msg": {
-                    "description": "错误消息",
                     "type": "string"
                 }
             }
@@ -6343,16 +6517,20 @@ var doc = `{
         "vo.FakerReq": {
             "type": "object",
             "properties": {
+                "js_id": {
+                    "description": "js id",
+                    "type": "integer"
+                },
                 "obj_id": {
-                    "description": "上传文件接口返回的id",
+                    "description": "文件上传成功返回的id",
                     "type": "string"
                 },
                 "req_type": {
-                    "description": "请求类型(type为文本情况下) 0:text/html,1:text/plain;2:text/xml,3:application/json",
+                    "description": "文本类型下: 请求类型设置，0:text/html,1:text/plain;2:text/xml,3:application/json",
                     "type": "integer"
                 },
                 "status": {
-                    "description": "开启状态",
+                    "description": "状态",
                     "type": "boolean"
                 },
                 "text": {
@@ -6360,7 +6538,7 @@ var doc = `{
                     "type": "string"
                 },
                 "type": {
-                    "description": "类型 0:文本；1:图片 2：音频 3：视频",
+                    "description": "0: 文本；1:图片; 2: mp3; 3:mp4",
                     "type": "integer"
                 }
             }
@@ -6372,16 +6550,20 @@ var doc = `{
                     "description": "id",
                     "type": "integer"
                 },
+                "js_id": {
+                    "description": "js id",
+                    "type": "integer"
+                },
                 "obj_id": {
-                    "description": "上传文件接口返回的id",
+                    "description": "文件上传成功返回的id",
                     "type": "string"
                 },
                 "req_type": {
-                    "description": "请求类型(type为文本情况下) 0:text/html,1:text/plain;2:text/xml,3:application/json",
+                    "description": "文本类型下: 请求类型设置，0:text/html,1:text/plain;2:text/xml,3:application/json",
                     "type": "integer"
                 },
                 "status": {
-                    "description": "开启状态",
+                    "description": "状态",
                     "type": "boolean"
                 },
                 "text": {
@@ -6389,7 +6571,7 @@ var doc = `{
                     "type": "string"
                 },
                 "type": {
-                    "description": "类型 0:文本；1:图片 2：音频 3：视频",
+                    "description": "0: 文本；1:图片; 2: mp3; 3:mp4",
                     "type": "integer"
                 }
             }
@@ -6397,16 +6579,20 @@ var doc = `{
         "vo.FakerUpdateReq": {
             "type": "object",
             "properties": {
+                "js_id": {
+                    "description": "js id",
+                    "type": "integer"
+                },
                 "obj_id": {
-                    "description": "上传文件接口返回的id",
+                    "description": "文件上传成功返回的id",
                     "type": "string"
                 },
                 "req_type": {
-                    "description": "请求类型(type为文本情况下) 0:text/html,1:text/plain;2:text/xml,3:application/json",
+                    "description": "文本类型下: 请求类型设置，0:text/html,1:text/plain;2:text/xml,3:application/json",
                     "type": "integer"
                 },
                 "status": {
-                    "description": "开启状态",
+                    "description": "状态",
                     "type": "boolean"
                 },
                 "text": {
@@ -6414,7 +6600,7 @@ var doc = `{
                     "type": "string"
                 },
                 "type": {
-                    "description": "类型 0:文本；1:图片 2：音频 3：视频",
+                    "description": "0: 文本；1:图片; 2: mp3; 3:mp4",
                     "type": "integer"
                 }
             }
@@ -6523,11 +6709,9 @@ var doc = `{
             "type": "object",
             "properties": {
                 "bucket": {
-                    "description": "时间",
                     "type": "string"
                 },
                 "count": {
-                    "description": "访问量",
                     "type": "integer"
                 }
             }
@@ -6544,15 +6728,12 @@ var doc = `{
             "type": "object",
             "properties": {
                 "domain_id": {
-                    "description": "域名ID，未选择则传 0",
                     "type": "integer"
                 },
                 "primary_id": {
-                    "description": "js主分类ID",
                     "type": "integer"
                 },
                 "title": {
-                    "description": "标题",
                     "type": "string"
                 }
             }
@@ -6561,19 +6742,15 @@ var doc = `{
             "type": "object",
             "properties": {
                 "domain": {
-                    "description": "域名配置信息",
                     "$ref": "#/definitions/vo.Domain"
                 },
                 "id": {
-                    "description": "id",
                     "type": "integer"
                 },
                 "primary": {
-                    "description": "js主分类的信息",
                     "$ref": "#/definitions/vo.JsPrimaryResp"
                 },
                 "title": {
-                    "description": "标题",
                     "type": "string"
                 }
             }
@@ -6582,15 +6759,12 @@ var doc = `{
             "type": "object",
             "properties": {
                 "domain_id": {
-                    "description": "域名ID",
                     "type": "integer"
                 },
                 "primary_id": {
-                    "description": "js主分类ID",
                     "type": "integer"
                 },
                 "title": {
-                    "description": "标题",
                     "type": "string"
                 }
             }
@@ -6599,65 +6773,51 @@ var doc = `{
             "type": "object",
             "properties": {
                 "category_id": {
-                    "description": "所属js分类的ID",
                     "type": "integer"
                 },
                 "client_type": {
-                    "description": "客户端 0：移动端； 1：PC端",
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
                 },
                 "from_mode": {
-                    "description": "来源 0：无；1：关键词 2：搜索引擎",
                     "type": "integer"
                 },
                 "href_id": {
-                    "description": "href 跳转id，多个用 \",\" 连接",
                     "type": "string"
                 },
                 "key_word": {
-                    "description": "关键词",
                     "type": "string"
                 },
                 "redirect_code": {
-                    "description": "跳转代码 0：Top；1：Windows",
                     "type": "integer"
                 },
                 "redirect_count": {
-                    "description": "跳转次数",
                     "type": "integer"
                 },
                 "redirect_mode": {
-                    "description": "跳转方式",
                     "type": "integer"
                 },
                 "release_time": {
-                    "description": "封禁小时",
                     "type": "integer"
                 },
                 "search_engines": {
-                    "description": "搜索引擎",
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
                 },
                 "shield_area": {
-                    "description": "屏蔽地区，多个用 ”-“ 相连；eg：北京市-上海市-...",
                     "type": "string"
                 },
                 "status": {
-                    "description": "状态",
                     "type": "boolean"
                 },
                 "title": {
-                    "description": "标题",
                     "type": "string"
                 },
                 "wait_time": {
-                    "description": "等待时间",
                     "type": "integer"
                 }
             }
@@ -6666,73 +6826,57 @@ var doc = `{
             "type": "object",
             "properties": {
                 "category_id": {
-                    "description": "分类ID",
                     "type": "integer"
                 },
                 "client_type": {
-                    "description": "客户端 0：移动端； 1：PC端",
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
                 },
                 "from_mode": {
-                    "description": "来源 0：无；1：关键词 2：搜索引擎",
                     "type": "integer"
                 },
                 "href_id": {
-                    "description": "href 跳转id，多个用 \",\" 连接",
                     "type": "string"
                 },
                 "id": {
-                    "description": "id",
                     "type": "integer"
                 },
                 "ip": {
-                    "description": "今日IP数",
                     "type": "integer"
                 },
                 "key_word": {
-                    "description": "关键词",
                     "type": "string"
                 },
                 "redirect_code": {
-                    "description": "跳转代码 0：Top；1：Windows",
                     "type": "integer"
                 },
                 "redirect_count": {
-                    "description": "跳转次数",
                     "type": "integer"
                 },
                 "redirect_mode": {
-                    "description": "跳转方式",
                     "type": "integer"
                 },
                 "release_time": {
-                    "description": "封禁小时",
                     "type": "integer"
                 },
                 "search_engines": {
-                    "description": "搜索引擎",
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
                 },
                 "shield_area": {
-                    "description": "屏蔽地区，多个用 ”-“ 相连；eg：北京市-上海市-...",
                     "type": "string"
                 },
                 "status": {
-                    "description": "状态",
                     "type": "boolean"
                 },
                 "title": {
-                    "description": "标题",
                     "type": "string"
                 },
                 "wait_time": {
-                    "description": "等待时间",
                     "type": "integer"
                 }
             }
@@ -6741,57 +6885,45 @@ var doc = `{
             "type": "object",
             "properties": {
                 "category_id": {
-                    "description": "分类ID",
                     "type": "integer"
                 },
                 "client_type": {
-                    "description": "客户端 0：移动端； 1：PC端",
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
                 },
                 "from_mode": {
-                    "description": "来源 0：无；1：关键词 2：搜索引擎",
                     "type": "integer"
                 },
                 "href_id": {
-                    "description": "href 跳转id，多个用 \",\" 连接",
                     "type": "string"
                 },
                 "key_word": {
-                    "description": "关键词",
                     "type": "string"
                 },
                 "redirect_code": {
-                    "description": "跳转代码 0：Top；1：Windows",
                     "type": "integer"
                 },
                 "redirect_count": {
-                    "description": "跳转次数",
                     "type": "integer"
                 },
                 "redirect_mode": {
-                    "description": "跳转方式",
                     "type": "integer"
                 },
                 "release_time": {
-                    "description": "封禁小时",
                     "type": "integer"
                 },
                 "search_engines": {
-                    "description": "搜索引擎",
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
                 },
                 "shield_area": {
-                    "description": "屏蔽地区，多个用 ”-“ 相连；eg：北京市-上海市-...",
                     "type": "string"
                 },
                 "wait_time": {
-                    "description": "等待时间",
                     "type": "integer"
                 }
             }
@@ -6809,11 +6941,9 @@ var doc = `{
             "type": "object",
             "properties": {
                 "id": {
-                    "description": "主分类id",
                     "type": "integer"
                 },
                 "title": {
-                    "description": "标题名",
                     "type": "string"
                 }
             }
@@ -6916,35 +7046,27 @@ var doc = `{
             "type": "object",
             "properties": {
                 "id": {
-                    "description": "ID",
                     "type": "integer"
                 },
                 "identify": {
-                    "description": "权限标识",
                     "type": "string"
                 },
                 "index": {
-                    "description": "索引",
                     "type": "integer"
                 },
                 "menu_name": {
-                    "description": "菜单名称",
                     "type": "string"
                 },
                 "name": {
-                    "description": "名称",
                     "type": "string"
                 },
                 "parent_id": {
-                    "description": "父级菜单的ID,最高级为 0",
                     "type": "integer"
                 },
                 "route": {
-                    "description": "路由",
                     "type": "string"
                 },
                 "type": {
-                    "description": "权限类型   0: 菜单权限 1: 操作权限",
                     "type": "integer"
                 }
             }
@@ -6953,31 +7075,24 @@ var doc = `{
             "type": "object",
             "properties": {
                 "id": {
-                    "description": "ID",
                     "type": "integer"
                 },
                 "index": {
-                    "description": "索引",
                     "type": "integer"
                 },
                 "menu_name": {
-                    "description": "菜单名称",
                     "type": "string"
                 },
                 "name": {
-                    "description": "名称",
                     "type": "string"
                 },
                 "parent_id": {
-                    "description": "父级ID",
                     "type": "integer"
                 },
                 "route": {
-                    "description": "路由",
                     "type": "string"
                 },
                 "sub_permissions": {
-                    "description": "子级权限",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/vo.PermissionTree"
@@ -7022,7 +7137,6 @@ var doc = `{
             "type": "object",
             "properties": {
                 "admin": {
-                    "description": "是否是管理员",
                     "type": "boolean"
                 },
                 "id": {
@@ -7033,15 +7147,64 @@ var doc = `{
                 }
             }
         },
-        "vo.RedirectManageReq": {
+        "vo.RedirectLogResp": {
             "type": "object",
             "properties": {
                 "android": {
-                    "description": "android端跳转地址",
+                    "description": "现android跳转地址",
                     "type": "string"
                 },
                 "category_id": {
                     "description": "js分类id",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "integer"
+                },
+                "ios": {
+                    "description": "现ios跳转地址",
+                    "type": "string"
+                },
+                "old_android": {
+                    "description": "原android跳转地址",
+                    "type": "string"
+                },
+                "old_ios": {
+                    "description": "原IOS跳转地址",
+                    "type": "string"
+                },
+                "old_pc": {
+                    "description": "原pc跳转地址",
+                    "type": "string"
+                },
+                "pc": {
+                    "description": "现pc跳转地址",
+                    "type": "string"
+                },
+                "redirect_id": {
+                    "description": "跳转管理id",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "操作类型",
+                    "type": "string"
+                },
+                "update_at": {
+                    "description": "修改时间",
+                    "type": "string"
+                }
+            }
+        },
+        "vo.RedirectManageReq": {
+            "type": "object",
+            "properties": {
+                "android": {
+                    "description": "android跳转地址",
+                    "type": "string"
+                },
+                "category_id": {
+                    "description": "分类id",
                     "type": "integer"
                 },
                 "ios": {
@@ -7049,15 +7212,15 @@ var doc = `{
                     "type": "string"
                 },
                 "off": {
-                    "description": "关闭时间",
+                    "description": "关闭时间(不选不传); eg: 01:02:03",
                     "type": "string"
                 },
                 "on": {
-                    "description": "开启时间",
+                    "description": "开启时间(不选不传); eg: 01:02:03",
                     "type": "string"
                 },
                 "pc": {
-                    "description": "PC端跳转地址",
+                    "description": "pc跳转地址",
                     "type": "string"
                 },
                 "title": {
@@ -7070,31 +7233,29 @@ var doc = `{
             "type": "object",
             "properties": {
                 "android": {
-                    "description": "android端跳转地址",
                     "type": "string"
                 },
                 "id": {
-                    "description": "id",
                     "type": "integer"
                 },
                 "ios": {
-                    "description": "ios跳转地址",
                     "type": "string"
                 },
                 "off": {
-                    "description": "关闭时间",
+                    "description": "开启时间(不选不传)",
                     "type": "string"
                 },
                 "on": {
-                    "description": "开启时间",
+                    "description": "开启时间(不选不传)",
                     "type": "string"
                 },
                 "pc": {
-                    "description": "PC端跳转地址",
                     "type": "string"
                 },
+                "status": {
+                    "type": "boolean"
+                },
                 "title": {
-                    "description": "标题",
                     "type": "string"
                 }
             }
@@ -7103,7 +7264,6 @@ var doc = `{
             "type": "object",
             "properties": {
                 "android": {
-                    "description": "android端跳转地址",
                     "type": "string"
                 },
                 "category_id": {
@@ -7111,23 +7271,18 @@ var doc = `{
                     "type": "integer"
                 },
                 "ios": {
-                    "description": "ios跳转地址",
                     "type": "string"
                 },
                 "off": {
-                    "description": "关闭时间",
                     "type": "string"
                 },
                 "on": {
-                    "description": "开启时间",
                     "type": "string"
                 },
                 "pc": {
-                    "description": "PC端跳转地址",
                     "type": "string"
                 },
                 "title": {
-                    "description": "标题",
                     "type": "string"
                 }
             }
@@ -7149,11 +7304,9 @@ var doc = `{
             "type": "object",
             "properties": {
                 "id": {
-                    "description": "角色ID",
                     "type": "integer"
                 },
                 "name": {
-                    "description": "角色命",
                     "type": "string"
                 }
             }
@@ -7186,23 +7339,18 @@ var doc = `{
             "type": "object",
             "properties": {
                 "description": {
-                    "description": "说明",
                     "type": "string"
                 },
                 "id": {
-                    "description": "角色ID",
                     "type": "integer"
                 },
                 "identify": {
-                    "description": "标识符",
                     "type": "string"
                 },
                 "name": {
-                    "description": "角色命",
                     "type": "string"
                 },
                 "permissions": {
-                    "description": "权限",
                     "type": "array",
                     "items": {
                         "type": "integer"
@@ -7279,11 +7427,9 @@ var doc = `{
             "type": "object",
             "properties": {
                 "bucket": {
-                    "description": "时间",
                     "type": "string"
                 },
                 "count": {
-                    "description": "访问量",
                     "type": "integer"
                 }
             }
@@ -7313,7 +7459,6 @@ var doc = `{
             "type": "object",
             "properties": {
                 "admin": {
-                    "description": "是否是管理员",
                     "type": "boolean"
                 },
                 "id": {
@@ -7331,15 +7476,12 @@ var doc = `{
             "type": "object",
             "properties": {
                 "menu_id": {
-                    "description": "菜单ID",
                     "type": "integer"
                 },
                 "menu_name": {
-                    "description": "菜单名字",
                     "type": "string"
                 },
                 "router": {
-                    "description": "菜单路由",
                     "type": "string"
                 }
             }

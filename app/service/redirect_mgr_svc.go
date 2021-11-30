@@ -43,6 +43,13 @@ type RmService interface {
 	Update(openID string, id int64, param *vo.RedirectManageUpdateReq) exception.Exception
 	Delete(id int64) exception.Exception
 	MultiDelete(ids string) exception.Exception
+	StatusChange(openID string, id int64, status bool) exception.Exception
+}
+
+func (rsi *rmServiceImpl) StatusChange(openID string, id int64, status bool) exception.Exception {
+	return rsi.repo.StatusChange(rsi.db, id, map[string]interface{}{
+		"status": status,
+	})
 }
 
 func (rsi *rmServiceImpl) Create(openID string, param *vo.RedirectManageReq) exception.Exception {

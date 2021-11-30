@@ -40,11 +40,13 @@ var migrations = []*gormigrate.Migration{
 	versions.V0003InitProjectData,
 	// init sys log table
 	versions.V0004InitLogTables,
+	// init redirect log table
+	versions.V0005InitRedirectLogTables,
 }
 
 func Migrate() error {
 	return gormigrate.New(database.GetDriver(), &gormigrate.Options{
-		TableName:                 "mems_migrations",
+		TableName:                 "js_migrations",
 		IDColumnName:              "id",
 		IDColumnSize:              255,
 		UseTransaction:            true,

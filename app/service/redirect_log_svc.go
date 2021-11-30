@@ -16,9 +16,8 @@ var (
 )
 
 type rlServiceImpl struct {
-	db     *gorm.DB
-	repo   repositories.RlRepo
-	rlRepo repositories.RlRepo
+	db   *gorm.DB
+	repo repositories.RlRepo
 }
 
 func GetRlService() RlService {

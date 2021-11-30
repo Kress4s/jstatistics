@@ -22,3 +22,16 @@ func GetLastMonthTimeScope(now time.Time) (string, string) {
 	begin := end.AddDate(0, -1, 0)
 	return begin.Format(constant.DateFormat), end.Format(constant.DateFormat)
 }
+
+// 判断跳转的时间区间是否符合
+func IsInRedirectOnOff(on, off string) (bool, error) {
+	now := time.Now()
+	ont, err := time.Parse("15:04:05", on)
+	offT, _err := time.Parse("15:04:05", off)
+	if err != nil && _err != nil {
+		return false, err
+	}
+	onTime := time.Date(now.Year(), now.Month(), now.Day(), ont.Hour(), ont.Minute(), ont.Second(), 0, time.Local)
+	offTime := time.Date(now.Year(), now.Month(), now.Day(), offT.Hour(), offT.Minute(), offT.Second(), 0, time.Local)
+	return now.Before(offTime) && now.After(onTime), nil
+}
