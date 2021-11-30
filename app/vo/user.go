@@ -41,25 +41,20 @@ type LoginReq struct {
 }
 
 type ProfileResp struct {
-	ID   int64  `json:"id"`
-	Name string `json:"name"`
-	// 是否是管理员
-	Admin bool `json:"admin"`
+	Name  string `json:"name"`
+	ID    int64  `json:"id"`
+	Admin bool   `json:"admin"`
 }
 
 type UserResp struct {
-	ID       int64  `json:"id"`
 	UserName string `json:"user_name"`
-	// 是否是管理员
-	Admin  bool `json:"admin"`
-	Status bool `json:"status"`
+	ID       int64  `json:"id"`
+	Admin    bool   `json:"admin"`
+	Status   bool   `json:"status"`
 }
 
 type UserToMenusResp struct {
-	// 菜单ID
-	MenuID int64 `json:"menu_id"`
-	// 菜单名字
 	MenuName string `json:"menu_name"`
-	// 菜单路由
-	Route string `json:"router"`
+	Route    string `json:"router"`
+	MenuID   int64  `json:"menu_id"`
 }

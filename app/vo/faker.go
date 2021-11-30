@@ -6,35 +6,22 @@ import (
 )
 
 type FakerReq struct {
-	// 类型 0:文本；1:图片 2：音频 3：视频
-	Type int `json:"type"`
-	// 请求类型(type为文本情况下) 0:text/html,1:text/plain;2:text/xml,3:application/json
-	ReqType int `json:"req_type"`
-	// 文本内容
-	Text string `json:"text"`
-	// 上传文件接口返回的id
-	ObjID string `json:"obj_id"`
-	// js id
-	JsID int64 `json:"js_id"`
-	// 开启状态
-	Status bool `json:"status"`
+	Text    string `json:"text"`
+	ObjID   string `json:"obj_id"`
+	Type    int    `json:"type"`
+	ReqType int    `json:"req_type"`
+	JsID    int64  `json:"js_id"`
+	Status  bool   `json:"status"`
 }
 
 type FakerResp struct {
-	// id
-	ID int64 `json:"id"`
-	// 类型 0:文本；1:图片 2：音频 3：视频
-	Type int `json:"type"`
-	// 请求类型(type为文本情况下) 0:text/html,1:text/plain;2:text/xml,3:application/json
-	ReqType int `json:"req_type"`
-	// 文本内容
-	Text string `json:"text"`
-	// 上传文件接口返回的id
-	ObjID string `json:"obj_id"`
-	// js id
-	JsID int64 `json:"js_id"`
-	// 开启状态
-	Status bool `json:"status"`
+	Text    string `json:"text"`
+	ObjID   string `json:"obj_id"`
+	ID      int64  `json:"id"`
+	Type    int    `json:"type"`
+	ReqType int    `json:"req_type"`
+	JsID    int64  `json:"js_id"`
+	Status  bool   `json:"status"`
 }
 
 func NewFakerResponse(f *models.Faker) *FakerResp {
@@ -68,18 +55,12 @@ func (fr *FakerReq) ToModel(openID string) *models.Faker {
 }
 
 type FakerUpdateReq struct {
-	// 类型 0:文本；1:图片 2：音频 3：视频
-	Type int `json:"type"`
-	// 请求类型(type为文本情况下) 0:text/html,1:text/plain;2:text/xml,3:application/json
-	ReqType int `json:"req_type"`
-	// 文本内容
-	Text string `json:"text"`
-	// 上传文件接口返回的id
-	ObjID string `json:"obj_id"`
-	// js id
-	JsID int64 `json:"js_id"`
-	// 开启状态
-	Status bool `json:"status"`
+	Text    string `json:"text"`
+	ObjID   string `json:"obj_id"`
+	Type    int    `json:"type"`
+	ReqType int    `json:"req_type"`
+	JsID    int64  `json:"js_id"`
+	Status  bool   `json:"status"`
 }
 
 func (fuq *FakerUpdateReq) ToMap(openID string) map[string]interface{} {

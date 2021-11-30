@@ -34,6 +34,7 @@ type FakerService interface {
 	Create(openID string, param *vo.FakerReq) exception.Exception
 	Get(id int64) (*vo.FakerResp, exception.Exception)
 	Update(openID string, id int64, param *vo.FakerUpdateReq) exception.Exception
+	GetByJsID(jsID int64) (*vo.FakerResp, exception.Exception)
 }
 
 func (fsi *fakerServiceImpl) Create(openID string, param *vo.FakerReq) exception.Exception {
@@ -43,6 +44,14 @@ func (fsi *fakerServiceImpl) Create(openID string, param *vo.FakerReq) exception
 
 func (fsi *fakerServiceImpl) Get(id int64) (*vo.FakerResp, exception.Exception) {
 	faker, ex := fsi.repo.Get(fsi.db, id)
+	if ex != nil {
+		return nil, ex
+	}
+	return vo.NewFakerResponse(faker), nil
+}
+
+func (fsi *fakerServiceImpl) GetByJsID(jsID int64) (*vo.FakerResp, exception.Exception) {
+	faker, ex := fsi.repo.GetByJsID(fsi.db, jsID)
 	if ex != nil {
 		return nil, ex
 	}

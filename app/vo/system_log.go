@@ -23,12 +23,12 @@ func (slr *SystemLogReq) ToModel() *models.SystemLog {
 }
 
 type SystemLogResp struct {
-	ID          int64     `json:"id"`
+	OperateAt   time.Time `json:"operateAt"`
 	UserName    string    `json:"user_name"`
 	IP          string    `json:"ip"`
 	Address     string    `json:"address"`
 	Description string    `json:"description"`
-	OperateAt   time.Time `json:"operateAt"`
+	ID          int64     `json:"id"`
 }
 
 func NewSysLogResp(log *models.SystemLog) *SystemLogResp {

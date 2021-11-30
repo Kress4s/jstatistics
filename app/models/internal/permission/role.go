@@ -6,11 +6,11 @@ import (
 )
 
 type Role struct {
-	ID          int64  `gorm:"column:id;primaryKey;unique;not null;comment:id"`
+	common.Base `gorm:"embedded"`
 	Name        string `gorm:"column:name;type:varchar(50);not null;comment:角色名"`
 	Identify    string `gorm:"column:identify;type:varchar(60);not null;comment:标识符"`
 	Description string `gorm:"column:description;type:varchar(60);comment:标识符"`
-	common.Base `gorm:"embedded"`
+	ID          int64  `gorm:"column:id;primaryKey;unique;not null;comment:id"`
 }
 
 func (Role) TableName() string {

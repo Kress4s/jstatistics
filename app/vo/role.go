@@ -50,21 +50,14 @@ func (r *RoleReq) ToModel(openID string) *models.Role {
 }
 
 type RoleResp struct {
-	// 角色ID
-	ID int64 `json:"id"`
-	// 角色命
-	Name string `json:"name"`
-	// 标识符
-	Identify string `json:"identify"`
-	// 说明
+	Name        string `json:"name"`
+	Identify    string `json:"identify"`
 	Description string `json:"description"`
-	// 权限
 	Permissions []int64
+	ID          int64 `json:"id"`
 }
 
 type RoleBriefResp struct {
-	// 角色ID
-	ID int64 `json:"id"`
-	// 角色命
 	Name string `json:"name"`
+	ID   int64  `json:"id"`
 }

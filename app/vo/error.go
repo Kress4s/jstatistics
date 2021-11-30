@@ -1,10 +1,7 @@
 package vo
 
 type Error struct {
-	// 错误码
-	Code int `json:"code"`
-	// 错误消息
-	Msg string `json:"msg"`
-	// 参数
+	Msg  string   `json:"msg"`
 	Args []string `json:"args"`
+	Code int      `json:"code"`
 }

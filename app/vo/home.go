@@ -21,17 +21,13 @@ type LastMonthIP struct {
 }
 
 type IPVisit struct {
-	// 访问量
-	Count int64 `json:"count"`
-	// 时间
 	Bucket string `json:"bucket"`
+	Count  int64  `json:"count"`
 }
 
 type UVVisit struct {
-	// 访问量
-	Count int64 `json:"count"`
-	// 时间
 	Bucket string `json:"bucket"`
+	Count  int64  `json:"count"`
 }
 
 type HomeIPAndUVisit struct {
@@ -49,10 +45,7 @@ type RegionStatisticResp struct {
 }
 
 type JSVisitStatisticResp struct {
-	// 排名
-	Rank int `json:"rank"`
-	// 标题
 	Title string `json:"title"`
-	// 访问数
-	Count int64 `json:"count"`
+	Rank  int    `json:"rank"`
+	Count int64  `json:"count"`
 }

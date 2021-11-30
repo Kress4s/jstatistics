@@ -6,10 +6,10 @@ import (
 )
 
 type CDN struct {
-	ID          int64  `gorm:"column:id;primaryKey;unique;not null;comment:id"`
+	common.Base `gorm:"embedded"`
 	Title       string `gorm:"column:title;type:varchar(50);not null;comment:标题"`
 	IP          string `gorm:"column:ip;type:varchar(50);uniqueIndex;not null;comment:ip"`
-	common.Base `gorm:"embedded"`
+	ID          int64  `gorm:"column:id;primaryKey;unique;not null;comment:id"`
 }
 
 func (CDN) TableName() string {

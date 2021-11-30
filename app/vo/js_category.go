@@ -6,12 +6,9 @@ import (
 )
 
 type JsCategoryReq struct {
-	// js主分类ID
-	PrimaryID int64 `json:"primary_id"`
-	// 标题
-	Title string `json:"title"`
-	// 域名ID，未选择则传 0
-	DomainID int64 `json:"domain_id"`
+	Title     string `json:"title"`
+	PrimaryID int64  `json:"primary_id"`
+	DomainID  int64  `json:"domain_id"`
 }
 
 func (jpr *JsCategoryReq) ToModel(openID string) *models.JsCategory {
@@ -30,21 +27,15 @@ func (jpr *JsCategoryReq) ToModel(openID string) *models.JsCategory {
 }
 
 type Domain struct {
-	// 域名配置的id
-	ID int64 `json:"id"`
-	// 域名配置的标题
 	Title string `json:"title"`
+	ID    int64  `json:"id"`
 }
 
 type JsCategoryResp struct {
-	// id
-	ID int64 `json:"id"`
-	// 标题
-	Title string `json:"title"`
-	// 域名配置信息
-	Domain *Domain `json:"domain"`
-	// js主分类的信息
+	Domain    *Domain       `json:"domain"`
+	Title     string        `json:"title"`
 	JsPrimary JsPrimaryResp `json:"primary"`
+	ID        int64         `json:"id"`
 }
 
 func NewJsCategoryResponse(jp *models.JsCategory, domain *models.DomainMgr, jsp *models.JsPrimary) *JsCategoryResp {
@@ -64,12 +55,9 @@ func NewJsCategoryResponse(jp *models.JsCategory, domain *models.DomainMgr, jsp 
 }
 
 type JsCategoryUpdateReq struct {
-	// js主分类ID
-	PrimaryID int64 `json:"primary_id"`
-	// 标题
-	Title string `json:"title"`
-	// 域名ID
-	DomainID int64 `json:"domain_id"`
+	Title     string `json:"title"`
+	PrimaryID int64  `json:"primary_id"`
+	DomainID  int64  `json:"domain_id"`
 }
 
 func (jpr *JsCategoryUpdateReq) ToMap(openID string) map[string]interface{} {

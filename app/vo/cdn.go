@@ -27,14 +27,10 @@ func (cr *CDNReq) ToModel(openID string) *models.CDN {
 }
 
 type CDNResp struct {
-	// ID
-	ID int64 `json:"id"`
-	// 标题
-	Title string `json:"title"`
-	// cdn
-	IP string `json:"ip"`
-	// 创建时间
 	CreateAt time.Time `json:"create_at"`
+	Title    string    `json:"title"`
+	IP       string    `json:"ip"`
+	ID       int64     `json:"id"`
 }
 
 func NewCDNResponse(im *models.CDN) *CDNResp {

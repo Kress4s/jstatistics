@@ -6,16 +6,11 @@ import (
 )
 
 type DomainReq struct {
-	// 标题
-	Title string `json:"title"`
-	// 域名
-	Domain string `json:"domain"`
-	// ssl
-	SSL bool `json:"ssl,omitempty"`
-	// 证书
+	Title       string `json:"title"`
+	Domain      string `json:"domain"`
 	Certificate string `json:"certificate,omitempty"`
-	// 秘钥
-	SecretKey string `json:"secret_key,omitempty"`
+	SecretKey   string `json:"secret_key,omitempty"`
+	SSL         bool   `json:"ssl,omitempty"`
 }
 
 func (dr *DomainReq) ToModel(openID string) *models.DomainMgr {
@@ -36,18 +31,12 @@ func (dr *DomainReq) ToModel(openID string) *models.DomainMgr {
 }
 
 type DomainResp struct {
-	// id
-	ID int64 `json:"id"`
-	// 标题
-	Title string `json:"title"`
-	// 域名
-	Domain string `json:"domain"`
-	// ssl
-	SSL bool `json:"ssl"`
-	// 证书
+	Title       string `json:"title"`
+	Domain      string `json:"domain"`
 	Certificate string `json:"certificate"`
-	// 秘钥
-	SecretKey string `json:"secret_key"`
+	SecretKey   string `json:"secret_key"`
+	ID          int64  `json:"id"`
+	SSL         bool   `json:"ssl"`
 }
 
 func NewDomainResponse(dm *models.DomainMgr) *DomainResp {
@@ -62,16 +51,11 @@ func NewDomainResponse(dm *models.DomainMgr) *DomainResp {
 }
 
 type DomainUpdateReq struct {
-	// 标题
-	Title string `json:"title"`
-	// 域名
-	Domain string `json:"domain"`
-	// ssl
-	SSL bool `json:"ssl,omitempty"`
-	// 证书
+	Title       string `json:"title"`
+	Domain      string `json:"domain"`
 	Certificate string `json:"certificate,omitempty"`
-	// 秘钥
-	SecretKey string `json:"secret_key,omitempty"`
+	SecretKey   string `json:"secret_key,omitempty"`
+	SSL         bool   `json:"ssl,omitempty"`
 }
 
 func (dur *DomainUpdateReq) ToMap(openID string) map[string]interface{} {

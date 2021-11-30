@@ -43,4 +43,7 @@ const (
 
 	// 日志
 	SystemLog = "js_system_log"
+
+	// 跳转管理的操作日志
+	RedirectLog = "js_redirect_log"
 )

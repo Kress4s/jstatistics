@@ -26,6 +26,8 @@ func RecordSystemLog(funcName, param, content string) context.Handler {
 		case "MultiDelete":
 			ids := ctx.URLParam(param)
 			description = content + param + ": " + ids
+		default:
+			description = content
 		}
 		if err := service.GetSyslogService().Create(&vo.SystemLogReq{
 			UserName:    userName,

@@ -32,6 +32,7 @@ type (
 	Object         = common.Object
 	Faker          = application.Faker
 	SystemLog      = common.SystemLog
+	RedirectLog    = application.RedirectLog
 
 	// view
 	IPVisitStatistic = dash_board.IPVisitStatistic

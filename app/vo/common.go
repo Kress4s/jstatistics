@@ -26,12 +26,9 @@ type DataPagination struct {
 }
 
 type PageInfo struct {
-	// 请求页
-	Page int `json:"page"`
-	// 页大小
-	PageSize int `json:"page_size"`
-	// 模糊搜索关键字
 	Keywords string `json:"keywords"`
+	Page     int    `json:"page"`
+	PageSize int    `json:"page_size"`
 }
 
 func (p *PageInfo) Offset() int {

@@ -8,34 +8,20 @@ import (
 )
 
 type JsManageReq struct {
-	// 标题
-	Title string `json:"title"`
-	// 屏蔽地区，多个用 ”-“ 相连；eg：北京市-上海市-...
-	ShieldArea string `json:"shield_area"`
-	// 客户端 0：移动端； 1：PC端
-	ClientType types.BigintArray `json:"client_type"`
-	// 跳转次数
-	RedirectCount int `json:"redirect_count"`
-	// 封禁小时
-	ReleaseTime int `json:"release_time"`
-	// 来源 0：无；1：关键词 2：搜索引擎
-	FromMode int `json:"from_mode"`
-	// 关键词
-	KeyWord string `json:"key_word"`
-	// 搜索引擎
+	KeyWord       string            `json:"key_word"`
+	ShieldArea    string            `json:"shield_area"`
+	HrefID        string            `json:"href_id"`
+	Title         string            `json:"title"`
+	ClientType    types.BigintArray `json:"client_type"`
 	SearchEngines types.BigintArray `json:"search_engines"`
-	// 跳转方式
-	RedirectMode int `json:"redirect_mode"`
-	// 跳转代码 0：Top；1：Windows
-	RedirectCode int `json:"redirect_code"`
-	// href 跳转id，多个用 "," 连接
-	HrefID string `json:"href_id"`
-	// 等待时间
-	WaitTime int `json:"wait_time"`
-	// 所属js分类的ID
-	CategoryID int64 `json:"category_id"`
-	// 状态
-	Status bool `json:"status"`
+	FromMode      int               `json:"from_mode"`
+	ReleaseTime   int               `json:"release_time"`
+	RedirectMode  int               `json:"redirect_mode"`
+	RedirectCode  int               `json:"redirect_code"`
+	RedirectCount int               `json:"redirect_count"`
+	WaitTime      int               `json:"wait_time"`
+	CategoryID    int64             `json:"category_id"`
+	Status        bool              `json:"status"`
 }
 
 func (jm *JsManageReq) ToModel(openID string) *models.JsManage {
@@ -67,38 +53,22 @@ func (jm *JsManageReq) ToModel(openID string) *models.JsManage {
 }
 
 type JsManageResp struct {
-	// id
-	ID int64 `json:"id"`
-	// 标题
-	Title string `json:"title"`
-	// 今日IP数
-	IP int `json:"ip"`
-	// 屏蔽地区，多个用 ”-“ 相连；eg：北京市-上海市-...
-	ShieldArea string `json:"shield_area"`
-	// 客户端 0：移动端； 1：PC端
-	ClientType types.BigintArray `json:"client_type"`
-	// 跳转次数
-	RedirectCount int `json:"redirect_count"`
-	// 封禁小时
-	ReleaseTime int `json:"release_time"`
-	// 来源 0：无；1：关键词 2：搜索引擎
-	FromMode int `json:"from_mode"`
-	// 关键词
-	KeyWord string `json:"key_word"`
-	// 搜索引擎
+	KeyWord       string            `json:"key_word"`
+	Title         string            `json:"title"`
+	HrefID        string            `json:"href_id"`
+	ShieldArea    string            `json:"shield_area"`
+	ClientType    types.BigintArray `json:"client_type"`
 	SearchEngines types.BigintArray `json:"search_engines"`
-	// 跳转方式
-	RedirectMode int `json:"redirect_mode"`
-	// 跳转代码 0：Top；1：Windows
-	RedirectCode int `json:"redirect_code"`
-	// href 跳转id，多个用 "," 连接
-	HrefID string `json:"href_id"`
-	// 等待时间
-	WaitTime int `json:"wait_time"`
-	// 分类ID
-	CategoryID int64 `json:"category_id"`
-	// 状态
-	Status bool `json:"status"`
+	ID            int64             `json:"id"`
+	FromMode      int               `json:"from_mode"`
+	ReleaseTime   int               `json:"release_time"`
+	RedirectCount int               `json:"redirect_count"`
+	RedirectMode  int               `json:"redirect_mode"`
+	RedirectCode  int               `json:"redirect_code"`
+	IP            int               `json:"ip"`
+	WaitTime      int               `json:"wait_time"`
+	CategoryID    int64             `json:"category_id"`
+	Status        bool              `json:"status"`
 }
 
 func NewJsManageResponse(jm *models.JsManage) *JsManageResp {
@@ -124,30 +94,18 @@ func NewJsManageResponse(jm *models.JsManage) *JsManageResp {
 }
 
 type JsManageUpdateReq struct {
-	// 屏蔽地区，多个用 ”-“ 相连；eg：北京市-上海市-...
-	ShieldArea string `json:"shield_area"`
-	// 客户端 0：移动端； 1：PC端
-	ClientType types.BigintArray `json:"client_type"`
-	// 跳转次数
-	RedirectCount int `json:"redirect_count"`
-	// 封禁小时
-	ReleaseTime int `json:"release_time"`
-	// 来源 0：无；1：关键词 2：搜索引擎
-	FromMode int `json:"from_mode"`
-	// 关键词
-	KeyWord string `json:"key_word"`
-	// 搜索引擎
+	ShieldArea    string            `json:"shield_area"`
+	HrefID        string            `json:"href_id"`
+	KeyWord       string            `json:"key_word"`
+	ClientType    types.BigintArray `json:"client_type"`
 	SearchEngines types.BigintArray `json:"search_engines"`
-	// 跳转方式
-	RedirectMode int `json:"redirect_mode"`
-	// 跳转代码 0：Top；1：Windows
-	RedirectCode int `json:"redirect_code"`
-	// href 跳转id，多个用 "," 连接
-	HrefID string `json:"href_id"`
-	// 等待时间
-	WaitTime int `json:"wait_time"`
-	// 分类ID
-	CategoryID int64 `json:"category_id"`
+	RedirectCount int               `json:"redirect_count"`
+	FromMode      int               `json:"from_mode"`
+	RedirectMode  int               `json:"redirect_mode"`
+	RedirectCode  int               `json:"redirect_code"`
+	ReleaseTime   int               `json:"release_time"`
+	WaitTime      int               `json:"wait_time"`
+	CategoryID    int64             `json:"category_id"`
 }
 
 func (jum *JsManageUpdateReq) ToMap(openID string) map[string]interface{} {
