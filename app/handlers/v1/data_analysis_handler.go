@@ -26,7 +26,7 @@ func NewDataAnalysisHandler() *DataAnalysisHandler {
 // @Tags 数据统计 - 流量统计
 // @Param pid query int true "JS主分类ID"
 // @Param cid query int false "JS分类ID"
-// @Param jid query int false "JS ID"
+// @Param js_id query int false "JS ID"
 // @Success 200 {object} vo.TodayIP "查询今日IP统计数成功"
 // @Failure 400 {object} vo.Error  "请求参数错误"
 // @Failure 401 {object} vo.Error "当前用户登录令牌失效"
@@ -52,7 +52,7 @@ func (dah *DataAnalysisHandler) TodayIP(ctx iris.Context) mvc.Result {
 // @Tags 数据统计 - 流量统计
 // @Param pid query int true "JS主分类ID"
 // @Param cid query int false "JS分类ID"
-// @Param jid query int false "JS ID"
+// @Param js_id query int false "JS ID"
 // @Success 200 {object} vo.YesterdayIP "查询昨日IP统计数成功"
 // @Failure 400 {object} vo.Error  "请求参数错误"
 // @Failure 401 {object} vo.Error "当前用户登录令牌失效"
@@ -78,7 +78,7 @@ func (dah *DataAnalysisHandler) YesterdayIP(ctx iris.Context) mvc.Result {
 // @Tags 数据统计 - 流量统计
 // @Param pid query int true "JS主分类ID"
 // @Param cid query int false "JS分类ID"
-// @Param jid query int false "JS ID"
+// @Param js_id query int false "JS ID"
 // @Success 200 {object} vo.ThisMonthIP "查询本月IP统计数成功"
 // @Failure 400 {object} vo.Error  "请求参数错误"
 // @Failure 401 {object} vo.Error "当前用户登录令牌失效"
@@ -104,7 +104,7 @@ func (dah *DataAnalysisHandler) ThisMonthIP(ctx iris.Context) mvc.Result {
 // @Tags 数据统计 - 流量统计
 // @Param pid query int true "JS主分类ID"
 // @Param cid query int false "JS分类ID"
-// @Param jid query int false "JS ID"
+// @Param js_id query int false "JS ID"
 // @Success 200 {object} vo.LastMonthIP "查询上月IP统计数成功"
 // @Failure 400 {object} vo.Error  "请求参数错误"
 // @Failure 401 {object} vo.Error "当前用户登录令牌失效"
@@ -130,7 +130,7 @@ func (dah *DataAnalysisHandler) LastMonthIP(ctx iris.Context) mvc.Result {
 // @Tags 数据统计 - 流量统计
 // @Param pid query int true "JS主分类ID"
 // @Param cid query int false "JS分类ID"
-// @Param jid query int false "JS ID"
+// @Param js_id query int false "JS ID"
 // @Param begin_at query string true "时间格式: 2021-08-24"
 // @Param end_at query string true "时间格式: 2021-08-31"
 // @Success 200 {object} vo.HomeIPAndUVisit "查询时间范围内IP、UV的统计成功"
@@ -162,7 +162,7 @@ func (dah *DataAnalysisHandler) IPAndUVisit(ctx iris.Context) mvc.Result {
 // @Tags 数据统计 - 流量统计
 // @Param pid query int true "JS主分类ID"
 // @Param cid query int false "JS分类ID"
-// @Param jid query int false "JS ID"
+// @Param js_id query int false "JS ID"
 // @Success 200 {object} vo.HomeIPAndUVisit "查询今日IP、UV的统计成功"
 // @Failure 400 {object} vo.Error  "请求参数错误"
 // @Failure 401 {object} vo.Error "当前用户登录令牌失效"
@@ -188,7 +188,7 @@ func (dah *DataAnalysisHandler) TodayIPAndUVisit(ctx iris.Context) mvc.Result {
 // @Tags 数据统计 - 流量统计
 // @Param pid query int true "JS主分类ID"
 // @Param cid query int false "JS分类ID"
-// @Param jid query int false "JS ID"
+// @Param js_id query int false "JS ID"
 // @Success 200 {object} vo.HomeIPAndUVisit "查询昨日IP、UV的统计成功"
 // @Failure 400 {object} vo.Error  "请求参数错误"
 // @Failure 401 {object} vo.Error "当前用户登录令牌失效"
@@ -214,7 +214,7 @@ func (dah *DataAnalysisHandler) YesterdayIPAndUVisit(ctx iris.Context) mvc.Resul
 // @Tags 数据统计 - 流量统计
 // @Param pid query int true "JS主分类ID"
 // @Param cid query int false "JS分类ID"
-// @Param jid query int false "JS ID"
+// @Param js_id query int false "JS ID"
 // @Success 200 {object} vo.HomeIPAndUVisit "查询昨日IP、UV的统计成功"
 // @Failure 400 {object} vo.Error  "请求参数错误"
 // @Failure 401 {object} vo.Error "当前用户登录令牌失效"
@@ -240,7 +240,7 @@ func (dah *DataAnalysisHandler) FromNowIPAndUVisit(ctx iris.Context) mvc.Result 
 // @Tags 数据统计 - 流量统计
 // @Param pid query int true "JS主分类ID"
 // @Param cid query int false "JS分类ID"
-// @Param jid query int false "JS ID"
+// @Param js_id query int false "JS ID"
 // @Param page query int false "请求页"
 // @Param page_size query int false "页大小"
 // @Success 200 {object} vo.DataPagination{data=[]vo.FlowDataResp} "查询今日流量数据成功"
@@ -272,7 +272,7 @@ func (dah *DataAnalysisHandler) TodayFlowData(ctx iris.Context) mvc.Result {
 // @Tags 数据统计 - 流量统计
 // @Param pid query int true "JS主分类ID"
 // @Param cid query int false "JS分类ID"
-// @Param jid query int false "JS ID"
+// @Param js_id query int false "JS ID"
 // @Param page query int false "请求页"
 // @Param page_size query int false "页大小"
 // @Success 200 {object} vo.DataPagination{data=[]vo.FlowDataResp} "查询昨日流量数据成功"
@@ -306,7 +306,7 @@ func (dah *DataAnalysisHandler) YesterdayFlowData(ctx iris.Context) mvc.Result {
 // @Param end_at query string true "时间格式: 2021-08-31"
 // @Param pid query int true "JS主分类ID"
 // @Param cid query int false "JS分类ID"
-// @Param jid query int false "JS ID"
+// @Param js_id query int false "JS ID"
 // @Param page query int false "请求页"
 // @Param page_size query int false "页大小"
 // @Success 200 {object} vo.DataPagination{data=[]vo.FlowDataResp} "查询开始时间范围流量数据成功"
@@ -342,7 +342,7 @@ func (dah *DataAnalysisHandler) TimeScopeFlowData(ctx iris.Context) mvc.Result {
 // @Tags 数据统计 - 流量统计
 // @Param pid query int true "JS主分类ID"
 // @Param cid query int false "JS分类ID"
-// @Param jid query int false "JS ID"
+// @Param js_id query int false "JS ID"
 // @Param page query int false "请求页"
 // @Param page_size query int false "页大小"
 // @Success 200 {object} vo.DataPagination{data=[]vo.FlowDataResp} "查询开始时间范围流量数据成功"

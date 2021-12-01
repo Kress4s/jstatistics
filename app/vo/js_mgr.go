@@ -8,20 +8,34 @@ import (
 )
 
 type JsManageReq struct {
-	KeyWord       string            `json:"key_word"`
-	ShieldArea    string            `json:"shield_area"`
-	HrefID        string            `json:"href_id"`
-	Title         string            `json:"title"`
-	ClientType    types.BigintArray `json:"client_type"`
+	// 关键词
+	KeyWord string `json:"key_word"`
+	// 屏蔽地区
+	ShieldArea string `json:"shield_area"`
+	// hrefIDS
+	HrefID string `json:"href_id"`
+	// 标题
+	Title string `json:"title"`
+	// 客户端 0：移动端; 1: pc端
+	ClientType types.BigintArray `json:"client_type"`
+	// 搜索引擎
 	SearchEngines types.BigintArray `json:"search_engines"`
-	FromMode      int               `json:"from_mode"`
-	ReleaseTime   int               `json:"release_time"`
-	RedirectMode  int               `json:"redirect_mode"`
-	RedirectCode  int               `json:"redirect_code"`
-	RedirectCount int               `json:"redirect_count"`
-	WaitTime      int               `json:"wait_time"`
-	CategoryID    int64             `json:"category_id"`
-	Status        bool              `json:"status"`
+	// 来源类型 0:无; 1:关键词 2:搜索引擎
+	FromMode int `json:"from_mode"`
+	// 封禁时间
+	ReleaseTime int `json:"release_time"`
+	// 跳转方式 0:直接跳转 1:嵌套跳转 2:屏幕跳转 3:Href跳转
+	RedirectMode int `json:"redirect_mode"`
+	// 跳转代码类型 0:top 1:windows
+	RedirectCode int `json:"redirect_code"`
+	// 跳转次数
+	RedirectCount int `json:"redirect_count"`
+	// 等待时间
+	WaitTime int `json:"wait_time"`
+	// js分类id
+	CategoryID int64 `json:"category_id"`
+	// 状态
+	Status bool `json:"status"`
 }
 
 func (jm *JsManageReq) ToModel(openID string) *models.JsManage {
@@ -53,6 +67,7 @@ func (jm *JsManageReq) ToModel(openID string) *models.JsManage {
 }
 
 type JsManageResp struct {
+	// 关键词（下面字段参考 创建请求 字段说明）
 	KeyWord       string            `json:"key_word"`
 	Title         string            `json:"title"`
 	HrefID        string            `json:"href_id"`
@@ -94,6 +109,7 @@ func NewJsManageResponse(jm *models.JsManage) *JsManageResp {
 }
 
 type JsManageUpdateReq struct {
+	//（下面字段参考 创建请求 字段说明）
 	ShieldArea    string            `json:"shield_area"`
 	HrefID        string            `json:"href_id"`
 	KeyWord       string            `json:"key_word"`

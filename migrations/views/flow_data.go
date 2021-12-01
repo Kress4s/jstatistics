@@ -49,3 +49,33 @@ INNER JOIN %s as jm on jm.id = uv.js_id;`,
 		views.FlowDataView, tables.IPStatistics, tables.UVStatistics, tables.JsManage)
 	return db.Exec(sql).Error
 }
+
+func CreateIPFlowDataView(db *gorm.DB) error {
+	sql := fmt.Sprintf(`CREATE OR REPLACE VIEW "%s" AS
+	SELECT
+	js_id,
+	category_id,
+	primary_id,
+	visit_time,
+	count(*) as count
+FROM
+	%s
+GROUP BY
+	primary_id, js_id, category_id, visit_time`, views.IPFlowDataView, tables.IPStatistics)
+	return db.Exec(sql).Error
+}
+
+func CreateUVFlowDataView(db *gorm.DB) error {
+	sql := fmt.Sprintf(`CREATE OR REPLACE VIEW "%s" AS
+	SELECT
+	js_id,
+	category_id,
+	primary_id,
+	visit_time,
+	count(*) as count
+FROM
+	%s
+GROUP BY
+	js_id, category_id, primary_id, visit_time`, views.UVFlowDataView, tables.UVStatistics)
+	return db.Exec(sql).Error
+}

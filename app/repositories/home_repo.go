@@ -83,13 +83,17 @@ func (hri *homeRepoImpl) IPAndUVisit(db *gorm.DB, beginAt, endAt string) ([]mode
 	[]models.UVisitStatistic, exception.Exception) {
 	ip := make([]models.IPVisitStatistic, 0)
 	uv := make([]models.UVisitStatistic, 0)
-	txIP := db.Table(tables.IPStatistics).Select("ip, visit_time, count(*) as count").
-		Where("visit_time BETWEEN ? AND ?", beginAt, endAt).Group("ip, visit_time").Scan(&ip)
+	subIP := db.Table(tables.IPStatistics).Select("ip, visit_time, count(*) as count").
+		Where("visit_time BETWEEN ? AND ?", beginAt, endAt).Group("ip, visit_time")
+	txIP := db.Table("(?) as sub", subIP).Select("sub.visit_time, sum(sub.count) as count").
+		Group("sub.visit_time").Scan(&ip)
 	if txIP.Error != nil {
 		return nil, nil, exception.Wrap(response.ExceptionDatabase, txIP.Error)
 	}
-	txUV := db.Table(tables.UVStatistics).Select("cookie, visit_time, count(*) as count").
-		Where("visit_time BETWEEN ? AND ?", beginAt, endAt).Group("visit_time, cookie").Scan(&uv)
+	subUV := db.Table(tables.UVStatistics).Select("cookie, visit_time, count(*) as count").
+		Where("visit_time BETWEEN ? AND ?", beginAt, endAt).Group("visit_time, cookie")
+	txUV := db.Table("(?) as sub", subUV).Select("sub.visit_time, sum(sub.count) as count").
+		Group("sub.visit_time").Scan(&uv)
 	if txUV.Error != nil {
 		return nil, nil, exception.Wrap(response.ExceptionDatabase, txUV.Error)
 	}
@@ -108,13 +112,13 @@ func (hri *homeRepoImpl) RegionStatistic(db *gorm.DB) ([]models.RegionStatistic,
 func (hri *homeRepoImpl) JSVisitStatistic(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []models.JSVisitStatistic,
 	exception.Exception) {
 	statics := make([]models.JSVisitStatistic, 0)
-	tx := db.Table(tables.IPRecode).Select("ir.js_id AS js_id, count(*) AS count, js.title AS title").
-		Joins(fmt.Sprintf("INNER JOIN %s ON js.id = ir.js_id", tables.JsManage)).
+	tx := db.Table(tables.IPRecode + " as ir").Select("ir.js_id AS js_id, count(*) AS count, js.title AS title").
+		Joins(fmt.Sprintf("INNER JOIN %s as js ON js.id = ir.js_id", tables.JsManage)).
 		Group("ir.js_id, js.title").
-		Order("ir.js_id, js.title, count DESC").
+		Order("ir.js_id, js.title, ir.count DESC").
 		Limit(pageInfo.PageSize).Offset(pageInfo.Offset()).
-		Scan(&statics)
+		Find(&statics)
 	count := int64(0)
-	res := tx.Limit(-1).Offset(-1).Count(&count)
+	res := db.Table("(?) as sub", tx).Count(&count)
 	return count, statics, exception.Wrap(response.ExceptionDatabase, res.Error)
 }

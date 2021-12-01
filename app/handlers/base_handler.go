@@ -61,7 +61,7 @@ func GetPageInfo(ctx iris.Context) (*vo.PageInfo, exception.Exception) {
 }
 
 func GetJSFilterParam(ctx iris.Context) (*vo.JSFilterParams, exception.Exception) {
-	var pid, cid, jid int64
+	var pid, cid, jsID int64
 	var err error
 	if !ctx.URLParamExists(constant.PrimaryID) {
 		return nil, exception.New(response.ExceptionInvalidRequestParameters, "pid not be null")
@@ -77,15 +77,15 @@ func GetJSFilterParam(ctx iris.Context) (*vo.JSFilterParams, exception.Exception
 		}
 	}
 	if ctx.URLParamExists(constant.JsID) {
-		jid, err = ctx.URLParamInt64(constant.JsID)
+		jsID, err = ctx.URLParamInt64(constant.JsID)
 		if err != nil {
-			jid = 0
+			jsID = 0
 		}
 	}
 	return &vo.JSFilterParams{
 		PrimaryID:  pid,
 		CategoryID: cid,
-		JsID:       jid,
+		JsID:       jsID,
 	}, nil
 }
 

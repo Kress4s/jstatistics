@@ -91,7 +91,7 @@ func (jsi *JsmRepoImpl) GetBySign(db *gorm.DB, sign string) (*models.JsManage, e
 }
 
 func (jsi *JsmRepoImpl) DecreaseRedirectCount(db *gorm.DB, id int64) exception.Exception {
-	return exception.Wrap(response.ExceptionDatabase, db.Model(&models.JsManage{}).Updates(map[string]interface{}{
+	return exception.Wrap(response.ExceptionDatabase, db.Model(&models.JsManage{ID: id}).Updates(map[string]interface{}{
 		"redirect_count": gorm.Expr("redirect_count - ?", 1),
 	}).Error)
 }

@@ -122,7 +122,7 @@ func (hsi *homeServiceImpl) JSVisitStatistic(pageInfo *vo.PageInfo) (*vo.DataPag
 		return nil, ex
 	}
 	resp := make([]vo.JSVisitStatisticResp, 0, len(data))
-	for i, j := range resp {
+	for i, j := range data {
 		resp = append(resp, vo.JSVisitStatisticResp{
 			Rank:  pageInfo.Offset() + 1 + i,
 			Title: j.Title,

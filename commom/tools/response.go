@@ -51,9 +51,11 @@ func BeyondRuleRedirect(ctx iris.Context, faker *vo.FakerResp, redirectMode int)
 		redirectInfo = fmt.Sprintf(constant.MINIO_URL, faker.ObjID)
 	}
 	if redirectMode == 0 {
-		ctx.WriteString(fmt.Sprintf(constant.RedirectWindowsPage, redirectInfo))
+		// ctx.WriteString(fmt.Sprintf(constant.RedirectWindowsPage, redirectInfo))
+		DirectWindowsRedirect(ctx, redirectInfo)
 	} else {
-		ctx.WriteString(fmt.Sprintf(constant.RedirectTopPage, redirectInfo))
+		// ctx.WriteString(fmt.Sprintf(constant.RedirectTopPage, redirectInfo))
+		DirectTopRedirect(ctx, redirectInfo)
 	}
 
 }
@@ -63,7 +65,7 @@ func DirectWindowsRedirect(ctx iris.Context, redirect string) {
 }
 
 func DirectTopRedirect(ctx iris.Context, redirect string) {
-	ctx.WriteString(fmt.Sprintf(constant.RedirectWindowsPage, redirect))
+	ctx.WriteString(fmt.Sprintf(constant.RedirectTopPage, redirect))
 }
 
 func NestedRedirect(ctx iris.Context, redirect string) {

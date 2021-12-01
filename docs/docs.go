@@ -87,7 +87,7 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "JS ID",
-                        "name": "jid",
+                        "name": "js_id",
                         "in": "query"
                     },
                     {
@@ -181,7 +181,7 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "JS ID",
-                        "name": "jid",
+                        "name": "js_id",
                         "in": "query"
                     },
                     {
@@ -275,7 +275,7 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "JS ID",
-                        "name": "jid",
+                        "name": "js_id",
                         "in": "query"
                     }
                 ],
@@ -342,7 +342,7 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "JS ID",
-                        "name": "jid",
+                        "name": "js_id",
                         "in": "query"
                     }
                 ],
@@ -409,7 +409,7 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "JS ID",
-                        "name": "jid",
+                        "name": "js_id",
                         "in": "query"
                     }
                 ],
@@ -490,7 +490,7 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "JS ID",
-                        "name": "jid",
+                        "name": "js_id",
                         "in": "query"
                     },
                     {
@@ -584,7 +584,7 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "JS ID",
-                        "name": "jid",
+                        "name": "js_id",
                         "in": "query"
                     },
                     {
@@ -665,7 +665,7 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "JS ID",
-                        "name": "jid",
+                        "name": "js_id",
                         "in": "query"
                     },
                     {
@@ -759,7 +759,7 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "JS ID",
-                        "name": "jid",
+                        "name": "js_id",
                         "in": "query"
                     }
                 ],
@@ -826,7 +826,7 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "JS ID",
-                        "name": "jid",
+                        "name": "js_id",
                         "in": "query"
                     }
                 ],
@@ -893,7 +893,7 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "JS ID",
-                        "name": "jid",
+                        "name": "js_id",
                         "in": "query"
                     },
                     {
@@ -987,7 +987,7 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "JS ID",
-                        "name": "jid",
+                        "name": "js_id",
                         "in": "query"
                     }
                 ],
@@ -1054,7 +1054,7 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "JS ID",
-                        "name": "jid",
+                        "name": "js_id",
                         "in": "query"
                     }
                 ],
@@ -6773,51 +6773,65 @@ var doc = `{
             "type": "object",
             "properties": {
                 "category_id": {
+                    "description": "js分类id",
                     "type": "integer"
                 },
                 "client_type": {
+                    "description": "客户端 0：移动端; 1: pc端",
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
                 },
                 "from_mode": {
+                    "description": "来源类型 0:无; 1:关键词 2:搜索引擎",
                     "type": "integer"
                 },
                 "href_id": {
+                    "description": "hrefIDS",
                     "type": "string"
                 },
                 "key_word": {
+                    "description": "关键词",
                     "type": "string"
                 },
                 "redirect_code": {
+                    "description": "跳转代码类型 0:top 1:windows",
                     "type": "integer"
                 },
                 "redirect_count": {
+                    "description": "跳转次数",
                     "type": "integer"
                 },
                 "redirect_mode": {
+                    "description": "跳转方式 0:直接跳转 1:嵌套跳转 2:屏幕跳转 3:Href跳转",
                     "type": "integer"
                 },
                 "release_time": {
+                    "description": "封禁时间",
                     "type": "integer"
                 },
                 "search_engines": {
+                    "description": "搜索引擎",
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
                 },
                 "shield_area": {
+                    "description": "屏蔽地区",
                     "type": "string"
                 },
                 "status": {
+                    "description": "状态",
                     "type": "boolean"
                 },
                 "title": {
+                    "description": "标题",
                     "type": "string"
                 },
                 "wait_time": {
+                    "description": "等待时间",
                     "type": "integer"
                 }
             }
@@ -6847,6 +6861,7 @@ var doc = `{
                     "type": "integer"
                 },
                 "key_word": {
+                    "description": "关键词（下面字段参考 创建请求 字段说明）",
                     "type": "string"
                 },
                 "redirect_code": {
@@ -6921,6 +6936,7 @@ var doc = `{
                     }
                 },
                 "shield_area": {
+                    "description": "（下面字段参考 创建请求 字段说明）",
                     "type": "string"
                 },
                 "wait_time": {

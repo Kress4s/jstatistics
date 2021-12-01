@@ -321,36 +321,50 @@ definitions:
   vo.JsManageReq:
     properties:
       category_id:
+        description: js分类id
         type: integer
       client_type:
+        description: '客户端 0：移动端; 1: pc端'
         items:
           type: integer
         type: array
       from_mode:
+        description: 来源类型 0:无; 1:关键词 2:搜索引擎
         type: integer
       href_id:
+        description: hrefIDS
         type: string
       key_word:
+        description: 关键词
         type: string
       redirect_code:
+        description: 跳转代码类型 0:top 1:windows
         type: integer
       redirect_count:
+        description: 跳转次数
         type: integer
       redirect_mode:
+        description: 跳转方式 0:直接跳转 1:嵌套跳转 2:屏幕跳转 3:Href跳转
         type: integer
       release_time:
+        description: 封禁时间
         type: integer
       search_engines:
+        description: 搜索引擎
         items:
           type: integer
         type: array
       shield_area:
+        description: 屏蔽地区
         type: string
       status:
+        description: 状态
         type: boolean
       title:
+        description: 标题
         type: string
       wait_time:
+        description: 等待时间
         type: integer
     type: object
   vo.JsManageResp:
@@ -370,6 +384,7 @@ definitions:
       ip:
         type: integer
       key_word:
+        description: 关键词（下面字段参考 创建请求 字段说明）
         type: string
       redirect_code:
         type: integer
@@ -419,6 +434,7 @@ definitions:
           type: integer
         type: array
       shield_area:
+        description: （下面字段参考 创建请求 字段说明）
         type: string
       wait_time:
         type: integer
@@ -876,7 +892,7 @@ paths:
         type: integer
       - description: JS ID
         in: query
-        name: jid
+        name: js_id
         type: integer
       - description: 请求页
         in: query
@@ -934,7 +950,7 @@ paths:
         type: integer
       - description: JS ID
         in: query
-        name: jid
+        name: js_id
         type: integer
       - description: 请求页
         in: query
@@ -992,7 +1008,7 @@ paths:
         type: integer
       - description: JS ID
         in: query
-        name: jid
+        name: js_id
         type: integer
       responses:
         "200":
@@ -1035,7 +1051,7 @@ paths:
         type: integer
       - description: JS ID
         in: query
-        name: jid
+        name: js_id
         type: integer
       responses:
         "200":
@@ -1078,7 +1094,7 @@ paths:
         type: integer
       - description: JS ID
         in: query
-        name: jid
+        name: js_id
         type: integer
       responses:
         "200":
@@ -1131,7 +1147,7 @@ paths:
         type: integer
       - description: JS ID
         in: query
-        name: jid
+        name: js_id
         type: integer
       - description: 请求页
         in: query
@@ -1189,7 +1205,7 @@ paths:
         type: integer
       - description: JS ID
         in: query
-        name: jid
+        name: js_id
         type: integer
       - description: '时间格式: 2021-08-24'
         in: query
@@ -1242,7 +1258,7 @@ paths:
         type: integer
       - description: JS ID
         in: query
-        name: jid
+        name: js_id
         type: integer
       - description: 请求页
         in: query
@@ -1300,7 +1316,7 @@ paths:
         type: integer
       - description: JS ID
         in: query
-        name: jid
+        name: js_id
         type: integer
       responses:
         "200":
@@ -1343,7 +1359,7 @@ paths:
         type: integer
       - description: JS ID
         in: query
-        name: jid
+        name: js_id
         type: integer
       responses:
         "200":
@@ -1386,7 +1402,7 @@ paths:
         type: integer
       - description: JS ID
         in: query
-        name: jid
+        name: js_id
         type: integer
       - description: 请求页
         in: query
@@ -1444,7 +1460,7 @@ paths:
         type: integer
       - description: JS ID
         in: query
-        name: jid
+        name: js_id
         type: integer
       responses:
         "200":
@@ -1487,7 +1503,7 @@ paths:
         type: integer
       - description: JS ID
         in: query
-        name: jid
+        name: js_id
         type: integer
       responses:
         "200":

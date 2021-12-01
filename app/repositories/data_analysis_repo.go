@@ -1,8 +1,10 @@
 package repositories
 
 import (
+	"fmt"
 	"js_statistics/app/models"
 	"js_statistics/app/models/tables"
+	"js_statistics/app/models/views"
 	"js_statistics/app/response"
 	"js_statistics/app/vo"
 	"js_statistics/constant"
@@ -128,35 +130,39 @@ func (dri *daRepoImpl) IPAndUVisit(db *gorm.DB, param *vo.JSFilterParams, beginA
 ) ([]models.IPVisitStatistic, []models.UVisitStatistic, exception.Exception) {
 	ip := make([]models.IPVisitStatistic, 0)
 	uv := make([]models.UVisitStatistic, 0)
-	txIP := db.Table(tables.IPStatistics).Select("ip, visit_time, count(*) as count").
+	subIP := db.Table(tables.IPStatistics).Select("ip, visit_time, count(*) as count").
 		Where("visit_time BETWEEN ? AND ?", beginAt, endAt)
 	if param.PrimaryID == 0 {
 		return nil, nil, exception.New(response.ExceptionInvalidRequestParameters, "primary_id must choose")
 	}
-	txIP = txIP.Where("primary_id = ?", param.PrimaryID)
+	subIP = subIP.Where("primary_id = ?", param.PrimaryID)
 	if param.CategoryID != 0 {
-		txIP = txIP.Where("category_id = ?", param.CategoryID)
+		subIP = subIP.Where("category_id = ?", param.CategoryID)
 	}
 	if param.JsID != 0 {
-		txIP = txIP.Where("js_id = ?", param.JsID)
+		subIP = subIP.Where("js_id = ?", param.JsID)
 	}
-	txIP = txIP.Group("ip, visit_time").Scan(&ip)
+	subIP = subIP.Group("ip, visit_time")
+	txIP := db.Table("(?) as sub", subIP).Select("sub.visit_time, sum(sub.count) as count").
+		Group("sub.visit_time").Scan(&ip)
 	if txIP.Error != nil {
 		return nil, nil, exception.Wrap(response.ExceptionDatabase, txIP.Error)
 	}
-	txUV := db.Table(tables.UVStatistics).Select("cookie, visit_time, count(*) as count").
+	subUV := db.Table(tables.UVStatistics).Select("cookie, visit_time, count(*) as count").
 		Where("visit_time BETWEEN ? AND ?", beginAt, endAt)
 	if param.PrimaryID == 0 {
 		return nil, nil, exception.New(response.ExceptionInvalidRequestParameters, "primary_id must choose")
 	}
-	txUV = txUV.Where("primary_id = ?", param.PrimaryID)
+	subUV = subUV.Where("primary_id = ?", param.PrimaryID)
 	if param.CategoryID != 0 {
-		txUV = txUV.Where("category_id = ?", param.CategoryID)
+		subUV = subUV.Where("category_id = ?", param.CategoryID)
 	}
 	if param.JsID != 0 {
-		txUV = txUV.Where("js_id = ?", param.JsID)
+		subUV = subUV.Where("js_id = ?", param.JsID)
 	}
-	txUV = txUV.Group("visit_time, cookie").Scan(&uv)
+	subUV = subUV.Group("visit_time, cookie")
+	txUV := db.Table("(?) as sub", subUV).Select("sub.visit_time, sum(sub.count) as count").
+		Group("sub.visit_time").Scan(&uv)
 	if txUV.Error != nil {
 		return nil, nil, exception.Wrap(response.ExceptionDatabase, txUV.Error)
 	}
@@ -168,35 +174,39 @@ func (dri *daRepoImpl) TodayIPAndUVisit(db *gorm.DB, param *vo.JSFilterParams) (
 	ip := make([]models.IPVisitStatistic, 0)
 	uv := make([]models.UVisitStatistic, 0)
 	today := time.Now().Format(constant.DateFormat)
-	txIP := db.Table(tables.IPStatistics).Select("ip, visit_time, count(*) as count").
+	subIP := db.Table(tables.IPStatistics).Select("ip, visit_time, count(*) as count").
 		Where("visit_time = ?", today)
 	if param.PrimaryID == 0 {
 		return nil, nil, exception.New(response.ExceptionInvalidRequestParameters, "primary_id must choose")
 	}
-	txIP = txIP.Where("primary_id = ?", param.PrimaryID)
+	subIP = subIP.Where("primary_id = ?", param.PrimaryID)
 	if param.CategoryID != 0 {
-		txIP = txIP.Where("category_id = ?", param.CategoryID)
+		subIP = subIP.Where("category_id = ?", param.CategoryID)
 	}
 	if param.JsID != 0 {
-		txIP = txIP.Where("js_id = ?", param.JsID)
+		subIP = subIP.Where("js_id = ?", param.JsID)
 	}
-	txIP = txIP.Group("ip, visit_time").Scan(&ip)
+	subIP = subIP.Group("ip, visit_time")
+	txIP := db.Table("(?) as sub", subIP).Select("sub.visit_time, sum(sub.count) as count").
+		Group("sub.visit_time").Scan(&ip)
 	if txIP.Error != nil {
 		return nil, nil, exception.Wrap(response.ExceptionDatabase, txIP.Error)
 	}
-	txUV := db.Table(tables.UVStatistics).Select("cookie, visit_time, count(*) as count").
+	subUV := db.Table(tables.UVStatistics).Select("cookie, visit_time, count(*) as count").
 		Where("visit_time = ?", today)
 	if param.PrimaryID == 0 {
 		return nil, nil, exception.New(response.ExceptionInvalidRequestParameters, "primary_id must choose")
 	}
-	txUV = txUV.Where("primary_id = ?", param.PrimaryID)
+	subUV = subUV.Where("primary_id = ?", param.PrimaryID)
 	if param.CategoryID != 0 {
-		txUV = txUV.Where("category_id = ?", param.CategoryID)
+		subUV = subUV.Where("category_id = ?", param.CategoryID)
 	}
 	if param.JsID != 0 {
-		txUV = txUV.Where("js_id = ?", param.JsID)
+		subUV = subUV.Where("js_id = ?", param.JsID)
 	}
-	txUV = txUV.Group("visit_time, cookie").Scan(&uv)
+	subUV = subUV.Group("visit_time, cookie")
+	txUV := db.Table("(?) as sub", subUV).Select("sub.visit_time, sum(sub.count) as count").
+		Group("sub.visit_time").Scan(&uv)
 	if txUV.Error != nil {
 		return nil, nil, exception.Wrap(response.ExceptionDatabase, txUV.Error)
 	}
@@ -208,35 +218,39 @@ func (dri *daRepoImpl) YesterdayIPAndUVisit(db *gorm.DB, param *vo.JSFilterParam
 	ip := make([]models.IPVisitStatistic, 0)
 	uv := make([]models.UVisitStatistic, 0)
 	yesterday := time.Now().AddDate(0, 0, -1).Format(constant.DateFormat)
-	txIP := db.Table(tables.IPStatistics).Select("ip, visit_time, count(*) as count").
+	subIP := db.Table(tables.IPStatistics).Select("ip, visit_time, count(*) as count").
 		Where("visit_time = ?", yesterday)
 	if param.PrimaryID == 0 {
 		return nil, nil, exception.New(response.ExceptionInvalidRequestParameters, "primary_id must choose")
 	}
-	txIP = txIP.Where("primary_id = ?", param.PrimaryID)
+	subIP = subIP.Where("primary_id = ?", param.PrimaryID)
 	if param.CategoryID != 0 {
-		txIP = txIP.Where("category_id = ?", param.CategoryID)
+		subIP = subIP.Where("category_id = ?", param.CategoryID)
 	}
 	if param.JsID != 0 {
-		txIP = txIP.Where("js_id = ?", param.JsID)
+		subIP = subIP.Where("js_id = ?", param.JsID)
 	}
-	txIP = txIP.Group("ip, visit_time").Scan(&ip)
+	subIP = subIP.Group("ip, visit_time")
+	txIP := db.Table("(?) as sub", subIP).Select("sub.visit_time, sum(sub.count) as count").
+		Group("sub.visit_time").Scan(&ip)
 	if txIP.Error != nil {
 		return nil, nil, exception.Wrap(response.ExceptionDatabase, txIP.Error)
 	}
-	txUV := db.Table(tables.UVStatistics).Select("cookie, visit_time, count(*) as count").
+	subUV := db.Table(tables.UVStatistics).Select("cookie, visit_time, count(*) as count").
 		Where("visit_time = ?", yesterday)
 	if param.PrimaryID == 0 {
 		return nil, nil, exception.New(response.ExceptionInvalidRequestParameters, "primary_id must choose")
 	}
-	txUV = txUV.Where("primary_id = ?", param.PrimaryID)
+	subUV = subUV.Where("primary_id = ?", param.PrimaryID)
 	if param.CategoryID != 0 {
-		txUV = txUV.Where("category_id = ?", param.CategoryID)
+		subUV = subUV.Where("category_id = ?", param.CategoryID)
 	}
 	if param.JsID != 0 {
-		txUV = txUV.Where("js_id = ?", param.JsID)
+		subUV = subUV.Where("js_id = ?", param.JsID)
 	}
-	txUV = txUV.Group("visit_time, cookie").Scan(&uv)
+	subUV = subUV.Group("visit_time, cookie")
+	txUV := db.Table("(?) as sub", subUV).Select("sub.visit_time, sum(sub.count) as count").
+		Group("sub.visit_time").Scan(&uv)
 	if txUV.Error != nil {
 		return nil, nil, exception.Wrap(response.ExceptionDatabase, txUV.Error)
 	}
@@ -247,33 +261,37 @@ func (dri *daRepoImpl) FromNowIPAndUVisit(db *gorm.DB, param *vo.JSFilterParams)
 	[]models.UVisitStatistic, exception.Exception) {
 	ip := make([]models.IPVisitStatistic, 0)
 	uv := make([]models.UVisitStatistic, 0)
-	txIP := db.Table(tables.IPStatistics).Select("ip, visit_time, count(*) as count")
+	subIP := db.Table(tables.IPStatistics).Select("ip, visit_time, count(*) as count")
 	if param.PrimaryID == 0 {
 		return nil, nil, exception.New(response.ExceptionInvalidRequestParameters, "primary_id must choose")
 	}
-	txIP = txIP.Where("primary_id = ?", param.PrimaryID)
+	subIP = subIP.Where("primary_id = ?", param.PrimaryID)
 	if param.CategoryID != 0 {
-		txIP = txIP.Where("category_id = ?", param.CategoryID)
+		subIP = subIP.Where("category_id = ?", param.CategoryID)
 	}
 	if param.JsID != 0 {
-		txIP = txIP.Where("js_id = ?", param.JsID)
+		subIP = subIP.Where("js_id = ?", param.JsID)
 	}
-	txIP = txIP.Group("ip, visit_time").Scan(&ip)
+	subIP = subIP.Group("ip, visit_time")
+	txIP := db.Table("(?) as sub", subIP).Select("sub.visit_time, sum(sub.count) as count").
+		Group("sub.visit_time").Scan(&ip)
 	if txIP.Error != nil {
 		return nil, nil, exception.Wrap(response.ExceptionDatabase, txIP.Error)
 	}
-	txUV := db.Table(tables.UVStatistics).Select("cookie, visit_time, count(*) as count")
+	subUV := db.Table(tables.UVStatistics).Select("cookie, visit_time, count(*) as count")
 	if param.PrimaryID == 0 {
 		return nil, nil, exception.New(response.ExceptionInvalidRequestParameters, "primary_id must choose")
 	}
-	txUV = txUV.Where("primary_id = ?", param.PrimaryID)
+	subUV = subUV.Where("primary_id = ?", param.PrimaryID)
 	if param.CategoryID != 0 {
-		txUV = txUV.Where("category_id = ?", param.CategoryID)
+		subUV = subUV.Where("category_id = ?", param.CategoryID)
 	}
 	if param.JsID != 0 {
-		txUV = txUV.Where("js_id = ?", param.JsID)
+		subUV = subUV.Where("js_id = ?", param.JsID)
 	}
-	txUV = txUV.Group("visit_time, cookie").Scan(&uv)
+	subUV = subUV.Group("visit_time, cookie")
+	txUV := db.Table("(?) as sub", subUV).Select("sub.visit_time, sum(sub.count) as count").
+		Group("sub.visit_time").Scan(&uv)
 	if txUV.Error != nil {
 		return nil, nil, exception.Wrap(response.ExceptionDatabase, txUV.Error)
 	}
@@ -282,24 +300,48 @@ func (dri *daRepoImpl) FromNowIPAndUVisit(db *gorm.DB, param *vo.JSFilterParams)
 
 func (dri *daRepoImpl) TodayFlowData(db *gorm.DB, param *vo.JSFilterParams, pageInfo *vo.PageInfo) (int64,
 	[]models.FlowDataStatistic, exception.Exception) {
-	flowData := make([]models.FlowDataStatistic, 0)
 	today := time.Now().Format(constant.DateFormat)
-	subTx := db.Model(&models.FlowDataView{}).
-		Where("ip_time = ? and uv_time = ?", today, today)
+	flowData := make([]models.FlowDataStatistic, 0)
+	subIPTx := db.Table(views.IPFlowDataView).Select("js_id, sum(count) as count")
 	if param.PrimaryID == 0 {
 		return 0, nil, exception.New(response.ExceptionInvalidRequestParameters, "primary_id must choose")
 	}
-	subTx = subTx.Where("primary_id = ?", param.PrimaryID)
+	subIPTx = subIPTx.Where("primary_id = ?", param.PrimaryID)
 	if param.CategoryID != 0 {
-		subTx = subTx.Where("category_id = ?", param.CategoryID)
+		subIPTx = subIPTx.Where("category_id = ?", param.CategoryID)
 	}
 	if param.JsID != 0 {
-		subTx = subTx.Where("js_id = ?", param.JsID)
+		subIPTx = subIPTx.Where("js_id = ?", param.JsID)
 	}
+	subIPTx = subIPTx.Where("visit_time = ?", today)
+	subIPTx = subIPTx.Group("js_id")
+
+	subUVTx := db.Table(views.UVFlowDataView).Select("js_id, sum(count) as count")
+	subUVTx = subUVTx.Where("primary_id = ?", param.PrimaryID)
+	if param.CategoryID != 0 {
+		subUVTx = subUVTx.Where("category_id = ?", param.CategoryID)
+	}
+	if param.JsID != 0 {
+		subUVTx = subUVTx.Where("js_id = ?", param.JsID)
+	}
+	subUVTx = subUVTx.Where("visit_time = ?", today)
+	subUVTx = subUVTx.Group("js_id")
+
 	count := int64(0)
-	tx := db.Table("(?) as sub", subTx).Select(
-		"sub.title as title, sum(sub.ip_count) as ip_count, sum(sub.uv_count) as uv_count").
-		Group("sub.title").
+	jcpTX := db.Table(tables.JsManage + " AS js").
+		Select("js.id AS js_id, js.title AS title, jc.id AS category_id, jc.primary_id").
+		Joins(fmt.Sprintf("INNER JOIN %s AS jc ON js.category_id = jc.id", tables.JsCategory))
+	jcpTX = jcpTX.Where("jc.primary_id = ?", param.PrimaryID)
+	if param.CategoryID != 0 {
+		jcpTX = jcpTX.Where("jc.id = ?", param.CategoryID)
+	}
+	if param.JsID != 0 {
+		jcpTX = jcpTX.Where("js.id = ?", param.JsID)
+	}
+	tx := db.Table("(?) AS jst", jcpTX).
+		Select("jst.title AS title, ip_flow.count AS ip_count, uv_flow.count AS uv_count").
+		Joins("LEFT JOIN (?) AS ip_flow on jst.js_id = ip_flow.js_id", subIPTx).
+		Joins("LEFT JOIN (?) AS uv_flow on jst.js_id = uv_flow.js_id", subUVTx).
 		Limit(pageInfo.PageSize).Offset(pageInfo.Offset()).
 		Scan(&flowData).Limit(-1).Offset(-1).Count(&count)
 	return count, flowData, exception.Wrap(response.ExceptionDatabase, tx.Error)
@@ -307,24 +349,48 @@ func (dri *daRepoImpl) TodayFlowData(db *gorm.DB, param *vo.JSFilterParams, page
 
 func (dri *daRepoImpl) YesterdayFlowData(db *gorm.DB, param *vo.JSFilterParams, pageInfo *vo.PageInfo) (int64,
 	[]models.FlowDataStatistic, exception.Exception) {
-	flowData := make([]models.FlowDataStatistic, 0)
 	yesterday := time.Now().AddDate(0, 0, -1).Format(constant.DateFormat)
-	subTx := db.Model(&models.FlowDataView{}).
-		Where("ip_time = ? and uv_time = ?", yesterday, yesterday)
+	flowData := make([]models.FlowDataStatistic, 0)
+	subIPTx := db.Table(views.IPFlowDataView).Select("js_id, sum(count) as count")
 	if param.PrimaryID == 0 {
 		return 0, nil, exception.New(response.ExceptionInvalidRequestParameters, "primary_id must choose")
 	}
-	subTx = subTx.Where("primary_id = ?", param.PrimaryID)
+	subIPTx = subIPTx.Where("primary_id = ?", param.PrimaryID)
 	if param.CategoryID != 0 {
-		subTx = subTx.Where("category_id = ?", param.CategoryID)
+		subIPTx = subIPTx.Where("category_id = ?", param.CategoryID)
 	}
 	if param.JsID != 0 {
-		subTx = subTx.Where("js_id = ?", param.JsID)
+		subIPTx = subIPTx.Where("js_id = ?", param.JsID)
 	}
+	subIPTx = subIPTx.Where("visit_time = ?", yesterday)
+	subIPTx = subIPTx.Group("js_id")
+
+	subUVTx := db.Table(views.UVFlowDataView).Select("js_id, sum(count) as count")
+	subUVTx = subUVTx.Where("primary_id = ?", param.PrimaryID)
+	if param.CategoryID != 0 {
+		subUVTx = subUVTx.Where("category_id = ?", param.CategoryID)
+	}
+	if param.JsID != 0 {
+		subUVTx = subUVTx.Where("js_id = ?", param.JsID)
+	}
+	subUVTx = subUVTx.Where("visit_time = ?", yesterday)
+	subUVTx = subUVTx.Group("js_id")
+
 	count := int64(0)
-	tx := db.Table("(?) as sub", subTx).Select(
-		"sub.title as title, sum(sub.ip_count) as ip_count, sum(sub.uv_count) as uv_count").
-		Group("sub.title").
+	jcpTX := db.Table(tables.JsManage + " AS js").
+		Select("js.id AS js_id, js.title AS title, jc.id AS category_id, jc.primary_id").
+		Joins(fmt.Sprintf("INNER JOIN %s AS jc ON js.category_id = jc.id", tables.JsCategory))
+	jcpTX = jcpTX.Where("jc.primary_id = ?", param.PrimaryID)
+	if param.CategoryID != 0 {
+		jcpTX = jcpTX.Where("jc.id = ?", param.CategoryID)
+	}
+	if param.JsID != 0 {
+		jcpTX = jcpTX.Where("js.id = ?", param.JsID)
+	}
+	tx := db.Table("(?) AS jst", jcpTX).
+		Select("jst.title AS title, ip_flow.count AS ip_count, uv_flow.count AS uv_count").
+		Joins("LEFT JOIN (?) AS ip_flow on jst.js_id = ip_flow.js_id", subIPTx).
+		Joins("LEFT JOIN (?) AS uv_flow on jst.js_id = uv_flow.js_id", subUVTx).
 		Limit(pageInfo.PageSize).Offset(pageInfo.Offset()).
 		Scan(&flowData).Limit(-1).Offset(-1).Count(&count)
 	return count, flowData, exception.Wrap(response.ExceptionDatabase, tx.Error)
@@ -333,22 +399,46 @@ func (dri *daRepoImpl) YesterdayFlowData(db *gorm.DB, param *vo.JSFilterParams, 
 func (dri *daRepoImpl) TimeScopeFlowData(db *gorm.DB, param *vo.JSFilterParams, pageInfo *vo.PageInfo,
 	beginAt, endAt string) (int64, []models.FlowDataStatistic, exception.Exception) {
 	flowData := make([]models.FlowDataStatistic, 0)
-	subTx := db.Model(&models.FlowDataView{}).
-		Where("ip_time >= ? and ip_time <= ? and uv_time >= ? and uv_time <= ?", beginAt, endAt, beginAt, endAt)
+	subIPTx := db.Table(views.IPFlowDataView).Select("js_id, sum(count) as count")
 	if param.PrimaryID == 0 {
 		return 0, nil, exception.New(response.ExceptionInvalidRequestParameters, "primary_id must choose")
 	}
-	subTx = subTx.Where("primary_id = ?", param.PrimaryID)
+	subIPTx = subIPTx.Where("primary_id = ?", param.PrimaryID)
 	if param.CategoryID != 0 {
-		subTx = subTx.Where("category_id = ?", param.CategoryID)
+		subIPTx = subIPTx.Where("category_id = ?", param.CategoryID)
 	}
 	if param.JsID != 0 {
-		subTx = subTx.Where("js_id = ?", param.JsID)
+		subIPTx = subIPTx.Where("js_id = ?", param.JsID)
 	}
+	subIPTx = subIPTx.Where("visit_time >= ? and visit_time < ?", beginAt, endAt)
+	subIPTx = subIPTx.Group("js_id")
+
+	subUVTx := db.Table(views.UVFlowDataView).Select("js_id, sum(count) as count")
+	subUVTx = subUVTx.Where("primary_id = ?", param.PrimaryID)
+	if param.CategoryID != 0 {
+		subUVTx = subUVTx.Where("category_id = ?", param.CategoryID)
+	}
+	if param.JsID != 0 {
+		subUVTx = subUVTx.Where("js_id = ?", param.JsID)
+	}
+	subUVTx = subUVTx.Where("visit_time >= ? and visit_time < ?", beginAt, endAt)
+	subUVTx = subUVTx.Group("js_id")
+
 	count := int64(0)
-	tx := db.Table("(?) as sub", subTx).Select(
-		"sub.title as title, sum(sub.ip_count) as ip_count, sum(sub.uv_count) as uv_count").
-		Group("sub.title").
+	jcpTX := db.Table(tables.JsManage + " AS js").
+		Select("js.id AS js_id, js.title AS title, jc.id AS category_id, jc.primary_id").
+		Joins(fmt.Sprintf("INNER JOIN %s AS jc ON js.category_id = jc.id", tables.JsCategory))
+	jcpTX = jcpTX.Where("jc.primary_id = ?", param.PrimaryID)
+	if param.CategoryID != 0 {
+		jcpTX = jcpTX.Where("jc.id = ?", param.CategoryID)
+	}
+	if param.JsID != 0 {
+		jcpTX = jcpTX.Where("js.id = ?", param.JsID)
+	}
+	tx := db.Table("(?) AS jst", jcpTX).
+		Select("jst.title AS title, ip_flow.count AS ip_count, uv_flow.count AS uv_count").
+		Joins("LEFT JOIN (?) AS ip_flow on jst.js_id = ip_flow.js_id", subIPTx).
+		Joins("LEFT JOIN (?) AS uv_flow on jst.js_id = uv_flow.js_id", subUVTx).
 		Limit(pageInfo.PageSize).Offset(pageInfo.Offset()).
 		Scan(&flowData).Limit(-1).Offset(-1).Count(&count)
 	return count, flowData, exception.Wrap(response.ExceptionDatabase, tx.Error)
@@ -357,21 +447,43 @@ func (dri *daRepoImpl) TimeScopeFlowData(db *gorm.DB, param *vo.JSFilterParams, 
 func (dri *daRepoImpl) FromNowFlowData(db *gorm.DB, param *vo.JSFilterParams, pageInfo *vo.PageInfo) (int64,
 	[]models.FlowDataStatistic, exception.Exception) {
 	flowData := make([]models.FlowDataStatistic, 0)
-	subTx := db.Model(&models.FlowDataView{})
+	subIPTx := db.Table(views.IPFlowDataView).Select("js_id, sum(count) as count")
 	if param.PrimaryID == 0 {
 		return 0, nil, exception.New(response.ExceptionInvalidRequestParameters, "primary_id must choose")
 	}
-	subTx = subTx.Where("primary_id = ?", param.PrimaryID)
+	subIPTx = subIPTx.Where("primary_id = ?", param.PrimaryID)
 	if param.CategoryID != 0 {
-		subTx = subTx.Where("category_id = ?", param.CategoryID)
+		subIPTx = subIPTx.Where("category_id = ?", param.CategoryID)
 	}
 	if param.JsID != 0 {
-		subTx = subTx.Where("js_id = ?", param.JsID)
+		subIPTx = subIPTx.Where("js_id = ?", param.JsID)
 	}
+	subIPTx = subIPTx.Group("js_id")
+
+	subUVTx := db.Table(views.UVFlowDataView).Select("js_id, sum(count) as count")
+	subUVTx = subUVTx.Where("primary_id = ?", param.PrimaryID)
+	if param.CategoryID != 0 {
+		subUVTx = subUVTx.Where("category_id = ?", param.CategoryID)
+	}
+	if param.JsID != 0 {
+		subUVTx = subUVTx.Where("js_id = ?", param.JsID)
+	}
+	subUVTx = subUVTx.Group("js_id")
 	count := int64(0)
-	tx := db.Table("(?) as sub", subTx).Select(
-		"sub.title as title, sum(sub.ip_count) as ip_count, sum(sub.uv_count) as uv_count").
-		Group("sub.title").
+	jcpTX := db.Table(tables.JsManage + " AS js").
+		Select("js.id AS js_id, js.title AS title, jc.id AS category_id, jc.primary_id").
+		Joins(fmt.Sprintf("INNER JOIN %s AS jc ON js.category_id = jc.id", tables.JsCategory))
+	jcpTX = jcpTX.Where("jc.primary_id = ?", param.PrimaryID)
+	if param.CategoryID != 0 {
+		jcpTX = jcpTX.Where("jc.id = ?", param.CategoryID)
+	}
+	if param.JsID != 0 {
+		jcpTX = jcpTX.Where("js.id = ?", param.JsID)
+	}
+	tx := db.Table("(?) AS jst", jcpTX).
+		Select("jst.title AS title, ip_flow.count AS ip_count, uv_flow.count AS uv_count").
+		Joins("LEFT JOIN (?) AS ip_flow on jst.js_id = ip_flow.js_id", subIPTx).
+		Joins("LEFT JOIN (?) AS uv_flow on jst.js_id = uv_flow.js_id", subUVTx).
 		Limit(pageInfo.PageSize).Offset(pageInfo.Offset()).
 		Scan(&flowData).Limit(-1).Offset(-1).Count(&count)
 	return count, flowData, exception.Wrap(response.ExceptionDatabase, tx.Error)

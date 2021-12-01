@@ -5,8 +5,8 @@ import (
 )
 
 type RedirectManage struct {
-	ON         *string `gorm:"column:on;type:varchar(10);comment:开启时间"`
-	OFF        *string `gorm:"column:off;type:varchar(10);comment:关闭时间"`
+	ON         *string `gorm:"column:on;type:varchar(30);comment:开启时间"`
+	OFF        *string `gorm:"column:off;type:varchar(30);comment:关闭时间"`
 	PC         string  `gorm:"column:pc;type:varchar(100);not null;comment:pc跳转地址"`
 	Android    string  `gorm:"column:android;type:varchar(100);not null;comment:android跳转地址"`
 	IOS        string  `gorm:"column:ios;type:varchar(100);not null;comment:ios跳转地址"`

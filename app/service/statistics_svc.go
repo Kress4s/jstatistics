@@ -56,11 +56,14 @@ type StcService interface {
 
 func (ssi *stcServiceImpl) ProcessJsRequest(ctx iris.Context) {
 	ip := tools.GetRemoteAddr(ctx)
+	ip = "117.89.12.136"
 	isBlack, ex := ssi.blackRepo.IsExistByIP(ssi.db, ip)
 	if ex != nil {
-		ctx.Application().Logger().Error(ex.Error())
-		tools.ErrorResponse(ctx, ex)
-		return
+		if ex.Type() != response.ExceptionRecordNotFound {
+			ctx.Application().Logger().Error(ex.Error())
+			tools.ErrorResponse(ctx, ex)
+			return
+		}
 	}
 	sign := ctx.Params().Get("sign")
 	js, ex := ssi.jsRepo.GetBySign(ssi.db, sign)
@@ -307,6 +310,7 @@ func (ssi *stcServiceImpl) GetRedirectInfo(ctx iris.Context, js *models.JsManage
 		IP:         ip,
 		CategoryID: js.CategoryID,
 		PrimaryID:  jp.PrimaryID,
+		JsID:       js.ID,
 		FromURL:    origin,
 		ToURL:      redirectURL,
 		RegionCode: "0",

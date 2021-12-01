@@ -13,7 +13,8 @@ var V0002InitViews = &gormigrate.Migration{
 	Migrate: func(tx *gorm.DB) error {
 		if err := AutoMigrateView(
 			tx,
-			views.CreateFlowDataView,
+			views.CreateIPFlowDataView,
+			views.CreateUVFlowDataView,
 		); err != nil {
 			return err
 		}

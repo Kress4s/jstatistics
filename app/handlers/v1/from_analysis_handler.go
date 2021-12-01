@@ -28,7 +28,7 @@ func NewFromAnalysisHandler() *FromAnalysisHandler {
 // @Param end_at query string true "时间格式: 2021-08-31"
 // @Param pid query int true "JS主分类ID"
 // @Param cid query int false "JS分类ID"
-// @Param jid query int false "JS ID"
+// @Param js_id query int false "JS ID"
 // @Param page query int false "请求页"
 // @Param page_size query int false "页大小"
 // @Success 200 {object} vo.DataPagination{data=[]vo.FromAnalysisResp} "查询来路统计数据"

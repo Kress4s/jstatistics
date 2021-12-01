@@ -102,3 +102,7 @@ type FromAnalysisView struct {
 	ToUrl   string `gorm:"to_url"`
 	Count   int64  `gorm:"count"`
 }
+
+// type IPFlowDataStatisticView struct {
+
+// }

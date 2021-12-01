@@ -75,7 +75,7 @@ func (dsi *daServiceImpl) ThisMonthIP(param *vo.JSFilterParams) (*vo.ThisMonthIP
 }
 
 func (dsi *daServiceImpl) LastMonthIP(param *vo.JSFilterParams) (*vo.LastMonthIP, exception.Exception) {
-	beginAt, endAt := tools.GetThisMonthTimeScope(time.Now())
+	beginAt, endAt := tools.GetLastMonthTimeScope(time.Now())
 	count, ex := dsi.repo.LastMonthIP(dsi.db, param, beginAt, endAt)
 	if ex != nil {
 		return nil, ex
