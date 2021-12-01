@@ -20,18 +20,46 @@ func IsInRuleClient(client int64, jsClient []int64) bool {
 	return isValid
 }
 
+var IsMobileTypeCharacters = map[string]struct{}{
+	"iphone": {}, "ipod": {}, "ipad": {}, "android": {}, "mobile": {}, "blackberry": {},
+	"webos": {}, "incognito": {}, "webmate": {}, "bada": {}, "nokia": {}, "lg": {},
+	"ucweb": {}, "skyfire": {},
+
+	// TODO 测试移动端连接
+	"postman": {},
+}
+
+var IsIOSCharacters = map[string]struct{}{
+	"iphone": {}, "ipod": {}, "ipad": {}, "ios": {},
+	// TODO 测试postman
+	"post": {},
+}
+
 func GetClintType(agent string) int {
-	if strings.ContainsAny(strings.ToLower(agent), constant.MOBILE) {
-		return constant.MobileType
+	for k := range IsMobileTypeCharacters {
+		if strings.Contains(agent, k) {
+			return constant.MobileType
+		}
 	}
 	return constant.PCType
 }
 
+func IsIOSDevice(agent string) bool {
+	is := false
+	for k := range IsIOSCharacters {
+		if strings.Contains(agent, k) {
+			is = !is
+			break
+		}
+	}
+	return is
+}
+
 func GetDeviceType(agent string) int {
 	switch {
-	case strings.ContainsAny(strings.ToLower(agent), constant.IOS):
+	case IsIOSDevice(strings.ToLower(agent)):
 		return constant.IOSRedirectType
-	case strings.ContainsAny(strings.ToLower(agent), constant.Android):
+	case strings.Contains(strings.ToLower(agent), constant.Android):
 		return constant.AndroidRedirectType
 	default:
 		return constant.PCRedirectType

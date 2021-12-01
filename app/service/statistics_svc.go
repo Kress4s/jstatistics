@@ -85,10 +85,11 @@ func (ssi *stcServiceImpl) ProcessJsRequest(ctx iris.Context) {
 				tools.DirectTopRedirect(ctx, constant.BlankCode)
 				return
 			}
+		} else {
+			ctx.Application().Logger().Error(ex.Error())
+			tools.ErrorResponse(ctx, ex)
+			return
 		}
-		ctx.Application().Logger().Error(ex.Error())
-		tools.ErrorResponse(ctx, ex)
-		return
 	}
 	// 黑名单
 	if isBlack {
@@ -193,11 +194,13 @@ func (ssi *stcServiceImpl) JSJudgeMent(ctx iris.Context, js *models.JsManage, fa
 		fmt.Println("来源无")
 	case constant.FromTypeKey:
 		// 判断origin是否匹配
-		keyWord := strings.ReplaceAll(js.KeyWord, ",", " & ")
-		if !strings.ContainsAny(origin, keyWord) {
-			// 伪装内容
-			tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
-			return false
+		keyWord := strings.Split(origin, ",")
+		for i := range keyWord {
+			if !strings.Contains(origin, keyWord[i]) {
+				// 伪装内容
+				tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
+				return false
+			}
 		}
 	case constant.FromTypeEngine:
 		isExist, engineType := tools.GetEngineType(agent)

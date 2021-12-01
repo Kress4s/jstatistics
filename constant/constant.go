@@ -137,15 +137,7 @@ const (
 	TextXml = `<?xml version="1.0" encoding="UTF-8"?>
 	<text>%s</text>`
 
-	ApplicationJson = `<html>
-	<head>  
-	<title>application/json</title>  
-	<meta http-equiv="Content-Type" content="application/json"; charset=gb2312" /> 
-	</head> 
-	<body> 
-		<h1>{"text": %s}</h1>
-	</body> 
-	</html>`
+	ApplicationJson = `{"text": %s}`
 )
 
 const (
@@ -171,7 +163,8 @@ const (
 	Android = "android"
 
 	// PC
-	PCType     = 1
+	PCType = 1
+	// 移动端
 	MobileType = 0
 )
 
