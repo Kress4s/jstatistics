@@ -2,6 +2,7 @@ package service
 
 import (
 	"js_statistics/app/repositories"
+	"js_statistics/app/response"
 	"js_statistics/app/vo"
 	"js_statistics/commom/drivers/database"
 	"js_statistics/commom/tools"
@@ -67,7 +68,8 @@ func (dsi *daServiceImpl) YesterdayIP(param *vo.JSFilterParams) (*vo.YesterdayIP
 
 func (dsi *daServiceImpl) ThisMonthIP(param *vo.JSFilterParams) (*vo.ThisMonthIP, exception.Exception) {
 	beginAt, endAt := tools.GetThisMonthTimeScope(time.Now())
-	count, ex := dsi.repo.ThisMonthIP(dsi.db, param, beginAt, endAt)
+	count, ex := dsi.repo.ThisMonthIP(dsi.db, param, beginAt.Format(constant.DateFormat),
+		endAt.Format(constant.DateFormat))
 	if ex != nil {
 		return nil, ex
 	}
@@ -76,7 +78,8 @@ func (dsi *daServiceImpl) ThisMonthIP(param *vo.JSFilterParams) (*vo.ThisMonthIP
 
 func (dsi *daServiceImpl) LastMonthIP(param *vo.JSFilterParams) (*vo.LastMonthIP, exception.Exception) {
 	beginAt, endAt := tools.GetLastMonthTimeScope(time.Now())
-	count, ex := dsi.repo.LastMonthIP(dsi.db, param, beginAt, endAt)
+	count, ex := dsi.repo.LastMonthIP(dsi.db, param, beginAt.Format(constant.DateFormat),
+		endAt.Format(constant.DateFormat))
 	if ex != nil {
 		return nil, ex
 	}
@@ -91,19 +94,52 @@ func (dsi *daServiceImpl) IPAndUVisit(param *vo.JSFilterParams, beginAt, endAt s
 	}
 	ipVisit := make([]vo.IPVisit, 0, len(ipData))
 	uvVisit := make([]vo.UVVisit, 0, len(ipData))
-	for i := range ipData {
-		ipVisit = append(ipVisit, vo.IPVisit{
-			Count:  ipData[i].Count,
-			Bucket: ipData[i].VisitTime.Format(constant.DateFormat),
-		})
+	// 生成连续时间
+	begin, err := time.Parse(constant.DateFormat, beginAt)
+	end, _err := time.Parse(constant.DateFormat, endAt)
+	if err != nil || _err != nil {
+		return nil, exception.Wrap(response.ExceptionParseDate, _err)
 	}
-	for j := range uvData {
-		uvVisit = append(uvVisit, vo.UVVisit{
-			Count:  uvData[j].Count,
-			Bucket: uvData[j].VisitTime.Format(constant.DateFormat),
-		})
+	buckets := tools.DayIterator(begin, end)
+	for i := range buckets {
+		isExist := false
+		for j := range ipData {
+			if ipData[j].VisitTime.Format(constant.DateFormat) == buckets[i] {
+				ipVisit = append(ipVisit, vo.IPVisit{
+					Count:  ipData[j].Count,
+					Bucket: ipData[j].VisitTime.Format(constant.DateFormat),
+				})
+				isExist = true
+				break
+			}
+		}
+		if !isExist {
+			ipVisit = append(ipVisit, vo.IPVisit{
+				Count:  0,
+				Bucket: buckets[i],
+			})
+		}
 	}
 
+	for i := range buckets {
+		isExist := false
+		for j := range uvData {
+			if uvData[j].VisitTime.Format(constant.DateFormat) == buckets[i] {
+				uvVisit = append(uvVisit, vo.UVVisit{
+					Count:  uvData[j].Count,
+					Bucket: uvData[j].VisitTime.Format(constant.DateFormat),
+				})
+				isExist = true
+				break
+			}
+		}
+		if !isExist {
+			uvVisit = append(uvVisit, vo.UVVisit{
+				Count:  0,
+				Bucket: buckets[i],
+			})
+		}
+	}
 	return &vo.HomeIPAndUVisit{IP: ipVisit, UV: uvVisit}, nil
 }
 
@@ -120,10 +156,22 @@ func (dsi *daServiceImpl) TodayIPAndUVisit(param *vo.JSFilterParams) (*vo.HomeIP
 			Bucket: ipData[i].VisitTime.Format(constant.DateFormat),
 		})
 	}
+	if len(ipVisit) == 0 {
+		ipVisit = append(ipVisit, vo.IPVisit{
+			Count:  0,
+			Bucket: time.Now().Format(constant.DateFormat),
+		})
+	}
 	for j := range uvData {
 		uvVisit = append(uvVisit, vo.UVVisit{
 			Count:  uvData[j].Count,
 			Bucket: uvData[j].VisitTime.Format(constant.DateFormat),
+		})
+	}
+	if len(uvData) == 0 {
+		uvVisit = append(uvVisit, vo.UVVisit{
+			Count:  0,
+			Bucket: time.Now().Format(constant.DateFormat),
 		})
 	}
 	return &vo.HomeIPAndUVisit{IP: ipVisit, UV: uvVisit}, nil
@@ -142,10 +190,22 @@ func (dsi *daServiceImpl) YesterdayIPAndUVisit(param *vo.JSFilterParams) (*vo.Ho
 			Bucket: ipData[i].VisitTime.Format(constant.DateFormat),
 		})
 	}
+	if len(ipVisit) == 0 {
+		ipVisit = append(ipVisit, vo.IPVisit{
+			Count:  0,
+			Bucket: time.Now().Format(constant.DateFormat),
+		})
+	}
 	for j := range uvData {
 		uvVisit = append(uvVisit, vo.UVVisit{
 			Count:  uvData[j].Count,
 			Bucket: uvData[j].VisitTime.Format(constant.DateFormat),
+		})
+	}
+	if len(uvData) == 0 {
+		uvVisit = append(uvVisit, vo.UVVisit{
+			Count:  0,
+			Bucket: time.Now().Format(constant.DateFormat),
 		})
 	}
 	return &vo.HomeIPAndUVisit{IP: ipVisit, UV: uvVisit}, nil
@@ -158,17 +218,54 @@ func (dsi *daServiceImpl) FromNowIPAndUVisit(param *vo.JSFilterParams) (*vo.Home
 	}
 	ipVisit := make([]vo.IPVisit, 0, len(ipData))
 	uvVisit := make([]vo.UVVisit, 0, len(ipData))
-	for i := range ipData {
-		ipVisit = append(ipVisit, vo.IPVisit{
-			Count:  ipData[i].Count,
-			Bucket: ipData[i].VisitTime.Format(constant.DateFormat),
-		})
+	// 生成连续时间
+	IPBuckets := make([]string, 0)
+	if len(ipData) > 0 {
+		IPBuckets = tools.DayIterator(ipData[0].VisitTime, time.Now())
 	}
-	for j := range uvData {
-		uvVisit = append(uvVisit, vo.UVVisit{
-			Count:  uvData[j].Count,
-			Bucket: uvData[j].VisitTime.Format(constant.DateFormat),
-		})
+	for i := range IPBuckets {
+		isExist := false
+		for j := range ipData {
+			if ipData[j].VisitTime.Format(constant.DateFormat) == IPBuckets[i] {
+				ipVisit = append(ipVisit, vo.IPVisit{
+					Count:  ipData[j].Count,
+					Bucket: ipData[j].VisitTime.Format(constant.DateFormat),
+				})
+				isExist = true
+				break
+			}
+		}
+		if !isExist {
+			ipVisit = append(ipVisit, vo.IPVisit{
+				Count:  0,
+				Bucket: IPBuckets[i],
+			})
+		}
+	}
+
+	// 生成连续时间
+	UVBuckets := make([]string, 0)
+	if len(uvData) > 0 {
+		UVBuckets = tools.DayIterator(uvData[0].VisitTime, time.Now())
+	}
+	for i := range UVBuckets {
+		isExist := false
+		for j := range uvData {
+			if uvData[j].VisitTime.Format(constant.DateFormat) == UVBuckets[i] {
+				uvVisit = append(uvVisit, vo.UVVisit{
+					Count:  uvData[j].Count,
+					Bucket: uvData[j].VisitTime.Format(constant.DateFormat),
+				})
+				isExist = true
+				break
+			}
+		}
+		if !isExist {
+			uvVisit = append(uvVisit, vo.UVVisit{
+				Count:  0,
+				Bucket: UVBuckets[i],
+			})
+		}
 	}
 	return &vo.HomeIPAndUVisit{IP: ipVisit, UV: uvVisit}, nil
 }

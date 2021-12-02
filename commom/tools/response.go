@@ -21,43 +21,48 @@ func DefaultBlackCode(ctx iris.Context) {
 
 // js规则之外的条件，设置的伪装内容
 func BeyondRuleRedirect(ctx iris.Context, faker *vo.FakerResp, redirectMode int) {
-	var redirectInfo string
-	switch faker.Type {
-	//文本
-	case 0:
-		// text/html
-		switch faker.ReqType {
-		// text/html
+	// var redirectInfo string
+	if faker != nil {
+		var redirectInfo string
+		switch faker.Type {
+		//文本
 		case 0:
-			redirectInfo = fmt.Sprintf(constant.TextHtml, faker.Text)
-		// text/plain
+			// text/html
+			switch faker.ReqType {
+			// text/html
+			case 0:
+				redirectInfo = fmt.Sprintf(constant.TextHtml, faker.Text)
+			// text/plain
+			case 1:
+				redirectInfo = faker.Text
+			// text/xml
+			case 2:
+				redirectInfo = fmt.Sprintf(constant.TextXml, faker.Text)
+			// text/application
+			case 3:
+				redirectInfo = fmt.Sprintf(constant.ApplicationJson, faker.Text)
+			}
+		// 图片
 		case 1:
-			redirectInfo = faker.Text
-		// text/xml
+			redirectInfo = fmt.Sprintf(constant.MINIO_URL, faker.ObjID)
+		// mp3
 		case 2:
-			redirectInfo = fmt.Sprintf(constant.TextXml, faker.Text)
-		// text/application
+			redirectInfo = fmt.Sprintf(constant.MINIO_URL, faker.ObjID)
+		// mp4
 		case 3:
-			redirectInfo = fmt.Sprintf(constant.ApplicationJson, faker.Text)
+			redirectInfo = fmt.Sprintf(constant.MINIO_URL, faker.ObjID)
 		}
-	// 图片
-	case 1:
-		redirectInfo = fmt.Sprintf(constant.MINIO_URL, faker.ObjID)
-	// mp3
-	case 2:
-		redirectInfo = fmt.Sprintf(constant.MINIO_URL, faker.ObjID)
-	// mp4
-	case 3:
-		redirectInfo = fmt.Sprintf(constant.MINIO_URL, faker.ObjID)
-	}
-	if redirectMode == 0 {
-		// ctx.WriteString(fmt.Sprintf(constant.RedirectWindowsPage, redirectInfo))
-		DirectWindowsRedirect(ctx, redirectInfo)
+		if redirectMode == 0 {
+			// ctx.WriteString(fmt.Sprintf(constant.RedirectWindowsPage, redirectInfo))
+			DirectWindowsRedirect(ctx, redirectInfo)
+		} else {
+			// ctx.WriteString(fmt.Sprintf(constant.RedirectTopPage, redirectInfo))
+			DirectTopRedirect(ctx, redirectInfo)
+		}
 	} else {
-		// ctx.WriteString(fmt.Sprintf(constant.RedirectTopPage, redirectInfo))
-		DirectTopRedirect(ctx, redirectInfo)
+		// 不符合规则直接跳转空白页
+		DirectWindowsRedirect(ctx, constant.BlankCode)
 	}
-
 }
 
 func DirectWindowsRedirect(ctx iris.Context, redirect string) {

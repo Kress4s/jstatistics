@@ -61,7 +61,7 @@ func (hsi *homeServiceImpl) YesterdayIP() (*vo.YesterdayIP, exception.Exception)
 
 func (hsi *homeServiceImpl) ThisMonthIP() (*vo.ThisMonthIP, exception.Exception) {
 	beginAt, endAt := tools.GetThisMonthTimeScope(time.Now())
-	count, ex := hsi.repo.ThisMonthIP(hsi.db, beginAt, endAt)
+	count, ex := hsi.repo.ThisMonthIP(hsi.db, beginAt.Format(constant.DateFormat), endAt.Format(constant.DateFormat))
 	if ex != nil {
 		return nil, ex
 	}
@@ -70,7 +70,7 @@ func (hsi *homeServiceImpl) ThisMonthIP() (*vo.ThisMonthIP, exception.Exception)
 
 func (hsi *homeServiceImpl) LastMonthIP() (*vo.LastMonthIP, exception.Exception) {
 	beginAt, endAt := tools.GetLastMonthTimeScope(time.Now())
-	count, ex := hsi.repo.LastMonthIP(hsi.db, beginAt, endAt)
+	count, ex := hsi.repo.LastMonthIP(hsi.db, beginAt.Format(constant.DateFormat), endAt.Format(constant.DateFormat))
 	if ex != nil {
 		return nil, ex
 	}
@@ -79,25 +79,54 @@ func (hsi *homeServiceImpl) LastMonthIP() (*vo.LastMonthIP, exception.Exception)
 
 func (hsi *homeServiceImpl) IPAndUVisit() (*vo.HomeIPAndUVisit, exception.Exception) {
 	beginAt, endAt := tools.GetLastMonthTimeScope(time.Now())
-	ipData, uvData, ex := hsi.repo.IPAndUVisit(hsi.db, beginAt, endAt)
+	ipData, uvData, ex := hsi.repo.IPAndUVisit(hsi.db, beginAt.Format(constant.DateFormat),
+		endAt.Format(constant.DateFormat))
 	if ex != nil {
 		return nil, ex
 	}
 	ipVisit := make([]vo.IPVisit, 0, len(ipData))
 	uvVisit := make([]vo.UVVisit, 0, len(ipData))
-	for i := range ipData {
-		ipVisit = append(ipVisit, vo.IPVisit{
-			Count:  ipData[i].Count,
-			Bucket: ipData[i].VisitTime.Format(constant.DateFormat),
-		})
-	}
-	for j := range uvData {
-		uvVisit = append(uvVisit, vo.UVVisit{
-			Count:  uvData[j].Count,
-			Bucket: uvData[j].VisitTime.Format(constant.DateFormat),
-		})
+	// 生成连续时间
+	buckets := tools.DayIterator(beginAt, endAt)
+	for i := range buckets {
+		isExist := false
+		for j := range ipData {
+			if ipData[j].VisitTime.Format(constant.DateFormat) == buckets[i] {
+				ipVisit = append(ipVisit, vo.IPVisit{
+					Count:  ipData[j].Count,
+					Bucket: ipData[j].VisitTime.Format(constant.DateFormat),
+				})
+				isExist = true
+				break
+			}
+		}
+		if !isExist {
+			ipVisit = append(ipVisit, vo.IPVisit{
+				Count:  0,
+				Bucket: buckets[i],
+			})
+		}
 	}
 
+	for i := range buckets {
+		isExist := false
+		for j := range uvData {
+			if uvData[j].VisitTime.Format(constant.DateFormat) == buckets[i] {
+				uvVisit = append(uvVisit, vo.UVVisit{
+					Count:  uvData[j].Count,
+					Bucket: uvData[j].VisitTime.Format(constant.DateFormat),
+				})
+				isExist = true
+				break
+			}
+		}
+		if !isExist {
+			uvVisit = append(uvVisit, vo.UVVisit{
+				Count:  0,
+				Bucket: buckets[i],
+			})
+		}
+	}
 	return &vo.HomeIPAndUVisit{IP: ipVisit, UV: uvVisit}, nil
 }
 

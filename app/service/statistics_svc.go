@@ -75,17 +75,21 @@ func (ssi *stcServiceImpl) ProcessJsRequest(ctx iris.Context) {
 	// TODO 伪装内容
 	faker, ex := ssi.GetFakerRedirectInfoByJsID(js.ID)
 	if ex != nil {
-		if ex.Type() == response.ExceptionRecordNotFound {
-			// 未设置伪装内容
-			switch js.RedirectMode {
-			case 0:
-				tools.DirectWindowsRedirect(ctx, constant.BlankCode)
-				return
-			case 1:
-				tools.DirectTopRedirect(ctx, constant.BlankCode)
-				return
-			}
-		} else {
+		if ex.Type() != response.ExceptionRecordNotFound {
+			// 	// 未设置伪装内容
+			// 	switch js.RedirectMode {
+			// 	case 0:
+			// 		tools.DirectWindowsRedirect(ctx, constant.BlankCode)
+			// 		return
+			// 	case 1:
+			// 		tools.DirectTopRedirect(ctx, constant.BlankCode)
+			// 		return
+			// 	}
+			// } else {
+			// 	ctx.Application().Logger().Error(ex.Error())
+			// 	tools.ErrorResponse(ctx, ex)
+			// 	return
+			// }
 			ctx.Application().Logger().Error(ex.Error())
 			tools.ErrorResponse(ctx, ex)
 			return
@@ -236,8 +240,6 @@ func (ssi *stcServiceImpl) GetRedirectInfo(ctx iris.Context, js *models.JsManage
 		tools.ErrorResponse(ctx, ex)
 		return
 	}
-	// TODO 跳转代码 TOP/Windows 未定
-
 	// 跳转时间区间是否合理
 	if res, err := tools.IsInRedirectOnOff(*redirectInfo.ON, *redirectInfo.OFF); err != nil {
 		ctx.Application().Logger().Error(err.Error())

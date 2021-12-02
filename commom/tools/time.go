@@ -7,21 +7,21 @@ import (
 )
 
 // 过去7天
-func GetLastWeekTimeScope(now time.Time) (beginAt, endAt string) {
-	return now.AddDate(0, 0, -7).Format(constant.DateFormat), now.Format(constant.DateFormat)
+func GetLastWeekTimeScope(now time.Time) (beginAt, endAt time.Time) {
+	return now.AddDate(0, 0, -7), now
 }
 
 // 本月
-func GetThisMonthTimeScope(now time.Time) (beginAt, endAt string) {
-	beginAt = time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.Local).Format(constant.DateFormat)
-	return beginAt, now.Format(constant.DateFormat)
+func GetThisMonthTimeScope(now time.Time) (beginAt, endAt time.Time) {
+	beginAt = time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.Local)
+	return beginAt, now
 }
 
 // 上月
-func GetLastMonthTimeScope(now time.Time) (string, string) {
+func GetLastMonthTimeScope(now time.Time) (time.Time, time.Time) {
 	end := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.Local)
 	begin := end.AddDate(0, -1, 0)
-	return begin.Format(constant.DateFormat), end.Format(constant.DateFormat)
+	return begin, end
 }
 
 // 判断跳转的时间区间是否符合
@@ -38,4 +38,19 @@ func IsInRedirectOnOff(on, off string) (bool, error) {
 	fmt.Println(now.Before(offTime) && now.After(onTime))
 	fmt.Println(now.Before(onTime) && now.After(offTime))
 	return now.Before(offTime) && now.After(onTime), nil
+}
+
+// 时间区间补点
+func DayIterator(beginAt, endAt time.Time) []string {
+	dates := make([]string, 0)
+	dates = append(dates, beginAt.Format(constant.DateFormat))
+	tIter := beginAt.AddDate(0, 0, 1)
+	for {
+		if tIter.After(endAt) {
+			break
+		}
+		dates = append(dates, tIter.Format(constant.DateFormat))
+		tIter = tIter.AddDate(0, 0, 1)
+	}
+	return dates
 }

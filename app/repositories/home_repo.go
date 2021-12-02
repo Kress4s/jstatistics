@@ -86,14 +86,14 @@ func (hri *homeRepoImpl) IPAndUVisit(db *gorm.DB, beginAt, endAt string) ([]mode
 	subIP := db.Table(tables.IPStatistics).Select("ip, visit_time, count(*) as count").
 		Where("visit_time BETWEEN ? AND ?", beginAt, endAt).Group("ip, visit_time")
 	txIP := db.Table("(?) as sub", subIP).Select("sub.visit_time, sum(sub.count) as count").
-		Group("sub.visit_time").Scan(&ip)
+		Group("sub.visit_time").Order("sub.visit_time").Scan(&ip)
 	if txIP.Error != nil {
 		return nil, nil, exception.Wrap(response.ExceptionDatabase, txIP.Error)
 	}
 	subUV := db.Table(tables.UVStatistics).Select("cookie, visit_time, count(*) as count").
 		Where("visit_time BETWEEN ? AND ?", beginAt, endAt).Group("visit_time, cookie")
 	txUV := db.Table("(?) as sub", subUV).Select("sub.visit_time, sum(sub.count) as count").
-		Group("sub.visit_time").Scan(&uv)
+		Group("sub.visit_time").Order("sub.visit_time").Scan(&uv)
 	if txUV.Error != nil {
 		return nil, nil, exception.Wrap(response.ExceptionDatabase, txUV.Error)
 	}

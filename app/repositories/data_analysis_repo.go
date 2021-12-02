@@ -144,7 +144,7 @@ func (dri *daRepoImpl) IPAndUVisit(db *gorm.DB, param *vo.JSFilterParams, beginA
 	}
 	subIP = subIP.Group("ip, visit_time")
 	txIP := db.Table("(?) as sub", subIP).Select("sub.visit_time, sum(sub.count) as count").
-		Group("sub.visit_time").Scan(&ip)
+		Group("sub.visit_time").Order("sub.visit_time").Scan(&ip)
 	if txIP.Error != nil {
 		return nil, nil, exception.Wrap(response.ExceptionDatabase, txIP.Error)
 	}
@@ -162,7 +162,7 @@ func (dri *daRepoImpl) IPAndUVisit(db *gorm.DB, param *vo.JSFilterParams, beginA
 	}
 	subUV = subUV.Group("visit_time, cookie")
 	txUV := db.Table("(?) as sub", subUV).Select("sub.visit_time, sum(sub.count) as count").
-		Group("sub.visit_time").Scan(&uv)
+		Group("sub.visit_time").Order("sub.visit_time").Scan(&uv)
 	if txUV.Error != nil {
 		return nil, nil, exception.Wrap(response.ExceptionDatabase, txUV.Error)
 	}
@@ -274,7 +274,7 @@ func (dri *daRepoImpl) FromNowIPAndUVisit(db *gorm.DB, param *vo.JSFilterParams)
 	}
 	subIP = subIP.Group("ip, visit_time")
 	txIP := db.Table("(?) as sub", subIP).Select("sub.visit_time, sum(sub.count) as count").
-		Group("sub.visit_time").Scan(&ip)
+		Group("sub.visit_time").Order("sub.visit_time").Scan(&ip)
 	if txIP.Error != nil {
 		return nil, nil, exception.Wrap(response.ExceptionDatabase, txIP.Error)
 	}
@@ -291,7 +291,7 @@ func (dri *daRepoImpl) FromNowIPAndUVisit(db *gorm.DB, param *vo.JSFilterParams)
 	}
 	subUV = subUV.Group("visit_time, cookie")
 	txUV := db.Table("(?) as sub", subUV).Select("sub.visit_time, sum(sub.count) as count").
-		Group("sub.visit_time").Scan(&uv)
+		Group("sub.visit_time").Order("sub.visit_time").Scan(&uv)
 	if txUV.Error != nil {
 		return nil, nil, exception.Wrap(response.ExceptionDatabase, txUV.Error)
 	}
