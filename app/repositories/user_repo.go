@@ -43,7 +43,7 @@ func (u *UserRepoImpl) Profile(db *gorm.DB, id int64) (*models.User, exception.E
 	user := models.User{}
 	res := db.Where(&models.User{ID: id}).Find(&user)
 	if res.RowsAffected == 0 {
-		return nil, exception.New(response.ExceptionRecordNotFound, "recode not found")
+		return nil, exception.New(response.ExceptionRecordNotFound, "用户未找到")
 	}
 	if res.Error != nil {
 		return nil, exception.Wrap(response.ExceptionDatabase, res.Error)
@@ -58,7 +58,7 @@ func (u *UserRepoImpl) CheckPassword(db *gorm.DB, username, password string) (bo
 		return false, 0, exception.Wrap(response.ExceptionDatabase, res.Error)
 	}
 	if res.RowsAffected == 0 {
-		return false, 0, exception.New(response.ExceptionInvalidUserPassword, "user or password is wrong")
+		return false, 0, exception.New(response.ExceptionInvalidUserPassword, "用户名/密码错误")
 	}
 	return true, user.ID, nil
 }
@@ -71,7 +71,7 @@ func (u *UserRepoImpl) Get(db *gorm.DB, id int64) (*models.User, exception.Excep
 	user := models.User{}
 	res := db.Where(&models.User{ID: id}).Find(&user)
 	if res.RowsAffected == 0 {
-		return nil, exception.New(response.ExceptionRecordNotFound, "recode not found")
+		return nil, exception.New(response.ExceptionRecordNotFound, "用户未找到")
 	}
 	if res.Error != nil {
 		return nil, exception.Wrap(response.ExceptionDatabase, res.Error)

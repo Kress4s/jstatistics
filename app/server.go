@@ -38,6 +38,7 @@ func newApp() *iris.Application {
 	if cfg.DebugModel {
 		app.Use(IrisLogger())
 	}
+
 	app.Use(iris.Compression)
 	// app.Use(middlewares.RecordSystemLog())
 	// 跨域规则
@@ -57,6 +58,9 @@ func newApp() *iris.Application {
 		AllowCredentials:   true,
 		OptionsPassthrough: false,
 	}))
+	// log recode
+	// logFile := tools.NewLogFile()
+	// app.Logger().SetOutput(logFile)
 	routes.RegisterRoutes(app)
 	return app
 }
@@ -109,7 +113,7 @@ func IrisLogger() context.Handler {
 		//将添加到日志中。
 		MessageContextKeys: []string{"logger_message"},
 		//如果不为空然后它的内容来自`ctx.GetHeader（“User-Agent”）
-		MessageHeaderKeys: []string{"User-Agent"},
+		// MessageHeaderKeys: []string{"User-Agent"},
 	})
 	return customLogger
 }

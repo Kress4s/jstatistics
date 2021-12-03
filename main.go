@@ -16,6 +16,7 @@ package main
 
 import (
 	"js_statistics/app"
+	"js_statistics/commom/tools"
 	"js_statistics/config"
 	"log"
 	"os"
@@ -33,6 +34,9 @@ func main() {
 	// 性能监控
 	// go http.ListenAndServe(":7090", nil)
 
+	// init log path
+	createDIR()
+
 	s := waiForSignal()
 	log.Fatalf("signal received, server closed, %v", s)
 }
@@ -44,4 +48,11 @@ func waiForSignal() os.Signal {
 	s := <-signalChan
 	signal.Stop(signalChan)
 	return s
+}
+
+func createDIR() {
+	var err error
+	if _, err = os.Stat(tools.GetLogsPath()); err != nil {
+		os.MkdirAll(tools.GetLogsPath(), os.ModePerm)
+	}
 }

@@ -2,4 +2,8 @@
 
 js_statistics
 
+logs
+
 GeoLite2-City.mmdb
+
+GeoIP.conf

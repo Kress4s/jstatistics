@@ -115,9 +115,11 @@ func (u *UserHandler) List(ctx iris.Context) mvc.Result {
 	var id int64
 	var err error
 	if ctx.URLParamExists(constant.ID) {
-		id, err = ctx.URLParamInt64(constant.ID)
-		if err != nil {
-			return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
+		if ctx.URLParam(constant.ID) != "" {
+			id, err = ctx.URLParamInt64(constant.ID)
+			if err != nil {
+				return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
+			}
 		}
 	}
 	resp, ex := u.Svc.List(params, id)
