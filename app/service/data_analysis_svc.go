@@ -219,14 +219,26 @@ func (dsi *daServiceImpl) FromNowIPAndUVisit(param *vo.JSFilterParams) (*vo.Home
 	ipVisit := make([]vo.IPVisit, 0, len(ipData))
 	uvVisit := make([]vo.UVVisit, 0, len(ipData))
 	// 生成连续时间
-	IPBuckets := make([]string, 0)
-	if len(ipData) > 0 {
-		IPBuckets = tools.DayIterator(ipData[0].VisitTime, time.Now())
+	var beginAt time.Time
+	switch {
+	case len(ipData) > 0 && len(uvData) > 0:
+		if ipData[0].VisitTime.After(uvData[0].VisitTime) {
+			beginAt = uvData[0].VisitTime
+		} else {
+			beginAt = ipData[0].VisitTime
+		}
+	case len(ipData) > 0 && len(uvData) == 0:
+		beginAt = ipData[0].VisitTime
+	case len(ipData) == 0 && len(uvData) > 0:
+		beginAt = uvData[0].VisitTime
+	default:
+		beginAt = time.Now()
 	}
-	for i := range IPBuckets {
+	bucket := tools.DayIterator(beginAt, time.Now())
+	for i := range bucket {
 		isExist := false
 		for j := range ipData {
-			if ipData[j].VisitTime.Format(constant.DateFormat) == IPBuckets[i] {
+			if ipData[j].VisitTime.Format(constant.DateFormat) == bucket[i] {
 				ipVisit = append(ipVisit, vo.IPVisit{
 					Count:  ipData[j].Count,
 					Bucket: ipData[j].VisitTime.Format(constant.DateFormat),
@@ -238,20 +250,15 @@ func (dsi *daServiceImpl) FromNowIPAndUVisit(param *vo.JSFilterParams) (*vo.Home
 		if !isExist {
 			ipVisit = append(ipVisit, vo.IPVisit{
 				Count:  0,
-				Bucket: IPBuckets[i],
+				Bucket: bucket[i],
 			})
 		}
 	}
 
-	// 生成连续时间
-	UVBuckets := make([]string, 0)
-	if len(uvData) > 0 {
-		UVBuckets = tools.DayIterator(uvData[0].VisitTime, time.Now())
-	}
-	for i := range UVBuckets {
+	for i := range bucket {
 		isExist := false
 		for j := range uvData {
-			if uvData[j].VisitTime.Format(constant.DateFormat) == UVBuckets[i] {
+			if uvData[j].VisitTime.Format(constant.DateFormat) == bucket[i] {
 				uvVisit = append(uvVisit, vo.UVVisit{
 					Count:  uvData[j].Count,
 					Bucket: uvData[j].VisitTime.Format(constant.DateFormat),
@@ -263,7 +270,7 @@ func (dsi *daServiceImpl) FromNowIPAndUVisit(param *vo.JSFilterParams) (*vo.Home
 		if !isExist {
 			uvVisit = append(uvVisit, vo.UVVisit{
 				Count:  0,
-				Bucket: UVBuckets[i],
+				Bucket: bucket[i],
 			})
 		}
 	}

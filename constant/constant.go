@@ -56,43 +56,59 @@ const (
 
 	// 直接跳转 windows
 	RedirectWindowsPage = `window.location.href="%s"`
+
 	// 直接跳转 top
 	RedirectTopPage = `window.top.location.href="%s"`
+
 	// 嵌套跳转
-	NestingRedirect = `</head>
-	<body>
-		<script>
-			window.onload = function () {
-				// 创建div标签
-				var div = document.createElement("div");
-				// 给标签添加id
-				div.setAttribute("id", "container");
-				// 将div标签插入到body
-				document.body.appendChild(div);
-		
-				// 渲染
-				let url = "%s";
-				document.getElementById("container").innerHTML = "<iframe src=${url}></iframe>";
-			}
-		</script>
-	</body>
-	</html>`
+	NestingRedirect = `
+	<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>嵌套跳转</title>
+</head>
+<body>
+    <script>
+        window.onload = function () {
+            // 创建div标签
+            var div = document.createElement("div");
+            // 给标签添加id
+            div.setAttribute("id", "container");
+            // 将div标签插入到body
+            document.body.appendChild(div);
+
+            // 渲染
+            document.getElementById("container").innerHTML = '<iframe src= %s></iframe>';
+        }
+    </script>
+</body>
+</html>`
+
 	// 屏幕跳转
-	ScreenRedirect = `<!DOCTYPE html>
-	<html lang="zh">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-		<title>屏幕跳转</title></head><body>
-	 <script>
-			window.open('%s')
-		</script>
-	</body>
-	</html>`
+	ScreenRedirect = `
+	<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>屏幕跳转</title>
+
+</head>
+
+<body>
+    <script>
+        window.open('%s')
+    </script>
+</body>
+</html>`
 
 	// href 跳转
-	HrefRedirect = `<!DOCTYPE html>
+	HrefRedirect = `
+	<!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
@@ -110,7 +126,6 @@ const (
             a.setAttribute("href", url);
             // 将div标签插入到body
             document.body.appendChild(a);
-
             document.getElementById("a-link").click();
         }
     </script>
@@ -122,15 +137,16 @@ const (
 
 // 伪装内容类型
 const (
-	TextHtml = `<html>  
-	<head>  
-	<title>text/html</title>  
-	<meta http-equiv="Content-Type" content="text/html"; charset=gb2312" /> 
-	</head> 
-	<body> 
-		<h1>%s</h1>
-	</body> 
-	</html>`
+	TextHtml = `
+	<html>  
+<head>  
+<title>text/html</title>  
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" /> 
+</head> 
+<body> 
+    <h1>%s</h1>
+</body> 
+</html> `
 
 	TextPlain = `%s`
 
@@ -184,12 +200,16 @@ const (
 	GOOGLE  = 4
 	Bing    = 5
 
-	BaiduSearch   = "baidu"
-	UCSearch      = "uc"
-	SLLSearch     = "360" // 360
-	SOU_GOUSearch = "sougou"
-	GOOGLESearch  = "google & chrome"
-	BingSearch    = "bing"
+	BaiduSearch          = "baidu"
+	UCSearch             = "ubrowser"
+	UCSearchPrepare      = "uc"
+	SLLSearch            = "360" // 360
+	SOU_GOUSearch        = "metasr"
+	SOU_GOUSearchPrepare = "sougou"
+	BingSearch           = "edge"
+	BingSearchPrepare    = "bing"
+	GOOGLESearch         = "chrome"
+	GOOGLESearchPrepare  = "google"
 )
 
 // 跳转方式

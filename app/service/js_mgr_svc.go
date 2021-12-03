@@ -80,7 +80,7 @@ func (jsi *jsmServiceImpl) ListByCategoryID(pageInfo *vo.PageInfo, pid int64) (*
 	}
 	resp := make([]vo.JsManageResp, 0, len(jsms))
 	for i := range jsms {
-		resp = append(resp, *vo.NewJsManageResponse(&jsms[i]))
+		resp = append(resp, *vo.NewListJsManageResponse(&jsms[i]))
 	}
 	return vo.NewDataPagination(count, resp, pageInfo), nil
 }

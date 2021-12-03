@@ -5,8 +5,10 @@ import (
 	"js_statistics/app/models/tables"
 	"js_statistics/app/response"
 	"js_statistics/app/vo"
+	"js_statistics/constant"
 	"js_statistics/exception"
 	"sync"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -27,7 +29,8 @@ func GetJsmRepo() JsmRepo {
 
 type JsmRepo interface {
 	Create(db *gorm.DB, jsm *models.JsManage) exception.Exception
-	ListByCategoryID(db *gorm.DB, pageInfo *vo.PageInfo, cid int64) (int64, []models.JsManage, exception.Exception)
+	ListByCategoryID(db *gorm.DB, pageInfo *vo.PageInfo, cid int64) (int64, []models.JsManageListView,
+		exception.Exception)
 	Get(db *gorm.DB, id int64) (*models.JsManage, exception.Exception)
 	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
 	Delete(db *gorm.DB, id int64) exception.Exception
@@ -41,13 +44,16 @@ func (jsi *JsmRepoImpl) Create(db *gorm.DB, jsm *models.JsManage) exception.Exce
 	return exception.Wrap(response.ExceptionDatabase, db.Create(jsm).Error)
 }
 
-func (jsi *JsmRepoImpl) ListByCategoryID(db *gorm.DB, pageInfo *vo.PageInfo, pid int64) (int64, []models.JsManage, exception.Exception) {
-	jsms := make([]models.JsManage, 0)
-	tx := db.Table(tables.JsManage)
-	if pageInfo.Keywords != "" {
-		tx = tx.Scopes(vo.FuzzySearch(pageInfo.Keywords, "title"))
-	}
-	tx.Where("category_id = ?", pid).Order("id").Limit(pageInfo.PageSize).Offset(pageInfo.Offset()).Find(&jsms)
+func (jsi *JsmRepoImpl) ListByCategoryID(db *gorm.DB, pageInfo *vo.PageInfo, pid int64) (int64,
+	[]models.JsManageListView, exception.Exception) {
+	jsms := make([]models.JsManageListView, 0)
+	countSubTx := db.Table(tables.IPStatistics).Select("distinct(ip) AS ip, js_id").
+		Where("visit_time = ?", time.Now().Format(constant.DateFormat))
+	countTX := db.Table("(?) AS jis", countSubTx).Select("count(*) as count, jis.js_id AS js_id").Group("jis.js_id")
+	tx := db.Table(tables.JsManage+" AS js").
+		Select("js.*, ips_count.count as ip_count").
+		Joins("LEFT JOIN (?) AS ips_count ON ips_count.js_id = js.id", countTX)
+	tx.Where("category_id = ?", pid).Order("id").Limit(pageInfo.PageSize).Offset(pageInfo.Offset()).Scan(&jsms)
 	count := int64(0)
 	res := tx.Limit(-1).Offset(-1).Count(&count)
 	return count, jsms, exception.Wrap(response.ExceptionDatabase, res.Error)

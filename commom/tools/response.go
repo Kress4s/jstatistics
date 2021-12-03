@@ -2,6 +2,7 @@ package tools
 
 import (
 	"fmt"
+	"js_statistics/app/response"
 	"js_statistics/app/vo"
 	"js_statistics/constant"
 	"js_statistics/exception"
@@ -11,6 +12,9 @@ import (
 
 // 异常返回
 func ErrorResponse(ctx iris.Context, ex exception.Exception) {
+	if ex == nil {
+		ex = exception.New(response.ExceptionUnknown, "some error")
+	}
 	ctx.WriteString("occur error: " + ex.Error())
 }
 
@@ -60,8 +64,11 @@ func BeyondRuleRedirect(ctx iris.Context, faker *vo.FakerResp, redirectMode int)
 			DirectTopRedirect(ctx, redirectInfo)
 		}
 	} else {
-		// 不符合规则直接跳转空白页
-		DirectWindowsRedirect(ctx, constant.BlankCode)
+		if redirectMode == 0 {
+			DirectWindowsRedirect(ctx, constant.BlankCode)
+		} else {
+			DirectTopRedirect(ctx, constant.BlankCode)
+		}
 	}
 }
 

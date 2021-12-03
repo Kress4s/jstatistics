@@ -21,11 +21,18 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	// _ "github.com/mkevac/debugcharts"
 )
 
 func main() {
 	cfg := config.GetConfig()
+	// go monitor.Start()
 	go app.Run(cfg.Server.Port)
+	go app.RunJs(cfg.JsServer.Port)
+
+	// 性能监控
+	// go http.ListenAndServe(":7090", nil)
+
 	s := waiForSignal()
 	log.Fatalf("signal received, server closed, %v", s)
 }

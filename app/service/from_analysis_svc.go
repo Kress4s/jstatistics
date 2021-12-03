@@ -33,6 +33,7 @@ func GetFaService() FaService {
 type FaService interface {
 	FromStatistic(param *vo.JSFilterParams, pageInfo *vo.PageInfo, beginAt, endAt string) (*vo.DataPagination,
 		exception.Exception)
+	FromStatisticAll(param *vo.JSFilterParams, beginAt, endAt string) ([]vo.FromAnalysisResp, exception.Exception)
 }
 
 func (fsi *faServiceImpl) FromStatistic(param *vo.JSFilterParams, pageInfo *vo.PageInfo, beginAt, endAt string,
@@ -51,4 +52,22 @@ func (fsi *faServiceImpl) FromStatistic(param *vo.JSFilterParams, pageInfo *vo.P
 		})
 	}
 	return vo.NewDataPagination(count, resp, pageInfo), nil
+}
+
+func (fsi *faServiceImpl) FromStatisticAll(param *vo.JSFilterParams, beginAt, endAt string,
+) ([]vo.FromAnalysisResp, exception.Exception) {
+	data, ex := fsi.repo.FromStatisticAll(fsi.db, param, beginAt, endAt)
+	if ex != nil {
+		return nil, ex
+	}
+	resp := make([]vo.FromAnalysisResp, 0, len(data))
+	for i := range data {
+		resp = append(resp, vo.FromAnalysisResp{
+			Title: data[i].Title,
+			From:  data[i].FromURL,
+			To:    data[i].ToUrl,
+			Count: data[i].Count,
+		})
+	}
+	return resp, nil
 }

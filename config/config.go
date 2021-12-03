@@ -18,6 +18,9 @@ type Config struct {
 	Prometheus struct {
 		Port int `toml:"port"`
 	} `toml:"prometheus"`
+	JsServer struct {
+		Port int `toml:"port"`
+	} `toml:"js_server"`
 	Server struct {
 		Port        int `toml:"port"`
 		MaxPageSize int `toml:"max_page_size"`

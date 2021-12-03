@@ -18,21 +18,22 @@ type (
 	UserToMenus            = permission.UserToMenus
 
 	// 应用管理
-	DomainMgr      = application.DomainMgr
-	BlackIPMgr     = application.BlackIPMgr
-	WhiteIP        = application.WhiteIP
-	CDN            = application.CDN
-	JsPrimary      = application.JsPrimary
-	JsCategory     = application.JsCategory
-	JsManage       = application.JsManage
-	RedirectManage = application.RedirectManage
-	IPStatistics   = dash_board.IPStatistics
-	UVStatistics   = dash_board.UVStatistics
-	IPRecode       = dash_board.IPRecode
-	Object         = common.Object
-	Faker          = application.Faker
-	SystemLog      = common.SystemLog
-	RedirectLog    = application.RedirectLog
+	DomainMgr        = application.DomainMgr
+	BlackIPMgr       = application.BlackIPMgr
+	WhiteIP          = application.WhiteIP
+	CDN              = application.CDN
+	JsPrimary        = application.JsPrimary
+	JsCategory       = application.JsCategory
+	JsManage         = application.JsManage
+	JsManageListView = application.JsManageListView
+	RedirectManage   = application.RedirectManage
+	IPStatistics     = dash_board.IPStatistics
+	UVStatistics     = dash_board.UVStatistics
+	IPRecode         = dash_board.IPRecode
+	Object           = common.Object
+	Faker            = application.Faker
+	SystemLog        = common.SystemLog
+	RedirectLog      = application.RedirectLog
 
 	// view
 	IPVisitStatistic = dash_board.IPVisitStatistic

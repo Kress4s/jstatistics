@@ -1,7 +1,6 @@
 package tools
 
 import (
-	"fmt"
 	"js_statistics/constant"
 	"time"
 )
@@ -34,9 +33,6 @@ func IsInRedirectOnOff(on, off string) (bool, error) {
 	}
 	onTime := time.Date(now.Year(), now.Month(), now.Day(), ont.Hour(), ont.Minute(), ont.Second(), 0, time.Local)
 	offTime := time.Date(now.Year(), now.Month(), now.Day(), offT.Hour(), offT.Minute(), offT.Second(), 0, time.Local)
-	fmt.Println(now, onTime, offTime)
-	fmt.Println(now.Before(offTime) && now.After(onTime))
-	fmt.Println(now.Before(onTime) && now.After(offTime))
 	return now.Before(offTime) && now.After(onTime), nil
 }
 

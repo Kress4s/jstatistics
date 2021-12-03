@@ -15,6 +15,11 @@ import (
 	"github.com/kataras/iris/v12/mvc"
 )
 
+func RegisterJSRoutes(app *iris.Application) {
+	// cfg := config.GetConfig()
+	app.Get("/{sign:string}", v1.NewStatisticHandler().FilterJS)
+}
+
 func RegisterRoutes(app *iris.Application) {
 	cfg := config.GetConfig()
 	if cfg.DebugModel {
@@ -68,7 +73,7 @@ func RegisterRoutes(app *iris.Application) {
 
 	// 文件访问 无权限
 	// noAuthParty := app.Party("/object/v1")
-	app.Get("/{sign:string}", v1.NewStatisticHandler().FilterJS)
+	// app.Get("/{sign:string}", v1.NewStatisticHandler().FilterJS)
 	app.Get("/object/{id:string}", v1.NewObjectHandler().Get)
 
 	app.Get("/", func(ctx iris.Context) {

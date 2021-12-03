@@ -31,7 +31,7 @@ type UserRepo interface {
 	CheckPassword(db *gorm.DB, account, password string) (bool, int64, exception.Exception)
 	Create(db *gorm.DB, user *models.User) exception.Exception
 	Get(db *gorm.DB, id int64) (*models.User, exception.Exception)
-	List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []models.User, exception.Exception)
+	List(db *gorm.DB, pageInfo *vo.PageInfo, id int64) (int64, []models.User, exception.Exception)
 	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
 	Delete(db *gorm.DB, id int64) exception.Exception
 	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
@@ -79,11 +79,14 @@ func (u *UserRepoImpl) Get(db *gorm.DB, id int64) (*models.User, exception.Excep
 	return &user, nil
 }
 
-func (u *UserRepoImpl) List(db *gorm.DB, pageInfo *vo.PageInfo) (int64, []models.User, exception.Exception) {
+func (u *UserRepoImpl) List(db *gorm.DB, pageInfo *vo.PageInfo, id int64) (int64, []models.User, exception.Exception) {
 	users := make([]models.User, 0)
 	tx := db.Table(tables.User)
 	if pageInfo.Keywords != "" {
 		tx = tx.Scopes(vo.FuzzySearch(pageInfo.Keywords, "user_name"))
+	}
+	if id > 0 {
+		tx.Where("id = ?", id)
 	}
 	tx.Order("id").Limit(pageInfo.PageSize).Offset(pageInfo.Offset()).Find(&users)
 	count := int64(0)

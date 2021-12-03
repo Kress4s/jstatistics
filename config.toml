@@ -5,6 +5,9 @@ debug = true
 [prometheus]
 port = 1920
 
+[js_server]
+port = 8081
+
 [server]
 port = 9090
 max_page_size = 300

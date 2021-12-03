@@ -152,6 +152,90 @@ var doc = `{
                 }
             }
         },
+        "/api/v1/analysis/flow/from/statistic/export": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询来路统计数据导出",
+                "tags": [
+                    "数据统计 - 来路统计"
+                ],
+                "summary": "来路统计数据查询导出",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "时间格式: 2021-08-24",
+                        "name": "begin_at",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "时间格式: 2021-08-31",
+                        "name": "end_at",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS主分类ID",
+                        "name": "pid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS分类ID",
+                        "name": "cid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "JS ID",
+                        "name": "js_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询来路统计数据导出数据",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vo.FromAnalysisResp"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/analysis/flow/from_now/flowdata": {
             "get": {
                 "security": [
@@ -6130,8 +6214,14 @@ var doc = `{
                     },
                     {
                         "type": "string",
-                        "description": "keywords",
+                        "description": "用户昵称",
                         "name": "keywords",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
                         "in": "query"
                     }
                 ],

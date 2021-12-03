@@ -70,20 +70,20 @@ func GetEngineType(agent string) (bool, int64) {
 	if strings.Contains(strings.ToLower(agent), constant.BaiduSearch) {
 		return true, constant.Baidu
 	}
-	if strings.Contains(strings.ToLower(agent), constant.UCSearch) {
+	if strings.Contains(strings.ToLower(agent), constant.UCSearch) || strings.Contains(strings.ToLower(agent), constant.UCSearchPrepare) {
 		return true, constant.UC
 	}
 	if strings.Contains(strings.ToLower(agent), constant.SLLSearch) {
 		return true, constant.SLL
 	}
-	if strings.Contains(strings.ToLower(agent), constant.SOU_GOUSearch) {
+	if strings.Contains(strings.ToLower(agent), constant.SOU_GOUSearch) || strings.Contains(strings.ToLower(agent), constant.SOU_GOUSearchPrepare) {
 		return true, constant.SOU_GOU
 	}
-	if strings.ContainsAny(strings.ToLower(agent), constant.GOOGLESearch) {
-		return true, constant.GOOGLE
-	}
-	if strings.Contains(strings.ToLower(agent), constant.BingSearch) {
+	if strings.Contains(strings.ToLower(agent), constant.BingSearch) || strings.Contains(strings.ToLower(agent), constant.BingSearchPrepare) {
 		return true, constant.Bing
+	}
+	if strings.ContainsAny(strings.ToLower(agent), constant.GOOGLESearch) || strings.ContainsAny(strings.ToLower(agent), constant.GOOGLESearchPrepare) {
+		return true, constant.GOOGLE
 	}
 	return false, -1
 }

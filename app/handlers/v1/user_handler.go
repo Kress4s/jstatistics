@@ -97,7 +97,8 @@ func (u *UserHandler) Get(ctx iris.Context) mvc.Result {
 // @Tags 权限管理 - 管理员
 // @Param page query int false "请求页"
 // @Param page_size query int false "页大小"
-// @Param keywords query string false "keywords" "搜索关键词过滤"
+// @Param keywords query string false "用户昵称"
+// @Param id query string false "id"
 // @Success 200 {object} vo.DataPagination{data=[]vo.UserResp} "查询用户列表成功"
 // @Failure 400 {object} vo.Error  "请求参数错误"
 // @Failure 401 {object} vo.Error "当前用户登录令牌失效"
@@ -110,7 +111,16 @@ func (u *UserHandler) List(ctx iris.Context) mvc.Result {
 	if ex != nil {
 		return response.Error(ex)
 	}
-	resp, ex := u.Svc.List(params)
+	// id 过滤
+	var id int64
+	var err error
+	if ctx.URLParamExists(constant.ID) {
+		id, err = ctx.URLParamInt64(constant.ID)
+		if err != nil {
+			return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
+		}
+	}
+	resp, ex := u.Svc.List(params, id)
 	if ex != nil {
 		return response.Error(ex)
 	}

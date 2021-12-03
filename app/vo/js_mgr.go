@@ -80,7 +80,7 @@ type JsManageResp struct {
 	RedirectCount int               `json:"redirect_count"`
 	RedirectMode  int               `json:"redirect_mode"`
 	RedirectCode  int               `json:"redirect_code"`
-	IP            int               `json:"ip"`
+	IP            int64             `json:"ip"`
 	WaitTime      int               `json:"wait_time"`
 	CategoryID    int64             `json:"category_id"`
 	Status        bool              `json:"status"`
@@ -88,10 +88,30 @@ type JsManageResp struct {
 
 func NewJsManageResponse(jm *models.JsManage) *JsManageResp {
 	return &JsManageResp{
+		ID:            jm.ID,
+		Title:         jm.Title,
+		ShieldArea:    jm.ShieldArea,
+		ClientType:    jm.ClientType,
+		RedirectCount: jm.RedirectCount,
+		ReleaseTime:   jm.ReleaseTime,
+		FromMode:      jm.FromMode,
+		KeyWord:       jm.KeyWord,
+		SearchEngines: jm.SearchEngines,
+		RedirectMode:  jm.RedirectMode,
+		RedirectCode:  jm.RedirectCode,
+		HrefID:        jm.HrefID,
+		WaitTime:      jm.WaitTime,
+		CategoryID:    jm.CategoryID,
+		Status:        jm.Status,
+	}
+}
+
+func NewListJsManageResponse(jm *models.JsManageListView) *JsManageResp {
+	return &JsManageResp{
 		ID:    jm.ID,
 		Title: jm.Title,
 		//TODO:统计
-		IP:            0,
+		IP:            jm.IPCount,
 		ShieldArea:    jm.ShieldArea,
 		ClientType:    jm.ClientType,
 		RedirectCount: jm.RedirectCount,

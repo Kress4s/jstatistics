@@ -58,7 +58,40 @@ func (fah *FromAnalysisHandler) FromStatistic(ctx iris.Context) mvc.Result {
 	return response.JSON(resp)
 }
 
+// FromStatisticAll godoc
+// @Summary 来路统计数据查询导出
+// @Description 查询来路统计数据导出
+// @Tags 数据统计 - 来路统计
+// @Param begin_at query string true "时间格式: 2021-08-24"
+// @Param end_at query string true "时间格式: 2021-08-31"
+// @Param pid query int true "JS主分类ID"
+// @Param cid query int false "JS分类ID"
+// @Param js_id query int false "JS ID"
+// @Success 200 {array}  vo.FromAnalysisResp "查询来路统计数据导出数据"
+// @Failure 400 {object} vo.Error  "请求参数错误"
+// @Failure 401 {object} vo.Error "当前用户登录令牌失效"
+// @Failure 403 {object} vo.Error "当前操作无权限"
+// @Failure 500 {object} vo.Error "服务器内部错误"
+// @Security ApiKeyAuth
+// @Router /api/v1/analysis/flow/from/statistic/export [get]
+func (fah *FromAnalysisHandler) FromStatisticAll(ctx iris.Context) mvc.Result {
+	param, ex := handlers.GetJSFilterParam(ctx)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	beginAt, endAt, ex := handlers.GetTimeScopeParam(ctx)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	resp, ex := fah.Svc.FromStatisticAll(param, beginAt, endAt)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	return response.JSON(resp)
+}
+
 // BeforeActivation 初始化路由
 func (fah *FromAnalysisHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodGet, "/flow/from/statistic", "FromStatistic")
+	b.Handle(iris.MethodGet, "/flow/from/statistic/export", "FromStatisticAll")
 }

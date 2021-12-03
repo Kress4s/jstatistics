@@ -56,7 +56,7 @@ type StcService interface {
 
 func (ssi *stcServiceImpl) ProcessJsRequest(ctx iris.Context) {
 	ip := tools.GetRemoteAddr(ctx)
-	ip = "117.89.12.136"
+	// ip = "117.89.12.136"
 	isBlack, ex := ssi.blackRepo.IsExistByIP(ssi.db, ip)
 	if ex != nil {
 		if ex.Type() != response.ExceptionRecordNotFound {
@@ -100,8 +100,9 @@ func (ssi *stcServiceImpl) ProcessJsRequest(ctx iris.Context) {
 		tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
 		return
 	}
-	agent := ctx.Request().UserAgent()
+	agent := strings.ToLower(ctx.Request().UserAgent())
 	origin := ctx.GetHeader("Origin")
+	// origin = "www.baidu.com/45/34"
 	if len(origin) == 0 {
 		origin = ctx.GetHeader("Referer")
 	}
@@ -192,19 +193,23 @@ func (ssi *stcServiceImpl) JSJudgeMent(ctx iris.Context, js *models.JsManage, fa
 		return false
 	}
 
-	// TODO 来源
 	switch js.FromMode {
 	case constant.FromTypeNone:
 		fmt.Println("来源无")
 	case constant.FromTypeKey:
 		// 判断origin是否匹配
-		keyWord := strings.Split(origin, ",")
+		keyWord := strings.Split(js.KeyWord, ",")
+		isInKey := false
 		for i := range keyWord {
-			if !strings.Contains(origin, keyWord[i]) {
-				// 伪装内容
-				tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
-				return false
+			if strings.Contains(origin, keyWord[i]) {
+				isInKey = true
+				break
 			}
+		}
+		if !isInKey {
+			// 伪装内容
+			tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
+			return false
 		}
 	case constant.FromTypeEngine:
 		isExist, engineType := tools.GetEngineType(agent)
@@ -241,16 +246,17 @@ func (ssi *stcServiceImpl) GetRedirectInfo(ctx iris.Context, js *models.JsManage
 		return
 	}
 	// 跳转时间区间是否合理
-	if res, err := tools.IsInRedirectOnOff(*redirectInfo.ON, *redirectInfo.OFF); err != nil {
-		ctx.Application().Logger().Error(err.Error())
-		tools.ErrorResponse(ctx, ex)
-		return
-	} else if !res {
-		// 跳转管理时间区间不符合
-		tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
-		return
+	if *redirectInfo.ON != "" && *redirectInfo.OFF != "" {
+		if res, err := tools.IsInRedirectOnOff(*redirectInfo.ON, *redirectInfo.OFF); err != nil {
+			ctx.Application().Logger().Error(err.Error())
+			tools.ErrorResponse(ctx, ex)
+			return
+		} else if !res {
+			// 跳转管理时间区间不符合
+			tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
+			return
+		}
 	}
-
 	var redirectURL string
 	deviceType := tools.GetDeviceType(agent)
 	switch {

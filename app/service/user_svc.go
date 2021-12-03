@@ -33,7 +33,7 @@ type UserService interface {
 	Profile(id int64) (*vo.ProfileResp, exception.Exception)
 	Create(openID string, params *vo.UserReq) exception.Exception
 	Get(id int64) (*vo.ProfileResp, exception.Exception)
-	List(pageInfo *vo.PageInfo) (*vo.DataPagination, exception.Exception)
+	List(pageInfo *vo.PageInfo, id int64) (*vo.DataPagination, exception.Exception)
 	Update(openID string, id int64, params *vo.UserUpdateReq) exception.Exception
 	UpdateRoles(openID string, id int64, role *vo.UserUpdateRolesReq) exception.Exception
 	Delete(openID string, id int64) exception.Exception
@@ -88,8 +88,8 @@ func (us *userServiceImpl) Get(id int64) (*vo.ProfileResp, exception.Exception) 
 	}, nil
 }
 
-func (us *userServiceImpl) List(pageInfo *vo.PageInfo) (*vo.DataPagination, exception.Exception) {
-	count, users, ex := us.repo.List(us.db, pageInfo)
+func (us *userServiceImpl) List(pageInfo *vo.PageInfo, id int64) (*vo.DataPagination, exception.Exception) {
+	count, users, ex := us.repo.List(us.db, pageInfo, id)
 	if ex != nil {
 		return nil, ex
 	}
