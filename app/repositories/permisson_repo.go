@@ -11,7 +11,7 @@ import (
 
 var (
 	permissionRepoInstance PermissionRepo
-	permissionOnce        sync.Once
+	permissionOnce         sync.Once
 )
 
 type PermissionRepoImpl struct{}

@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"js_statistics/app/routes"
+	"js_statistics/commom/tools"
 	"js_statistics/config"
 	"log"
 
@@ -11,11 +12,6 @@ import (
 	"github.com/kataras/iris/v12/context"
 	"github.com/kataras/iris/v12/middleware/logger"
 )
-
-// type Application struct {
-// 	Server http.Server
-// 	Routes *mux.Router
-// }
 
 func Run(port int) {
 	if err := newApp().Run(iris.Addr(fmt.Sprintf("0.0.0.0:%d", port))); err != nil {
@@ -37,6 +33,10 @@ func newApp() *iris.Application {
 	// app.Use(middlewares.Recover())
 	if cfg.DebugModel {
 		app.Use(IrisLogger())
+	} else {
+		// log recode
+		logFile := tools.NewLogFile()
+		app.Logger().SetOutput(logFile)
 	}
 
 	app.Use(iris.Compression)
@@ -58,9 +58,6 @@ func newApp() *iris.Application {
 		AllowCredentials:   true,
 		OptionsPassthrough: false,
 	}))
-	// log recode
-	// logFile := tools.NewLogFile()
-	// app.Logger().SetOutput(logFile)
 	routes.RegisterRoutes(app)
 	return app
 }
@@ -72,6 +69,10 @@ func newJSApp() *iris.Application {
 	// app.Use(middlewares.Recover())
 	if cfg.DebugModel {
 		jsApp.Use(IrisLogger())
+	} else {
+		// log recode
+		logFile := tools.NewLogFile()
+		jsApp.Logger().SetOutput(logFile)
 	}
 	jsApp.Use(iris.Compression)
 	// app.Use(middlewares.RecordSystemLog())

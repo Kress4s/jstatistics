@@ -1,7 +1,9 @@
 package versions
 
 import (
+	"fmt"
 	"js_statistics/app/models"
+	"js_statistics/app/models/tables"
 	"time"
 
 	"github.com/go-gormigrate/gormigrate/v2"
@@ -111,6 +113,11 @@ var V0003InitProjectData = &gormigrate.Migration{
 		}
 		if err := tx.Create(InitUser()).Error; err != nil {
 			return err
+		}
+		tpx := tx.Exec(fmt.Sprintf("select setval('%s_id_seq', (select (max(id)) from %s));",
+			tables.Permission, tables.Permission))
+		if tpx.Error != nil {
+			return tpx.Error
 		}
 		return nil
 	},

@@ -1,12 +1,10 @@
 package routes
 
 import (
-	"fmt"
 	"js_statistics/app/handlers/auth"
 	v1 "js_statistics/app/handlers/v1"
 	"js_statistics/app/middlewares"
 	"js_statistics/config"
-	"js_statistics/constant"
 	_ "js_statistics/docs"
 
 	"github.com/iris-contrib/swagger/v12"
@@ -76,16 +74,4 @@ func RegisterRoutes(app *iris.Application) {
 	// app.Get("/{sign:string}", v1.NewStatisticHandler().FilterJS)
 	app.Get("/object/{id:string}", v1.NewObjectHandler().Get)
 
-	app.Get("/", func(ctx iris.Context) {
-		ctx.WriteString(fmt.Sprintf(constant.RedirectWindowsPage, constant.TestBaidu))
-	})
-	app.Get("/nested", func(ctx iris.Context) {
-		ctx.WriteString(fmt.Sprintf(constant.NestingRedirect, constant.TestBaidu))
-	})
-	app.Get("/screen", func(ctx iris.Context) {
-		ctx.WriteString(fmt.Sprintf(constant.ScreenRedirect, constant.TestBaidu))
-	})
-	app.Get("/href", func(ctx iris.Context) {
-		ctx.WriteString(fmt.Sprintf(constant.HrefRedirect, constant.TestBaidu))
-	})
 }

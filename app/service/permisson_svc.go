@@ -25,6 +25,7 @@ type permissionServiceImpl struct {
 type PermissionService interface {
 	Create(openID string, params *vo.PermissionReq) exception.Exception
 	Get(id int64) (*vo.PermissionResp, exception.Exception)
+	GetAll() ([]vo.PermissionResp, exception.Exception)
 	Update(openID string, id int64, params *vo.PermissionUpdateReq) exception.Exception
 	GetPermissionTree() (*vo.PermissionTree, exception.Exception)
 	Delete(openID string, id int64) exception.Exception
@@ -61,6 +62,23 @@ func (ps *permissionServiceImpl) Get(id int64) (*vo.PermissionResp, exception.Ex
 		Index:    p.Index,
 		ParentID: p.ParentID,
 	}, nil
+}
+
+func (ps *permissionServiceImpl) GetAll() ([]vo.PermissionResp, exception.Exception) {
+	p, ex := ps.repo.GetAll(ps.db)
+	if ex != nil {
+		return nil, ex
+	}
+	resp := make([]vo.PermissionResp, 0, len(p))
+	for i := range p {
+		resp = append(resp, vo.PermissionResp{
+			ID:       p[i].ID,
+			Name:     p[i].Name,
+			MenuName: p[i].MenuName,
+			ParentID: p[i].ParentID,
+		})
+	}
+	return resp, nil
 }
 
 func (ps *permissionServiceImpl) GetPermissionTree() (*vo.PermissionTree, exception.Exception) {

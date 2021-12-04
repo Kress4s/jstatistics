@@ -4366,6 +4366,37 @@ paths:
       summary: 获取权限规则树
       tags:
       - 权限管理 - 权限规则
+  /api/v1/permission/rules/all:
+    get:
+      description: 获取全部权限规则
+      responses:
+        "200":
+          description: 查询权限规则成功
+          schema:
+            items:
+              $ref: '#/definitions/vo.PermissionResp'
+            type: array
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取全部权限规则
+      tags:
+      - 权限管理 - 权限规则
   /api/v1/permission/systemlogs:
     get:
       description: 查询操作日志列表

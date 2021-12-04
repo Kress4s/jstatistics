@@ -72,6 +72,25 @@ func (ph *PermissionHandler) Get(ctx iris.Context) mvc.Result {
 	return response.JSON(res)
 }
 
+// GetAll godoc
+// @Summary 获取全部权限规则
+// @Description 获取全部权限规则
+// @Tags 权限管理 - 权限规则
+// @Success 200 {array} vo.PermissionResp "查询权限规则成功"
+// @Failure 400 {object} vo.Error  "请求参数错误"
+// @Failure 401 {object} vo.Error "当前用户登录令牌失效"
+// @Failure 403 {object} vo.Error "当前操作无权限"
+// @Failure 500 {object} vo.Error "服务器内部错误"
+// @Security ApiKeyAuth
+// @Router /api/v1/permission/rules/all [get]
+func (ph *PermissionHandler) GetAll(ctx iris.Context) mvc.Result {
+	res, ex := ph.Svc.GetAll()
+	if ex != nil {
+		return response.Error(ex)
+	}
+	return response.JSON(res)
+}
+
 // Create godoc
 // @Summary 获取权限规则树
 // @Description 获取权限规则树
@@ -148,6 +167,7 @@ func (ph *PermissionHandler) Delete(ctx iris.Context) mvc.Result {
 func (ph *PermissionHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodPost, "/rule", "Create", middlewares.RecordSystemLog("Create", "", "创建权限规则成功"))
 	b.Handle(iris.MethodGet, "/rule/{id:string}", "Get")
+	b.Handle(iris.MethodGet, "/rules/all", "GetAll")
 	b.Handle(iris.MethodGet, "/rules", "GetPermissionTree")
 	b.Handle(iris.MethodPut, "/rule/{id:string}", "Update", middlewares.RecordSystemLog("Update", "id", "更新权限规则成功"))
 	b.Handle(iris.MethodDelete, "/rule/{id:string}", "Delete", middlewares.RecordSystemLog("Delete", "id", "删除权限规则成功"))
