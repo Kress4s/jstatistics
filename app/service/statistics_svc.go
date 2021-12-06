@@ -32,6 +32,7 @@ type stcServiceImpl struct {
 	jsRepo    repositories.JsmRepo
 	rmtRepo   repositories.RmRepo
 	fakerRepo repositories.FakerRepo
+	cdnRepo   repositories.CdnRepo
 }
 
 func GetStcService() StcService {
@@ -45,6 +46,7 @@ func GetStcService() StcService {
 			jsRepo:    repositories.GetJsmRepo(),
 			rmtRepo:   repositories.GetRmRepo(),
 			fakerRepo: repositories.GetFakerRepo(),
+			cdnRepo:   repositories.GetCdnRepo(),
 		}
 	})
 	return stcServiceInstance
@@ -113,14 +115,29 @@ func (ssi *stcServiceImpl) ProcessJsRequest(ctx iris.Context) {
 	// 白名单
 	isWhite, ex := ssi.wipRepo.IsExistByIP(ssi.db, ip)
 	if ex != nil {
-		ctx.Application().Logger().Error(ex.Error())
-		tools.ErrorResponse(ctx, ex)
-		return
+		if ex.Type() != response.ExceptionRecordNotFound {
+			ctx.Application().Logger().Error(ex.Error())
+			tools.ErrorResponse(ctx, ex)
+			return
+		}
 	}
 	visitType, cookie := tools.GetVisitType(ctx)
 	if isWhite {
 		//返回输出代码
 		ssi.GetRedirectInfo(ctx, js, faker, sign, agent, ip, cookie, origin, visitType)
+		return
+	}
+	isCDN, ex := ssi.cdnRepo.IsExistByIP(ssi.db, ip)
+	if ex != nil {
+		if ex.Type() != response.ExceptionRecordNotFound {
+			ctx.Application().Logger().Error(ex.Error())
+			tools.ErrorResponse(ctx, ex)
+			return
+		}
+	}
+	if isCDN {
+		// 过滤掉cdn的ip，直接返回
+		tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
 		return
 	}
 	// js判断条件

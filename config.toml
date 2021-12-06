@@ -29,7 +29,7 @@ max_idle_conns = 30
 max_open_conns = 60
 
 [minio]
-addr = "121.41.38.13:9000"
+addr = "115.159.122.220:9000"
 access_key_id = "minioadmin"
 secret_access_key = "minioadmin"
 ssl = false

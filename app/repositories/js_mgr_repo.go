@@ -34,10 +34,13 @@ type JsmRepo interface {
 	Get(db *gorm.DB, id int64) (*models.JsManage, exception.Exception)
 	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
 	Delete(db *gorm.DB, id int64) exception.Exception
+	DeleteByCategoryID(db *gorm.DB, cid int64) exception.Exception
+	DeleteByCategoryIDs(db *gorm.DB, cids []int64) exception.Exception
 	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
 	GetBySign(db *gorm.DB, sign string) (*models.JsManage, exception.Exception)
 	DecreaseRedirectCount(db *gorm.DB, id int64) exception.Exception
 	StatusChange(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
+	GetIDsByCategoryID(db *gorm.DB, cids []int64) ([]int64, exception.Exception)
 }
 
 func (jsi *JsmRepoImpl) Create(db *gorm.DB, jsm *models.JsManage) exception.Exception {
@@ -80,6 +83,14 @@ func (jsi *JsmRepoImpl) Delete(db *gorm.DB, id int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.JsManage{}, id).Error)
 }
 
+func (jsi *JsmRepoImpl) DeleteByCategoryID(db *gorm.DB, cid int64) exception.Exception {
+	return exception.Wrap(response.ExceptionDatabase, db.Where("category_id = ?", cid).Delete(&models.JsManage{}).Error)
+}
+
+func (jsi *JsmRepoImpl) DeleteByCategoryIDs(db *gorm.DB, cids []int64) exception.Exception {
+	return exception.Wrap(response.ExceptionDatabase, db.Where("category_id in (?)", cids).Delete(&models.JsManage{}).Error)
+}
+
 func (jsi *JsmRepoImpl) MultiDelete(db *gorm.DB, ids []int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.JsManage{}, ids).Error)
 }
@@ -105,4 +116,17 @@ func (jsi *JsmRepoImpl) DecreaseRedirectCount(db *gorm.DB, id int64) exception.E
 func (jsi *JsmRepoImpl) StatusChange(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase,
 		db.Model(&models.JsManage{}).Where(&models.JsManage{ID: id}).Updates(param).Error)
+}
+
+func (jsi *JsmRepoImpl) GetIDsByCategoryID(db *gorm.DB, cids []int64) ([]int64, exception.Exception) {
+	mgrs := make([]models.JsManage, 0)
+	res := db.Select("id").Where("category_id in (?)", cids).Find(&mgrs)
+	if res.Error != nil {
+		return nil, exception.Wrap(response.ExceptionDatabase, res.Error)
+	}
+	mgrIDs := make([]int64, 0, len(mgrs))
+	for i := range mgrs {
+		mgrIDs = append(mgrIDs, mgrs[i].ID)
+	}
+	return mgrIDs, nil
 }

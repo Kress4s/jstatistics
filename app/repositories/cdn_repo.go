@@ -32,6 +32,7 @@ type CdnRepo interface {
 	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
 	Delete(db *gorm.DB, id int64) exception.Exception
 	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
+	IsExistByIP(db *gorm.DB, ip string) (bool, exception.Exception)
 }
 
 func (cri *CdnRepoImpl) Create(db *gorm.DB, cdn *models.CDN) exception.Exception {
@@ -73,4 +74,16 @@ func (cri *CdnRepoImpl) Delete(db *gorm.DB, id int64) exception.Exception {
 
 func (cri *CdnRepoImpl) MultiDelete(db *gorm.DB, ids []int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.CDN{}, ids).Error)
+}
+
+func (cri *CdnRepoImpl) IsExistByIP(db *gorm.DB, ip string) (bool, exception.Exception) {
+	cdn := models.CDN{}
+	res := db.Where(&models.CDN{IP: ip}).Find(&cdn)
+	if res.RowsAffected == 0 {
+		return false, nil
+	}
+	if res.Error != nil {
+		return false, exception.Wrap(response.ExceptionDatabase, res.Error)
+	}
+	return true, nil
 }

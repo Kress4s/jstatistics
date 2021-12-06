@@ -189,12 +189,12 @@ func (jh *JscHandler) MultiDelete(ctx iris.Context) mvc.Result {
 // @Failure 500 {object} vo.Error "服务器内部错误"
 // @Security ApiKeyAuth
 // @Router /api/v1/application/all/js_categories/primary/{pid} [get]
-func (jh *JscHandler) ListAllByvPrimaryID(ctx iris.Context) mvc.Result {
+func (jh *JscHandler) ListAllByPrimaryID(ctx iris.Context) mvc.Result {
 	pid, err := ctx.Params().GetInt64(constant.PrimaryID)
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}
-	res, ex := jh.Svc.ListAllByvPrimaryID(pid)
+	res, ex := jh.Svc.ListAllByPrimaryID(pid)
 	if ex != nil {
 		return response.Error(ex)
 	}
@@ -209,5 +209,5 @@ func (jh *JscHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodPut, "/js_category/{id:string}", "Update", middlewares.RecordSystemLog("Update", "id", "更新js分类成功"))
 	b.Handle(iris.MethodDelete, "/js_category/{id:string}", "Delete", middlewares.RecordSystemLog("Delete", "id", "删除js分类成功"))
 	b.Handle(iris.MethodDelete, "/js_category/multi", "MultiDelete", middlewares.RecordSystemLog("MultiDelete", "ids", "批量删除js分类成功"))
-	b.Handle(iris.MethodGet, "/all/js_categories/primary/{pid:string}", "ListAllByvPrimaryID")
+	b.Handle(iris.MethodGet, "/all/js_categories/primary/{pid:string}", "ListAllByPrimaryID")
 }

@@ -19,15 +19,17 @@ var (
 )
 
 type domainServiceImpl struct {
-	db   *gorm.DB
-	repo repositories.DomainRepo
+	db      *gorm.DB
+	repo    repositories.DomainRepo
+	jscRepo repositories.JscRepo
 }
 
 func GetDomainService() DomainService {
 	domainOnce.Do(func() {
 		domainServiceInstance = &domainServiceImpl{
-			db:   database.GetDriver(),
-			repo: repositories.GetDomainRepo(),
+			db:      database.GetDriver(),
+			repo:    repositories.GetDomainRepo(),
+			jscRepo: repositories.GetJscRepo(),
 		}
 	})
 	return domainServiceInstance
@@ -73,7 +75,21 @@ func (dsi *domainServiceImpl) Update(openID string, id int64, param *vo.DomainUp
 }
 
 func (dsi *domainServiceImpl) Delete(id int64) exception.Exception {
-	return dsi.repo.Delete(dsi.db, id)
+	tx := dsi.db.Begin()
+	if tx.Error != nil {
+		return exception.Wrap(response.ExceptionDatabase, tx.Error)
+	}
+	defer tx.Rollback()
+	if ex := dsi.jscRepo.UpdateDomainIDToO(tx, id); ex != nil {
+		return ex
+	}
+	if ex := dsi.repo.Delete(tx, id); ex != nil {
+		return ex
+	}
+	if err := tx.Commit(); err.Error != nil {
+		return exception.Wrap(response.ExceptionDatabase, err.Error)
+	}
+	return nil
 }
 
 func (dsi *domainServiceImpl) MultiDelete(ids string) exception.Exception {
@@ -89,7 +105,21 @@ func (dsi *domainServiceImpl) MultiDelete(ids string) exception.Exception {
 		}
 		did = append(did, int64(id))
 	}
-	return dsi.repo.MultiDelete(dsi.db, did)
+	tx := dsi.db.Begin()
+	if tx.Error != nil {
+		return exception.Wrap(response.ExceptionDatabase, tx.Error)
+	}
+	defer tx.Rollback()
+	if ex := dsi.jscRepo.UpdateDomainIDToO(tx, did...); ex != nil {
+		return ex
+	}
+	if ex := dsi.repo.MultiDelete(tx, did); ex != nil {
+		return ex
+	}
+	if err := tx.Commit(); err.Error != nil {
+		return exception.Wrap(response.ExceptionDatabase, err.Error)
+	}
+	return nil
 }
 
 func (dsi *domainServiceImpl) ListAll() ([]vo.DomainResp, exception.Exception) {

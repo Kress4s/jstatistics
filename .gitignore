@@ -7,3 +7,5 @@ logs
 GeoLite2-City.mmdb
 
 GeoIP.conf
+
+vendor
