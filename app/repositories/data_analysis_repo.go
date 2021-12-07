@@ -410,7 +410,7 @@ func (dri *daRepoImpl) TimeScopeFlowData(db *gorm.DB, param *vo.JSFilterParams, 
 	if param.JsID != 0 {
 		subIPTx = subIPTx.Where("js_id = ?", param.JsID)
 	}
-	subIPTx = subIPTx.Where("visit_time >= ? and visit_time < ?", beginAt, endAt)
+	subIPTx = subIPTx.Where("visit_time >= ? and visit_time <= ?", beginAt, endAt)
 	subIPTx = subIPTx.Group("js_id")
 
 	subUVTx := db.Table(views.UVFlowDataView).Select("js_id, sum(count) as count")
@@ -421,7 +421,7 @@ func (dri *daRepoImpl) TimeScopeFlowData(db *gorm.DB, param *vo.JSFilterParams, 
 	if param.JsID != 0 {
 		subUVTx = subUVTx.Where("js_id = ?", param.JsID)
 	}
-	subUVTx = subUVTx.Where("visit_time >= ? and visit_time < ?", beginAt, endAt)
+	subUVTx = subUVTx.Where("visit_time >= ? and visit_time <= ?", beginAt, endAt)
 	subUVTx = subUVTx.Group("js_id")
 
 	count := int64(0)

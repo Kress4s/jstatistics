@@ -28,6 +28,8 @@ type UserRoleRepo interface {
 	GetByUserID(db *gorm.DB, userID int64) ([]models.UserRoleRelation, exception.Exception)
 	DeleteByUserID(db *gorm.DB, userID int64) exception.Exception
 	DeleteByRoleID(db *gorm.DB, roleID int64) exception.Exception
+	DeleteByUsersID(db *gorm.DB, usersID ...int64) exception.Exception
+	DeleteByRolesID(db *gorm.DB, rolesID ...int64) exception.Exception
 }
 
 func (uri *UserRoleRepoImpl) Create(db *gorm.DB, urs []models.UserRoleRelation) exception.Exception {
@@ -39,9 +41,19 @@ func (uri *UserRoleRepoImpl) DeleteByUserID(db *gorm.DB, userID int64) exception
 		db.Where("user_id = ?", userID).Delete(models.UserRoleRelation{}).Error)
 }
 
+func (uri *UserRoleRepoImpl) DeleteByUsersID(db *gorm.DB, usersID ...int64) exception.Exception {
+	return exception.Wrap(response.ExceptionDatabase,
+		db.Where("user_id in (?)", usersID).Delete(models.UserRoleRelation{}).Error)
+}
+
 func (uri *UserRoleRepoImpl) DeleteByRoleID(db *gorm.DB, roleID int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase,
 		db.Where("role_id = ?", roleID).Delete(models.UserRoleRelation{}).Error)
+}
+
+func (uri *UserRoleRepoImpl) DeleteByRolesID(db *gorm.DB, rolesID ...int64) exception.Exception {
+	return exception.Wrap(response.ExceptionDatabase,
+		db.Where("role_id in (?)", rolesID).Delete(models.UserRoleRelation{}).Error)
 }
 
 func (uri *UserRoleRepoImpl) GetByUserID(db *gorm.DB, userID int64) ([]models.UserRoleRelation,

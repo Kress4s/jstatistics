@@ -26,6 +26,7 @@ type jsmServiceImpl struct {
 	repo       repositories.JsmRepo
 	jcRepo     repositories.JscRepo
 	domainRepo repositories.DomainRepo
+	stcRepo    repositories.StcRepo
 }
 
 func GetJsmService() JsmService {
@@ -35,6 +36,7 @@ func GetJsmService() JsmService {
 			repo:       repositories.GetJsmRepo(),
 			jcRepo:     repositories.GetJscRepo(),
 			domainRepo: repositories.GetDomainRepo(),
+			stcRepo:    repositories.GetStcRepo(),
 		}
 	})
 	return jsmServiceInstance
@@ -90,7 +92,21 @@ func (jsi *jsmServiceImpl) Update(openID string, id int64, param *vo.JsManageUpd
 }
 
 func (jsi *jsmServiceImpl) Delete(id int64) exception.Exception {
-	return jsi.repo.Delete(jsi.db, id)
+	tx := jsi.db.Begin()
+	if tx.Error != nil {
+		return exception.Wrap(response.ExceptionDatabase, tx.Error)
+	}
+	defer tx.Rollback()
+	if ex := jsi.stcRepo.DeleteByJsID(tx, id); ex != nil {
+		return ex
+	}
+	if ex := jsi.repo.Delete(tx, id); ex != nil {
+		return ex
+	}
+	if err := tx.Commit(); err.Error != nil {
+		return exception.Wrap(response.ExceptionDatabase, err.Error)
+	}
+	return nil
 }
 
 func (jsi *jsmServiceImpl) MultiDelete(ids string) exception.Exception {
@@ -100,13 +116,27 @@ func (jsi *jsmServiceImpl) MultiDelete(ids string) exception.Exception {
 	}
 	jid := make([]int64, 0, len(idslice))
 	for i := range idslice {
-		id, err := strconv.ParseUint(idslice[i], 10, 0)
+		id, err := strconv.ParseInt(idslice[i], 0, 64)
 		if err != nil {
 			return exception.Wrap(response.ExceptionParseStringToInt64Error, err)
 		}
-		jid = append(jid, int64(id))
+		jid = append(jid, id)
 	}
-	return jsi.repo.MultiDelete(jsi.db, jid)
+	tx := jsi.db.Begin()
+	if tx.Error != nil {
+		return exception.Wrap(response.ExceptionDatabase, tx.Error)
+	}
+	defer tx.Rollback()
+	if ex := jsi.stcRepo.DeleteByJsIDs(tx, jid...); ex != nil {
+		return ex
+	}
+	if ex := jsi.repo.MultiDelete(tx, jid); ex != nil {
+		return ex
+	}
+	if err := tx.Commit(); err.Error != nil {
+		return exception.Wrap(response.ExceptionDatabase, err.Error)
+	}
+	return nil
 }
 
 func (jsi *jsmServiceImpl) GetJSiteByID(id int64) (*vo.JSiteResp, exception.Exception) {

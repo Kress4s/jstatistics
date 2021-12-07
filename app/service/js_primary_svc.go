@@ -6,6 +6,7 @@ import (
 	"js_statistics/app/vo"
 	"js_statistics/commom/drivers/database"
 	"js_statistics/exception"
+	"sort"
 	"sync"
 
 	"gorm.io/gorm"
@@ -21,6 +22,8 @@ type jspServiceImpl struct {
 	repo    repositories.JspRepo
 	jscRepo repositories.JscRepo
 	jsmRepo repositories.JsmRepo
+	rmRepo  repositories.RmRepo
+	stcRepo repositories.StcRepo
 }
 
 func GetJspService() JspService {
@@ -30,6 +33,8 @@ func GetJspService() JspService {
 			repo:    repositories.GetJspRepo(),
 			jscRepo: repositories.GetJscRepo(),
 			jsmRepo: repositories.GetJsmRepo(),
+			rmRepo:  repositories.GetRmRepo(),
+			stcRepo: repositories.GetStcRepo(),
 		}
 	})
 	return jspServiceInstance
@@ -41,6 +46,7 @@ type JspService interface {
 	List() ([]vo.JsPrimaryResp, exception.Exception)
 	Update(openID string, id int64, param *vo.JsPrimaryUpdateReq) exception.Exception
 	Delete(id int64) exception.Exception
+	GetAllsCategoryTree() ([]vo.Primaries, exception.Exception)
 }
 
 func (jsi *jspServiceImpl) Create(openID string, param *vo.JsPrimaryReq) exception.Exception {
@@ -98,10 +104,18 @@ func (jsi *jspServiceImpl) Delete(id int64) exception.Exception {
 		}
 	}
 	if len(cids) > 0 {
+		if ex := jsi.rmRepo.DeleteByCategoryIDs(tx, cids...); ex != nil {
+			return ex
+		}
+
 		if ex := jsi.jscRepo.MultiDelete(tx, cids); ex != nil {
 			return ex
 		}
 	}
+	if ex := jsi.stcRepo.DeleteByPrimaryID(tx, id); ex != nil {
+		return ex
+	}
+
 	if ex := jsi.repo.Delete(tx, id); ex != nil {
 		return ex
 	}
@@ -109,4 +123,54 @@ func (jsi *jspServiceImpl) Delete(id int64) exception.Exception {
 		return exception.Wrap(response.ExceptionDatabase, err.Error)
 	}
 	return nil
+}
+
+func (jsi *jspServiceImpl) GetAllsCategoryTree() ([]vo.Primaries, exception.Exception) {
+	res, ex := jsi.repo.GetAllsCategoryTree(jsi.db)
+	if ex != nil {
+		return nil, ex
+	}
+	resp := make([]vo.Primaries, 0)
+	pcMap := make(map[vo.PrimaryKey][]vo.JsCategoryBrief)
+	for i := range res {
+		key := vo.PrimaryKey{ID: res[i].ID, Title: res[i].Title}
+
+		if res[i].Pid == nil {
+			noData := make([]vo.JsCategoryBrief, 0)
+			pcMap[key] = noData
+		} else {
+			if res[i].ID == *res[i].Pid {
+				jcb := vo.JsCategoryBrief{
+					ID:    *res[i].Cid,
+					Title: *res[i].CTitle,
+				}
+				pcMap[key] = append(pcMap[key], jcb)
+			}
+		}
+	}
+	sortKeyID := make([]int, 0)
+	sortKeyTitle := make(map[int64]string)
+	for k := range pcMap {
+		sortKeyID = append(sortKeyID, int(k.ID))
+		sortKeyTitle[k.ID] = k.Title
+	}
+	sort.Ints(sortKeyID)
+	sortKey := make([]vo.PrimaryKey, 0, len(sortKeyID))
+
+	for j := range sortKeyID {
+		sortKey = append(sortKey, vo.PrimaryKey{
+			ID:    int64(sortKeyID[j]),
+			Title: sortKeyTitle[int64(sortKeyID[j])],
+		})
+	}
+
+	for k := range sortKey {
+		ps := vo.Primaries{
+			ID:         sortKey[k].ID,
+			Title:      sortKey[k].Title,
+			Categories: pcMap[sortKey[k]],
+		}
+		resp = append(resp, ps)
+	}
+	return resp, nil
 }

@@ -34,6 +34,7 @@ type RmRepo interface {
 	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
 	GetUsefulByCategoryID(db *gorm.DB, id int64) (*models.RedirectManage, exception.Exception)
 	StatusChange(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
+	DeleteByCategoryIDs(db *gorm.DB, cids ...int64) exception.Exception
 }
 
 func (jsi *RmRepoImpl) Create(db *gorm.DB, rm *models.RedirectManage) exception.Exception {
@@ -92,4 +93,9 @@ func (jsi *RmRepoImpl) GetUsefulByCategoryID(db *gorm.DB, id int64) (*models.Red
 func (jsi *RmRepoImpl) StatusChange(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase,
 		db.Model(&models.RedirectManage{}).Where(&models.RedirectManage{ID: id}).Updates(param).Error)
+}
+
+func (jsi *RmRepoImpl) DeleteByCategoryIDs(db *gorm.DB, cids ...int64) exception.Exception {
+	return exception.Wrap(response.ExceptionDatabase, db.Where("category_id in (?)", cids).
+		Delete(&models.RedirectManage{}).Error)
 }

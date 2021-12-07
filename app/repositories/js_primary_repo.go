@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"fmt"
 	"js_statistics/app/models"
 	"js_statistics/app/models/tables"
 	"js_statistics/app/response"
@@ -30,6 +31,7 @@ type JspRepo interface {
 	Get(db *gorm.DB, id int64) (*models.JsPrimary, exception.Exception)
 	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
 	Delete(db *gorm.DB, id int64) exception.Exception
+	GetAllsCategoryTree(db *gorm.DB) ([]models.AllsCategory, exception.Exception)
 }
 
 func (jri *JspRepoImpl) Create(db *gorm.DB, jsp *models.JsPrimary) exception.Exception {
@@ -62,4 +64,16 @@ func (jri *JspRepoImpl) Update(db *gorm.DB, id int64, param map[string]interface
 
 func (jri *JspRepoImpl) Delete(db *gorm.DB, id int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase, db.Delete(&models.JsPrimary{}, id).Error)
+}
+
+func (jri *JspRepoImpl) GetAllsCategoryTree(db *gorm.DB) ([]models.AllsCategory, exception.Exception) {
+	allCategories := make([]models.AllsCategory, 0)
+	res := db.Table(tables.JsPrimary + " AS p").
+		Select("p.id AS id, p.title AS title, c.id AS cid, c.title AS c_title, c.primary_id AS pid").
+		Joins(fmt.Sprintf("LEFT JOIN %s AS c ON c.primary_id = p.id", tables.JsCategory)).
+		Scan(&allCategories)
+	if res.Error != nil {
+		return nil, exception.Wrap(response.ExceptionDatabase, res.Error)
+	}
+	return allCategories, nil
 }

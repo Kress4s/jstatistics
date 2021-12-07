@@ -25,6 +25,8 @@ type jscServiceImpl struct {
 	domainRepo repositories.DomainRepo
 	jspRepo    repositories.JspRepo
 	jsmRepo    repositories.JsmRepo
+	rmRepo     repositories.RmRepo
+	stcRepo    repositories.StcRepo
 }
 
 func GetJscService() JscService {
@@ -35,6 +37,8 @@ func GetJscService() JscService {
 			domainRepo: repositories.GetDomainRepo(),
 			jspRepo:    repositories.GetJspRepo(),
 			jsmRepo:    repositories.GetJsmRepo(),
+			rmRepo:     repositories.GetRmRepo(),
+			stcRepo:    repositories.GetStcRepo(),
 		}
 	})
 	return jscServiceInstance
@@ -116,6 +120,14 @@ func (jsi *jscServiceImpl) Delete(id int64) exception.Exception {
 		return ex
 	}
 
+	if ex := jsi.rmRepo.DeleteByCategoryIDs(tx, id); ex != nil {
+		return ex
+	}
+
+	if ex := jsi.stcRepo.DeleteByCategoryID(tx, id); ex != nil {
+		return ex
+	}
+
 	if ex := jsi.repo.Delete(tx, id); ex != nil {
 		return ex
 	}
@@ -146,6 +158,14 @@ func (jsi *jscServiceImpl) MultiDelete(ids string) exception.Exception {
 	defer tx.Rollback()
 
 	if ex := jsi.jsmRepo.DeleteByCategoryIDs(tx, cids); ex != nil {
+		return ex
+	}
+
+	if ex := jsi.rmRepo.DeleteByCategoryIDs(tx, cids...); ex != nil {
+		return ex
+	}
+
+	if ex := jsi.stcRepo.DeleteByCategoriesID(tx, cids...); ex != nil {
 		return ex
 	}
 

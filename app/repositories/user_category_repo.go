@@ -27,7 +27,9 @@ type UserCategoryRepo interface {
 	Create(db *gorm.DB, rps []models.UserCategoryRelation) exception.Exception
 	GetByUserID(db *gorm.DB, userID int64) ([]models.UserCategoryRelation, exception.Exception)
 	DeleteByUserID(db *gorm.DB, userID int64) exception.Exception
-	DeleteByCategoryID(db *gorm.DB, roleID int64) exception.Exception
+	DeleteByUsersID(db *gorm.DB, usersID ...int64) exception.Exception
+	DeleteByCategoryID(db *gorm.DB, cid int64) exception.Exception
+	DeleteByCategoriesID(db *gorm.DB, cids ...int64) exception.Exception
 }
 
 func (uri *UserCategoryRepoImpl) Create(db *gorm.DB, urs []models.UserCategoryRelation) exception.Exception {
@@ -39,9 +41,19 @@ func (uri *UserCategoryRepoImpl) DeleteByUserID(db *gorm.DB, userID int64) excep
 		db.Where("user_id = ?", userID).Delete(models.UserCategoryRelation{}).Error)
 }
 
-func (uri *UserCategoryRepoImpl) DeleteByCategoryID(db *gorm.DB, roleID int64) exception.Exception {
+func (uri *UserCategoryRepoImpl) DeleteByUsersID(db *gorm.DB, usersID ...int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase,
-		db.Where("category_id = ?", roleID).Delete(models.UserCategoryRelation{}).Error)
+		db.Where("user_id in (?)", usersID).Delete(models.UserCategoryRelation{}).Error)
+}
+
+func (uri *UserCategoryRepoImpl) DeleteByCategoryID(db *gorm.DB, cid int64) exception.Exception {
+	return exception.Wrap(response.ExceptionDatabase,
+		db.Where("category_id = ?", cid).Delete(models.UserCategoryRelation{}).Error)
+}
+
+func (uri *UserCategoryRepoImpl) DeleteByCategoriesID(db *gorm.DB, cids ...int64) exception.Exception {
+	return exception.Wrap(response.ExceptionDatabase,
+		db.Where("category_id in (?)", cids).Delete(models.UserCategoryRelation{}).Error)
 }
 
 func (uri *UserCategoryRepoImpl) GetByUserID(db *gorm.DB, userID int64) ([]models.UserCategoryRelation,

@@ -28,6 +28,7 @@ type userServiceImpl struct {
 	urRepo   repositories.UserRoleRepo
 	pmRepo   repositories.PermissionRepo
 	ucRepo   repositories.UserCategoryRepo
+	upRepo   repositories.UserPrimaryRepo
 	jcRepo   repositories.JscRepo
 }
 
@@ -38,10 +39,10 @@ type UserService interface {
 	List(pageInfo *vo.PageInfo, id int64) (*vo.DataPagination, exception.Exception)
 	Update(openID string, id int64, params *vo.UserUpdateReq) exception.Exception
 	UpdateRoles(openID string, id int64, role *vo.UserUpdateRolesReq) exception.Exception
-	UpdateCategory(openID string, id int64, param *vo.UserUpdateCategoryReq) exception.Exception
+	UpdateJSCAndJS(openID string, id int64, param *vo.UserUpdateJscAndJsReq) exception.Exception
 	Delete(openID string, id int64) exception.Exception
 	GetRolesByUserID(openID string, uid int64) ([]vo.RoleBriefResp, exception.Exception)
-	GetCategoryByUserID(openID string, uid int64) ([]vo.JsCategoryBriefResp, exception.Exception)
+	GetJscAndJsByUserID(openID string, uid int64) (*vo.JsJscAndJsBriefResp, exception.Exception)
 	// MultiDelete(openID string, ids string) exception.Exception
 	GetUserMenus(openID int64) ([]vo.UserToMenusResp, exception.Exception)
 	StatusChange(openID string, id int64, status bool) exception.Exception
@@ -57,6 +58,7 @@ func GetUserService() UserService {
 			roleRepo: repositories.GetRoleRepo(),
 			pmRepo:   repositories.GetPermissionRepo(),
 			ucRepo:   repositories.GetUserCategoryRepo(),
+			upRepo:   repositories.GetUserPrimaryRepo(),
 			jcRepo:   repositories.GetJscRepo(),
 		}
 	})
@@ -138,6 +140,9 @@ func (us *userServiceImpl) Delete(openID string, id int64) exception.Exception {
 	if ex = us.urRepo.DeleteByUserID(tx, id); ex != nil {
 		return ex
 	}
+	if ex = us.ucRepo.DeleteByUserID(tx, id); ex != nil {
+		return ex
+	}
 	if res := tx.Commit(); res.Error != nil {
 		return exception.Wrap(response.ExceptionDatabase, tx.Error)
 	}
@@ -165,20 +170,30 @@ func (us *userServiceImpl) UpdateRoles(openID string, id int64, param *vo.UserUp
 	return nil
 }
 
-func (us *userServiceImpl) UpdateCategory(openID string, id int64, param *vo.UserUpdateCategoryReq) exception.Exception {
+func (us *userServiceImpl) UpdateJSCAndJS(openID string, id int64, param *vo.UserUpdateJscAndJsReq) exception.Exception {
 	tx := us.db.Begin()
-	defer tx.Rollback()
 	if tx.Error != nil {
 		return exception.Wrap(response.ExceptionDatabase, tx.Error)
 	}
-	ex := us.ucRepo.DeleteByUserID(tx, id)
-	if ex != nil {
+	defer tx.Rollback()
+	if ex := us.ucRepo.DeleteByUserID(tx, id); ex != nil {
 		return ex
 	}
-	urs := &vo.UserUpdateCategoryReq{CategoryIDs: param.CategoryIDs}
-	urms := urs.ToModel(openID, id)
-	if ex = us.ucRepo.Create(tx, urms); ex != nil {
+	if ex := us.upRepo.DeleteByUserID(tx, id); ex != nil {
 		return ex
+	}
+
+	urs := &vo.UserUpdateJscAndJsReq{CategoryIDs: param.CategoryIDs, PrimaryIDs: param.PrimaryIDs}
+	ucrs, uprs := urs.ToModel(openID, id)
+	if len(ucrs) > 0 {
+		if ex := us.ucRepo.Create(tx, ucrs); ex != nil {
+			return ex
+		}
+	}
+	if len(uprs) > 0 {
+		if ex := us.upRepo.Create(tx, uprs); ex != nil {
+			return ex
+		}
 	}
 	if res := tx.Commit(); res.Error != nil {
 		return exception.Wrap(response.ExceptionDatabase, tx.Error)
@@ -212,31 +227,25 @@ func (us *userServiceImpl) GetRolesByUserID(openID string, uid int64) ([]vo.Role
 	return resp, nil
 }
 
-func (us *userServiceImpl) GetCategoryByUserID(openID string, uid int64) ([]vo.JsCategoryBriefResp,
+func (us *userServiceImpl) GetJscAndJsByUserID(openID string, uid int64) (*vo.JsJscAndJsBriefResp,
 	exception.Exception) {
 	ucs, ex := us.ucRepo.GetByUserID(us.db, uid)
 	if ex != nil {
 		return nil, ex
 	}
-	if len(ucs) == 0 {
-		return []vo.JsCategoryBriefResp{}, nil
-	}
 	categoriesID := make([]int64, 0, len(ucs))
 	for i := range ucs {
 		categoriesID = append(categoriesID, ucs[i].CategoryID)
 	}
-	jcs, ex := us.jcRepo.GetByIDs(us.db, categoriesID)
+	ups, ex := us.upRepo.GetByUserID(us.db, uid)
 	if ex != nil {
 		return nil, ex
 	}
-	resp := make([]vo.JsCategoryBriefResp, 0, len(jcs))
-	for i := range jcs {
-		resp = append(resp, vo.JsCategoryBriefResp{
-			ID:    jcs[i].ID,
-			Title: jcs[i].Title,
-		})
+	primariesID := make([]int64, 0, len(ups))
+	for i := range ups {
+		primariesID = append(primariesID, ups[i].PrimaryID)
 	}
-	return resp, nil
+	return &vo.JsJscAndJsBriefResp{PrimariesID: primariesID, CategoriesID: categoriesID}, nil
 }
 
 func (us *userServiceImpl) GetUserMenus(userID int64) ([]vo.UserToMenusResp, exception.Exception) {
@@ -295,11 +304,28 @@ func (us *userServiceImpl) MultiDelete(ids string) exception.Exception {
 	}
 	did := make([]int64, 0, len(idslice))
 	for i := range idslice {
-		id, err := strconv.ParseUint(idslice[i], 10, 0)
+		id, err := strconv.ParseInt(idslice[i], 0, 64)
 		if err != nil {
 			return exception.Wrap(response.ExceptionParseStringToInt64Error, err)
 		}
-		did = append(did, int64(id))
+		did = append(did, id)
 	}
-	return us.repo.MultiDelete(us.db, did)
+	tx := us.db.Begin()
+	if tx.Error != nil {
+		return exception.Wrap(response.ExceptionDatabase, tx.Error)
+	}
+	defer tx.Rollback()
+	if ex := us.urRepo.DeleteByUsersID(tx, did...); ex != nil {
+		return ex
+	}
+	if ex := us.repo.MultiDelete(tx, did); ex != nil {
+		return ex
+	}
+	if ex := us.ucRepo.DeleteByUsersID(tx, did...); ex != nil {
+		return ex
+	}
+	if err := tx.Commit(); err.Error != nil {
+		return exception.Wrap(response.ExceptionDatabase, err.Error)
+	}
+	return nil
 }

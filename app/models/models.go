@@ -14,6 +14,7 @@ type (
 	Role                   = permission.Role
 	UserRoleRelation       = permission.UserRoleRelation
 	UserCategoryRelation   = permission.UserCategoryRelation
+	UserPrimaryRelation    = permission.UserPrimaryRelation
 	Permission             = permission.Permission
 	RolePermissionRelation = permission.RolePermissionRelation
 	UserToMenus            = permission.UserToMenus
@@ -24,6 +25,7 @@ type (
 	WhiteIP          = application.WhiteIP
 	CDN              = application.CDN
 	JsPrimary        = application.JsPrimary
+	AllsCategory     = application.AllsCategory
 	JsCategory       = application.JsCategory
 	JsManage         = application.JsManage
 	JsManageListView = application.JsManageListView

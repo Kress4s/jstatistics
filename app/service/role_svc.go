@@ -143,14 +143,13 @@ func (rsi *roleServiceImpl) Delete(id int64) exception.Exception {
 	if tx.Error != nil {
 		return exception.Wrap(response.ExceptionDatabase, tx.Error)
 	}
-	ex := rsi.repo.Delete(tx, id)
-	if ex != nil {
+	if ex := rsi.rpRepo.DeleteByRoleID(tx, id); ex != nil {
 		return ex
 	}
-	if ex = rsi.rpRepo.DeleteByRoleID(tx, id); ex != nil {
+	if ex := rsi.urRepo.DeleteByRoleID(tx, id); ex != nil {
 		return ex
 	}
-	if ex = rsi.urRepo.DeleteByRoleID(tx, id); ex != nil {
+	if ex := rsi.repo.Delete(tx, id); ex != nil {
 		return ex
 	}
 	if res := tx.Commit(); res.Error != nil {
@@ -166,11 +165,28 @@ func (rsi *roleServiceImpl) MultiDelete(ids string) exception.Exception {
 	}
 	did := make([]int64, 0, len(idslice))
 	for i := range idslice {
-		id, err := strconv.ParseUint(idslice[i], 10, 0)
+		id, err := strconv.ParseInt(idslice[i], 0, 64)
 		if err != nil {
 			return exception.Wrap(response.ExceptionParseStringToInt64Error, err)
 		}
-		did = append(did, int64(id))
+		did = append(did, id)
 	}
-	return rsi.repo.MultiDelete(rsi.db, did)
+	tx := rsi.db.Begin()
+	if tx.Error != nil {
+		return exception.Wrap(response.ExceptionDatabase, tx.Error)
+	}
+	defer tx.Rollback()
+	if ex := rsi.urRepo.DeleteByRolesID(tx, did...); ex != nil {
+		return ex
+	}
+	if ex := rsi.rpRepo.DeleteByRolesID(tx, did...); ex != nil {
+		return ex
+	}
+	if ex := rsi.repo.MultiDelete(tx, did); ex != nil {
+		return ex
+	}
+	if err := tx.Commit(); err.Error != nil {
+		return exception.Wrap(response.ExceptionDatabase, err.Error)
+	}
+	return nil
 }

@@ -26,6 +26,7 @@ func GetRolePermissionRepo() RolePermissionRepo {
 type RolePermissionRepo interface {
 	Create(db *gorm.DB, rps []models.RolePermissionRelation) exception.Exception
 	DeleteByRoleID(db *gorm.DB, roleID int64) exception.Exception
+	DeleteByRolesID(db *gorm.DB, rolesID ...int64) exception.Exception
 	DeleteByPermissionID(db *gorm.DB, pID int64) exception.Exception
 	GetByRoleID(db *gorm.DB, roleID int64) ([]models.RolePermissionRelation, exception.Exception)
 }
@@ -47,6 +48,11 @@ func (rpr *RolePermissionRepoImpl) GetByRoleID(db *gorm.DB, roleID int64) ([]mod
 func (rpr *RolePermissionRepoImpl) DeleteByRoleID(db *gorm.DB, roleID int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase,
 		db.Where("role_id = ?", roleID).Delete(models.RolePermissionRelation{}).Error)
+}
+
+func (rpr *RolePermissionRepoImpl) DeleteByRolesID(db *gorm.DB, rolesID ...int64) exception.Exception {
+	return exception.Wrap(response.ExceptionDatabase,
+		db.Where("role_id in (?)", rolesID).Delete(models.RolePermissionRelation{}).Error)
 }
 
 func (rpr *RolePermissionRepoImpl) DeleteByPermissionID(db *gorm.DB, pID int64) exception.Exception {

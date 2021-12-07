@@ -47,3 +47,17 @@ func (jpr *JsPrimaryUpdateReq) ToMap(openID string) map[string]interface{} {
 		"update_at": time.Now(),
 	}
 }
+
+type Primaries struct {
+	// 主分类id
+	ID int64 `json:"id"`
+	// 主分类title
+	Title string `json:"title"`
+	// 该主分类下的分类
+	Categories []JsCategoryBrief `json:"categories"`
+}
+
+type PrimaryKey struct {
+	ID    int64  `json:"id"`
+	Title string `json:"title"`
+}

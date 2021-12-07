@@ -3898,6 +3898,55 @@ var doc = `{
                 }
             }
         },
+        "/api/v1/application/js_primary/category/tree": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取js主分类下的分类树",
+                "tags": [
+                    "应用管理 - js主分类"
+                ],
+                "summary": "获取js主分类下的分类树(只到分类)",
+                "responses": {
+                    "200": {
+                        "description": "获取js主分类下的分类树成功",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vo.Primaries"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/application/js_primary/{id}": {
             "get": {
                 "security": [
@@ -3921,7 +3970,7 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "查询域名成功",
+                        "description": "查询js主分类信息成功",
                         "schema": {
                             "$ref": "#/definitions/vo.JsPrimaryResp"
                         }
@@ -6122,7 +6171,7 @@ var doc = `{
                 }
             }
         },
-        "/api/v1/permission/user/{id}/categories": {
+        "/api/v1/permission/user/{id}/jsc_js": {
             "get": {
                 "security": [
                     {
@@ -6147,7 +6196,7 @@ var doc = `{
                     "200": {
                         "description": "查询用户js分类信息成功",
                         "schema": {
-                            "$ref": "#/definitions/vo.JsCategoryBriefResp"
+                            "$ref": "#/definitions/vo.JsJscAndJsBriefResp"
                         }
                     },
                     "400": {
@@ -6196,12 +6245,12 @@ var doc = `{
                         "required": true
                     },
                     {
-                        "description": "UserUpdateCategoryReq",
+                        "description": "UserUpdateJscAndJsReq",
                         "name": "parameters",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/vo.UserUpdateCategoryReq"
+                            "$ref": "#/definitions/vo.UserUpdateJscAndJsReq"
                         }
                     }
                 ],
@@ -6977,13 +7026,15 @@ var doc = `{
                 }
             }
         },
-        "vo.JsCategoryBriefResp": {
+        "vo.JsCategoryBrief": {
             "type": "object",
             "properties": {
                 "id": {
+                    "description": "分类的ID",
                     "type": "integer"
                 },
                 "title": {
+                    "description": "分类的title",
                     "type": "string"
                 }
             }
@@ -7030,6 +7081,25 @@ var doc = `{
                 },
                 "title": {
                     "type": "string"
+                }
+            }
+        },
+        "vo.JsJscAndJsBriefResp": {
+            "type": "object",
+            "properties": {
+                "categories_id": {
+                    "description": "分类id",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "primaries_id": {
+                    "description": "主分类id",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },
@@ -7413,6 +7483,26 @@ var doc = `{
                 }
             }
         },
+        "vo.Primaries": {
+            "type": "object",
+            "properties": {
+                "categories": {
+                    "description": "该主分类下的分类",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vo.JsCategoryBrief"
+                    }
+                },
+                "id": {
+                    "description": "主分类id",
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "主分类title",
+                    "type": "string"
+                }
+            }
+        },
         "vo.ProfileResp": {
             "type": "object",
             "properties": {
@@ -7769,11 +7859,18 @@ var doc = `{
                 }
             }
         },
-        "vo.UserUpdateCategoryReq": {
+        "vo.UserUpdateJscAndJsReq": {
             "type": "object",
             "properties": {
                 "category_ids": {
                     "description": "js分类IDS",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "primary_ids": {
+                    "description": "js主分类ID",
                     "type": "array",
                     "items": {
                         "type": "integer"

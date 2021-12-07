@@ -70,7 +70,16 @@ func (jpr *JsCategoryUpdateReq) ToMap(openID string) map[string]interface{} {
 	}
 }
 
-type JsCategoryBriefResp struct {
-	ID    int64  `json:"id"`
+type JsJscAndJsBriefResp struct {
+	// 主分类id
+	PrimariesID []int64 `json:"primaries_id"`
+	// 分类id
+	CategoriesID []int64 `json:"categories_id"`
+}
+
+type JsCategoryBrief struct {
+	// 分类的ID
+	ID int64 `json:"id"`
+	// 分类的title
 	Title string `json:"title"`
 }

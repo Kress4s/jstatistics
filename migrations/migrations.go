@@ -42,8 +42,8 @@ var migrations = []*gormigrate.Migration{
 	versions.V0004InitLogTables,
 	// init redirect log table
 	versions.V0005InitRedirectLogTables,
-	// init user category table
-	versions.V0006InitUserCategoryTables,
+	// init user category/primary table
+	versions.V0006InitUserCategoryPrimaryTables,
 }
 
 func Migrate() error {

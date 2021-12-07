@@ -289,11 +289,13 @@ definitions:
       site:
         type: string
     type: object
-  vo.JsCategoryBriefResp:
+  vo.JsCategoryBrief:
     properties:
       id:
+        description: 分类的ID
         type: integer
       title:
+        description: 分类的title
         type: string
     type: object
   vo.JsCategoryReq:
@@ -324,6 +326,19 @@ definitions:
         type: integer
       title:
         type: string
+    type: object
+  vo.JsJscAndJsBriefResp:
+    properties:
+      categories_id:
+        description: 分类id
+        items:
+          type: integer
+        type: array
+      primaries_id:
+        description: 主分类id
+        items:
+          type: integer
+        type: array
     type: object
   vo.JsManageReq:
     properties:
@@ -587,6 +602,20 @@ definitions:
         description: '权限类型   0: 菜单权限 1: 操作权限'
         type: integer
     type: object
+  vo.Primaries:
+    properties:
+      categories:
+        description: 该主分类下的分类
+        items:
+          $ref: '#/definitions/vo.JsCategoryBrief'
+        type: array
+      id:
+        description: 主分类id
+        type: integer
+      title:
+        description: 主分类title
+        type: string
+    type: object
   vo.ProfileResp:
     properties:
       admin:
@@ -831,10 +860,15 @@ definitions:
       router:
         type: string
     type: object
-  vo.UserUpdateCategoryReq:
+  vo.UserUpdateJscAndJsReq:
     properties:
       category_ids:
         description: js分类IDS
+        items:
+          type: integer
+        type: array
+      primary_ids:
+        description: js主分类ID
         items:
           type: integer
         type: array
@@ -3365,7 +3399,7 @@ paths:
         type: string
       responses:
         "200":
-          description: 查询域名成功
+          description: 查询js主分类信息成功
           schema:
             $ref: '#/definitions/vo.JsPrimaryResp'
         "400":
@@ -3425,6 +3459,37 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 修改js主分类
+      tags:
+      - 应用管理 - js主分类
+  /api/v1/application/js_primary/category/tree:
+    get:
+      description: 获取js主分类下的分类树
+      responses:
+        "200":
+          description: 获取js主分类下的分类树成功
+          schema:
+            items:
+              $ref: '#/definitions/vo.Primaries'
+            type: array
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取js主分类下的分类树(只到分类)
       tags:
       - 应用管理 - js主分类
   /api/v1/application/redirect:
@@ -4635,7 +4700,7 @@ paths:
       summary: 修改用户
       tags:
       - 权限管理 - 管理员
-  /api/v1/permission/user/{id}/categories:
+  /api/v1/permission/user/{id}/jsc_js:
     get:
       description: 查询用户js分类权限信息
       parameters:
@@ -4648,7 +4713,7 @@ paths:
         "200":
           description: 查询用户js分类信息成功
           schema:
-            $ref: '#/definitions/vo.JsCategoryBriefResp'
+            $ref: '#/definitions/vo.JsJscAndJsBriefResp'
         "400":
           description: 请求参数错误
           schema:
@@ -4678,12 +4743,12 @@ paths:
         name: id
         required: true
         type: string
-      - description: UserUpdateCategoryReq
+      - description: UserUpdateJscAndJsReq
         in: body
         name: parameters
         required: true
         schema:
-          $ref: '#/definitions/vo.UserUpdateCategoryReq'
+          $ref: '#/definitions/vo.UserUpdateJscAndJsReq'
       responses:
         "200":
           description: 修改用户分类权限成功

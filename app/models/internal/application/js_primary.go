@@ -14,3 +14,11 @@ type JsPrimary struct {
 func (JsPrimary) TableName() string {
 	return tables.JsPrimary
 }
+
+type AllsCategory struct {
+	ID     int64   `gorm:"column:id"`
+	Title  string  `gorm:"column:title"`
+	Cid    *int64  `gorm:"column:cid"`
+	CTitle *string `gorm:"column:c_title"`
+	Pid    *int64  `gorm:"column:pid"`
+}

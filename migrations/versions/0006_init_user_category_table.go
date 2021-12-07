@@ -7,12 +7,13 @@ import (
 	"gorm.io/gorm"
 )
 
-// V0006InitUserCategoryTables init user category table
-var V0006InitUserCategoryTables = &gormigrate.Migration{
-	ID: "0006_init_user_category_table",
+// V0006InitUserCategoryPrimaryTables init user category/Primary table
+var V0006InitUserCategoryPrimaryTables = &gormigrate.Migration{
+	ID: "0006_init_user_c_p_table",
 	Migrate: func(tx *gorm.DB) error {
 		if err := tx.AutoMigrate(
 			&models.UserCategoryRelation{},
+			&models.UserPrimaryRelation{},
 		); err != nil {
 			return err
 		}
