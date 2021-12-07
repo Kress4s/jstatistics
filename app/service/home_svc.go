@@ -7,6 +7,7 @@ import (
 	"js_statistics/commom/tools"
 	"js_statistics/constant"
 	"js_statistics/exception"
+	"strings"
 	"sync"
 	"time"
 
@@ -136,12 +137,26 @@ func (hsi *homeServiceImpl) RegionStatistic() ([]vo.RegionStatisticResp, excepti
 		return nil, ex
 	}
 	resp := make([]vo.RegionStatisticResp, 0, len(data))
-	for i := range data {
-		resp = append(resp, vo.RegionStatisticResp{
-			Region: data[i].Region,
-			Count:  data[i].Count,
-		})
+	for j := range tools.ChinaProvince {
+		isExist := false
+		for i := range data {
+			if strings.Contains(data[i].Region, tools.ChinaProvince[j]) {
+				resp = append(resp, vo.RegionStatisticResp{
+					Region: tools.ChinaProvince[j],
+					Count:  data[i].Count,
+				})
+				isExist = true
+				break
+			}
+		}
+		if !isExist {
+			resp = append(resp, vo.RegionStatisticResp{
+				Region: tools.ChinaProvince[j],
+				Count:  0,
+			})
+		}
 	}
+
 	return resp, nil
 }
 

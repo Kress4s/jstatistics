@@ -102,7 +102,8 @@ func (hri *homeRepoImpl) IPAndUVisit(db *gorm.DB, beginAt, endAt string) ([]mode
 
 func (hri *homeRepoImpl) RegionStatistic(db *gorm.DB) ([]models.RegionStatistic, exception.Exception) {
 	res := make([]models.RegionStatistic, 0)
-	tx := db.Table(tables.IPRecode).Select("region, count(*) as count").Group("region").Scan(&res)
+	sub := db.Table(tables.IPRecode).Select("ip, region, count(*) as counts").Group("region, ip")
+	tx := db.Table("(?) AS r", sub).Select("r.region AS region, count(*) AS count").Group("r.region").Scan(&res)
 	if tx.Error != nil {
 		return nil, exception.Wrap(response.ExceptionDatabase, tx.Error)
 	}
