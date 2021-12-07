@@ -6122,6 +6122,120 @@ var doc = `{
                 }
             }
         },
+        "/api/v1/permission/user/{id}/categories": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询用户js分类权限信息",
+                "tags": [
+                    "权限管理 - 管理员"
+                ],
+                "summary": "查询用户js分类权限信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询用户js分类信息成功",
+                        "schema": {
+                            "$ref": "#/definitions/vo.JsCategoryBriefResp"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "修改用户js分类权限",
+                "tags": [
+                    "权限管理 - 管理员"
+                ],
+                "summary": "修改用户js分类权限",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "UserUpdateCategoryReq",
+                        "name": "parameters",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vo.UserUpdateCategoryReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "修改用户分类权限成功"
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "当前用户登录令牌失效",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "当前操作无权限",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/vo.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/permission/user/{id}/roles": {
             "get": {
                 "security": [
@@ -6859,6 +6973,17 @@ var doc = `{
             "type": "object",
             "properties": {
                 "site": {
+                    "type": "string"
+                }
+            }
+        },
+        "vo.JsCategoryBriefResp": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "title": {
                     "type": "string"
                 }
             }
@@ -7630,6 +7755,9 @@ var doc = `{
         "vo.UserToMenusResp": {
             "type": "object",
             "properties": {
+                "identify": {
+                    "type": "string"
+                },
                 "menu_id": {
                     "type": "integer"
                 },
@@ -7638,6 +7766,18 @@ var doc = `{
                 },
                 "router": {
                     "type": "string"
+                }
+            }
+        },
+        "vo.UserUpdateCategoryReq": {
+            "type": "object",
+            "properties": {
+                "category_ids": {
+                    "description": "js分类IDS",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },

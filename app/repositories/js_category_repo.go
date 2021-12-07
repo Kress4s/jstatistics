@@ -35,6 +35,7 @@ type JscRepo interface {
 	MultiDelete(db *gorm.DB, ids []int64) exception.Exception
 	ListAllByPrimaryID(db *gorm.DB, pid int64) ([]models.JsCategory, exception.Exception)
 	UpdateDomainIDToO(db *gorm.DB, domainIDs ...int64) exception.Exception
+	GetByIDs(db *gorm.DB, ids []int64) ([]models.JsCategory, exception.Exception)
 }
 
 func (jsi *JscRepoImpl) Create(db *gorm.DB, jsc *models.JsCategory) exception.Exception {
@@ -94,4 +95,13 @@ func (jsi *JscRepoImpl) ListAllByPrimaryID(db *gorm.DB, pid int64) ([]models.JsC
 func (jsi *JscRepoImpl) UpdateDomainIDToO(db *gorm.DB, domainIDs ...int64) exception.Exception {
 	return exception.Wrap(response.ExceptionDatabase,
 		db.Model(&models.JsCategory{}).Where("domain_id in (?)", domainIDs).UpdateColumn("domain_id", 0).Error)
+}
+
+func (jsi *JscRepoImpl) GetByIDs(db *gorm.DB, ids []int64) ([]models.JsCategory, exception.Exception) {
+	categories := make([]models.JsCategory, 0, len(ids))
+	tx := db.Find(&categories, ids)
+	if tx.Error != nil {
+		return nil, exception.Wrap(response.ExceptionDatabase, tx.Error)
+	}
+	return categories, nil
 }

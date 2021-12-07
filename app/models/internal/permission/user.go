@@ -22,4 +22,5 @@ type UserToMenus struct {
 	MenuName string `json:"menu_name"`
 	Route    string `json:"router"`
 	MenuID   int64  `json:"menu_id"`
+	Identify string `json:"identify"`
 }

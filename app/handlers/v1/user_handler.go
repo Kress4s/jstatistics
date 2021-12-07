@@ -188,6 +188,35 @@ func (u *UserHandler) UpdateRoles(ctx iris.Context) mvc.Result {
 }
 
 // Create godoc
+// @Summary 修改用户js分类权限
+// @Description 修改用户js分类权限
+// @Tags 权限管理 - 管理员
+// @Param id path string true "用户id"
+// @Param parameters body vo.UserUpdateCategoryReq true "UserUpdateCategoryReq"
+// @Success 200 "修改用户分类权限成功"
+// @Failure 400 {object} vo.Error "请求参数错误"
+// @Failure 401 {object} vo.Error "当前用户登录令牌失效"
+// @Failure 403 {object} vo.Error "当前操作无权限"
+// @Failure 500 {object} vo.Error "服务器内部错误"
+// @Security ApiKeyAuth
+// @Router /api/v1/permission/user/{id}/categories [put]
+func (u *UserHandler) UpdateCategory(ctx iris.Context) mvc.Result {
+	id, err := ctx.Params().GetInt64(constant.ID)
+	if err != nil {
+		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
+	}
+	param := &vo.UserUpdateCategoryReq{}
+	if err := ctx.ReadJSON(param); err != nil {
+		return response.Error(exception.Wrap(response.ExceptionInvalidRequestBody, err))
+	}
+	ex := u.Svc.UpdateCategory(u.UserName, id, param)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	return response.OK()
+}
+
+// Create godoc
 // @Summary 删除用户
 // @Description 删除用户
 // @Tags 权限管理 - 管理员
@@ -229,6 +258,30 @@ func (u *UserHandler) GetRolesByUserID(ctx iris.Context) mvc.Result {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}
 	res, ex := u.Svc.GetRolesByUserID(u.UserName, id)
+	if ex != nil {
+		return response.Error(ex)
+	}
+	return response.JSON(res)
+}
+
+// GetCategoryByUserID godoc
+// @Summary 查询用户js分类权限信息
+// @Description 查询用户js分类权限信息
+// @Tags 权限管理 - 管理员
+// @Param id path string true "用户id"
+// @Success 200 {object} vo.JsCategoryBriefResp "查询用户js分类信息成功"
+// @Failure 400 {object} vo.Error  "请求参数错误"
+// @Failure 401 {object} vo.Error "当前用户登录令牌失效"
+// @Failure 403 {object} vo.Error "当前操作无权限"
+// @Failure 500 {object} vo.Error "服务器内部错误"
+// @Security ApiKeyAuth
+// @Router /api/v1/permission/user/{id}/categories [get]
+func (u *UserHandler) GetCategoryByUserID(ctx iris.Context) mvc.Result {
+	id, err := ctx.Params().GetInt64(constant.ID)
+	if err != nil {
+		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
+	}
+	res, ex := u.Svc.GetCategoryByUserID(u.UserName, id)
 	if ex != nil {
 		return response.Error(ex)
 	}
@@ -313,8 +366,10 @@ func (u *UserHandler) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(iris.MethodPut, "/user/{id:string}", "Update", middlewares.RecordSystemLog("Update", "id", "更新用户成功"))
 	b.Handle(iris.MethodDelete, "/user/{id:string}", "Delete", middlewares.RecordSystemLog("Delete", "id", "删除用户成功"))
 	b.Handle(iris.MethodDelete, "/user/multi", "MultiDelete", middlewares.RecordSystemLog("Delete", "ids", "批量删除用户成功"))
-	b.Handle(iris.MethodPut, "/user/{id:string}/roles", "UpdateRoles", middlewares.RecordSystemLog("Update", "id", "更新用户成功"))
+	b.Handle(iris.MethodPut, "/user/{id:string}/roles", "UpdateRoles", middlewares.RecordSystemLog("Update", "id", "更新用户角色成功"))
+	b.Handle(iris.MethodPut, "/user/{id:string}/categories", "UpdateCategory", middlewares.RecordSystemLog("Update", "id", "更新用户js分类成功"))
 	b.Handle(iris.MethodGet, "/user/{id:string}/roles", "GetRolesByUserID")
+	b.Handle(iris.MethodGet, "/user/{id:string}/categories", "GetCategoryByUserID")
 	b.Handle(iris.MethodGet, "/user/menus", "GetUserMenus")
 	b.Handle(iris.MethodPatch, "/user/{id:string}", "StatusChange", middlewares.RecordSystemLog("Update", "id", "更新用户成功"))
 }

@@ -11,6 +11,8 @@ const (
 	Permission = "js_permission"
 	// 角色-权限
 	RolePermissionRelation = "js_role_permission_relation"
+	// 用户-js分类权限
+	UserCategoryRelation = "js_user_category_relation"
 
 	// 域名管理
 	DomainMgr = "js_domain_mgr"

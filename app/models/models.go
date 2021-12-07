@@ -13,6 +13,7 @@ type (
 	User                   = permission.User
 	Role                   = permission.Role
 	UserRoleRelation       = permission.UserRoleRelation
+	UserCategoryRelation   = permission.UserCategoryRelation
 	Permission             = permission.Permission
 	RolePermissionRelation = permission.RolePermissionRelation
 	UserToMenus            = permission.UserToMenus

@@ -289,6 +289,13 @@ definitions:
       site:
         type: string
     type: object
+  vo.JsCategoryBriefResp:
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+    type: object
   vo.JsCategoryReq:
     properties:
       domain_id:
@@ -815,12 +822,22 @@ definitions:
     type: object
   vo.UserToMenusResp:
     properties:
+      identify:
+        type: string
       menu_id:
         type: integer
       menu_name:
         type: string
       router:
         type: string
+    type: object
+  vo.UserUpdateCategoryReq:
+    properties:
+      category_ids:
+        description: js分类IDS
+        items:
+          type: integer
+        type: array
     type: object
   vo.UserUpdateReq:
     properties:
@@ -4616,6 +4633,79 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 修改用户
+      tags:
+      - 权限管理 - 管理员
+  /api/v1/permission/user/{id}/categories:
+    get:
+      description: 查询用户js分类权限信息
+      parameters:
+      - description: 用户id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 查询用户js分类信息成功
+          schema:
+            $ref: '#/definitions/vo.JsCategoryBriefResp'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询用户js分类权限信息
+      tags:
+      - 权限管理 - 管理员
+    put:
+      description: 修改用户js分类权限
+      parameters:
+      - description: 用户id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: UserUpdateCategoryReq
+        in: body
+        name: parameters
+        required: true
+        schema:
+          $ref: '#/definitions/vo.UserUpdateCategoryReq'
+      responses:
+        "200":
+          description: 修改用户分类权限成功
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "401":
+          description: 当前用户登录令牌失效
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "403":
+          description: 当前操作无权限
+          schema:
+            $ref: '#/definitions/vo.Error'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/vo.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改用户js分类权限
       tags:
       - 权限管理 - 管理员
   /api/v1/permission/user/{id}/roles:

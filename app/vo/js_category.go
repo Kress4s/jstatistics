@@ -69,3 +69,8 @@ func (jpr *JsCategoryUpdateReq) ToMap(openID string) map[string]interface{} {
 		"update_at":  time.Now(),
 	}
 }
+
+type JsCategoryBriefResp struct {
+	ID    int64  `json:"id"`
+	Title string `json:"title"`
+}
