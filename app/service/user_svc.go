@@ -143,6 +143,9 @@ func (us *userServiceImpl) Delete(openID string, id int64) exception.Exception {
 	if ex = us.ucRepo.DeleteByUserID(tx, id); ex != nil {
 		return ex
 	}
+	if ex = us.upRepo.DeleteByUserID(tx, id); ex != nil {
+		return ex
+	}
 	if res := tx.Commit(); res.Error != nil {
 		return exception.Wrap(response.ExceptionDatabase, tx.Error)
 	}
@@ -275,6 +278,25 @@ func (us *userServiceImpl) GetUserMenus(userID int64) ([]vo.UserToMenusResp, exc
 			return nil, ex
 		}
 	}
+	for i := range res {
+		if res[i].MenuID == 1 {
+			// 顶级权限
+			ps, ex := us.pmRepo.GetAll(us.db)
+			if ex != nil {
+				return nil, ex
+			}
+			res = make([]models.UserToMenus, 0, len(ps))
+			for i := range ps {
+				res = append(res, models.UserToMenus{
+					MenuID:   ps[i].ID,
+					MenuName: ps[i].MenuName,
+					Route:    ps[i].Route,
+					Identify: ps[i].Identify,
+				})
+			}
+			break
+		}
+	}
 	menus := make([]vo.UserToMenusResp, 0, len(res))
 	for i := range res {
 		menus = append(menus,
@@ -322,6 +344,9 @@ func (us *userServiceImpl) MultiDelete(ids string) exception.Exception {
 		return ex
 	}
 	if ex := us.ucRepo.DeleteByUsersID(tx, did...); ex != nil {
+		return ex
+	}
+	if ex := us.upRepo.DeleteByUsersID(tx, did...); ex != nil {
 		return ex
 	}
 	if err := tx.Commit(); err.Error != nil {

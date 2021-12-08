@@ -2,6 +2,7 @@ package service
 
 import (
 	"js_statistics/app/repositories"
+	"js_statistics/app/response"
 	"js_statistics/app/vo"
 	"js_statistics/commom/drivers/database"
 	"js_statistics/commom/tools"
@@ -38,9 +39,12 @@ type LoginService interface {
 
 func (ls *loginServiceImpl) Login(username, password string) (*vo.LoginResponse, exception.Exception) {
 	password = string(tools.Base64Encode([]byte(password)))
-	ok, userID, ex := ls.repo.CheckPassword(ls.db, username, password)
+	ok, status, userID, ex := ls.repo.CheckPassword(ls.db, username, password)
 	if ex != nil || !ok {
 		return nil, ex
+	}
+	if !status {
+		return nil, exception.New(response.ExceptionUserClose, "对不起 您登录权限已被关闭")
 	}
 	// token
 	token, exp := tools.Token(userID, username)

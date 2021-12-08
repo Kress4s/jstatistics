@@ -1,6 +1,7 @@
 package service
 
 import (
+	"js_statistics/app/models"
 	"js_statistics/app/repositories"
 	"js_statistics/app/response"
 	"js_statistics/app/vo"
@@ -18,23 +19,27 @@ var (
 )
 
 type jspServiceImpl struct {
-	db      *gorm.DB
-	repo    repositories.JspRepo
-	jscRepo repositories.JscRepo
-	jsmRepo repositories.JsmRepo
-	rmRepo  repositories.RmRepo
-	stcRepo repositories.StcRepo
+	db       *gorm.DB
+	repo     repositories.JspRepo
+	jscRepo  repositories.JscRepo
+	jsmRepo  repositories.JsmRepo
+	rmRepo   repositories.RmRepo
+	stcRepo  repositories.StcRepo
+	upRepo   repositories.UserPrimaryRepo
+	userRepo repositories.UserRepo
 }
 
 func GetJspService() JspService {
 	jspOnce.Do(func() {
 		jspServiceInstance = &jspServiceImpl{
-			db:      database.GetDriver(),
-			repo:    repositories.GetJspRepo(),
-			jscRepo: repositories.GetJscRepo(),
-			jsmRepo: repositories.GetJsmRepo(),
-			rmRepo:  repositories.GetRmRepo(),
-			stcRepo: repositories.GetStcRepo(),
+			db:       database.GetDriver(),
+			repo:     repositories.GetJspRepo(),
+			jscRepo:  repositories.GetJscRepo(),
+			jsmRepo:  repositories.GetJsmRepo(),
+			rmRepo:   repositories.GetRmRepo(),
+			stcRepo:  repositories.GetStcRepo(),
+			upRepo:   repositories.GetUserPrimaryRepo(),
+			userRepo: repositories.GetUserRepo(),
 		}
 	})
 	return jspServiceInstance
@@ -43,7 +48,7 @@ func GetJspService() JspService {
 type JspService interface {
 	Create(openID string, param *vo.JsPrimaryReq) exception.Exception
 	Get(id int64) (*vo.JsPrimaryResp, exception.Exception)
-	List() ([]vo.JsPrimaryResp, exception.Exception)
+	List(userID int64) ([]vo.JsPrimaryResp, exception.Exception)
 	Update(openID string, id int64, param *vo.JsPrimaryUpdateReq) exception.Exception
 	Delete(id int64) exception.Exception
 	GetAllsCategoryTree() ([]vo.Primaries, exception.Exception)
@@ -62,10 +67,22 @@ func (jsi *jspServiceImpl) Get(id int64) (*vo.JsPrimaryResp, exception.Exception
 	return vo.NewJsPrimaryResponse(jspMgr), nil
 }
 
-func (jsi *jspServiceImpl) List() ([]vo.JsPrimaryResp, exception.Exception) {
-	jsps, ex := jsi.repo.List(jsi.db)
+func (jsi *jspServiceImpl) List(userID int64) ([]vo.JsPrimaryResp, exception.Exception) {
+	user, ex := jsi.userRepo.Profile(jsi.db, userID)
 	if ex != nil {
 		return nil, ex
+	}
+	var jsps []models.JsPrimary
+	if user.IsAdmin {
+		jsps, ex = jsi.repo.List(jsi.db)
+		if ex != nil {
+			return nil, ex
+		}
+	} else {
+		jsps, ex = jsi.repo.ListByUserID(jsi.db, userID)
+		if ex != nil {
+			return nil, ex
+		}
 	}
 	resp := make([]vo.JsPrimaryResp, 0, len(jsps))
 	for i := range jsps {
@@ -116,6 +133,10 @@ func (jsi *jspServiceImpl) Delete(id int64) exception.Exception {
 		return ex
 	}
 
+	if ex := jsi.upRepo.DeleteByPrimaryID(tx, id); ex != nil {
+		return ex
+	}
+
 	if ex := jsi.repo.Delete(tx, id); ex != nil {
 		return ex
 	}
@@ -141,7 +162,7 @@ func (jsi *jspServiceImpl) GetAllsCategoryTree() ([]vo.Primaries, exception.Exce
 		} else {
 			if res[i].ID == *res[i].Pid {
 				jcb := vo.JsCategoryBrief{
-					ID:    *res[i].Cid,
+					CID:   *res[i].Cid,
 					Title: *res[i].CTitle,
 				}
 				pcMap[key] = append(pcMap[key], jcb)

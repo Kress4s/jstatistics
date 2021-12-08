@@ -27,6 +27,7 @@ func GetJspRepo() JspRepo {
 
 type JspRepo interface {
 	Create(db *gorm.DB, jsp *models.JsPrimary) exception.Exception
+	ListByUserID(db *gorm.DB, userID int64) ([]models.JsPrimary, exception.Exception)
 	List(db *gorm.DB) ([]models.JsPrimary, exception.Exception)
 	Get(db *gorm.DB, id int64) (*models.JsPrimary, exception.Exception)
 	Update(db *gorm.DB, id int64, param map[string]interface{}) exception.Exception
@@ -38,10 +39,18 @@ func (jri *JspRepoImpl) Create(db *gorm.DB, jsp *models.JsPrimary) exception.Exc
 	return exception.Wrap(response.ExceptionDatabase, db.Create(jsp).Error)
 }
 
+func (jri *JspRepoImpl) ListByUserID(db *gorm.DB, userID int64) ([]models.JsPrimary, exception.Exception) {
+	jsps := make([]models.JsPrimary, 0)
+	sub := db.Table(tables.UserPrimaryRelation).Where("user_id = ?", userID)
+	tx := db.Table(tables.JsPrimary+" AS p").Select("p.*").
+		Joins("INNER JOIN (?) AS up ON up.primary_id = p.id", sub)
+	tx.Order("p.id").Find(&jsps)
+	return jsps, exception.Wrap(response.ExceptionDatabase, tx.Error)
+}
+
 func (jri *JspRepoImpl) List(db *gorm.DB) ([]models.JsPrimary, exception.Exception) {
 	jsps := make([]models.JsPrimary, 0)
-	tx := db.Table(tables.JsPrimary)
-	tx.Order("id").Find(&jsps)
+	tx := db.Table(tables.JsPrimary).Order("id").Find(&jsps)
 	return jsps, exception.Wrap(response.ExceptionDatabase, tx.Error)
 }
 

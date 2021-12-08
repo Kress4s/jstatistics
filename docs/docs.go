@@ -3084,12 +3084,6 @@ var doc = `{
                         "description": "页大小",
                         "name": "page_size",
                         "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "keywords",
-                        "name": "keywords",
-                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -7029,7 +7023,7 @@ var doc = `{
         "vo.JsCategoryBrief": {
             "type": "object",
             "properties": {
-                "id": {
+                "cid": {
                     "description": "分类的ID",
                     "type": "integer"
                 },

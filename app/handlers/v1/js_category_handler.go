@@ -55,7 +55,6 @@ func (jh *JscHandler) Create(ctx iris.Context) mvc.Result {
 // @Param pid path string true "js主分类id"
 // @Param page query int false "请求页"
 // @Param page_size query int false "页大小"
-// @Param keywords query string false "keywords" "搜索关键词过滤"
 // @Success 200 {object} vo.DataPagination{data=[]vo.JsCategoryResp} "查询js分类列表成功"
 // @Failure 400 {object} vo.Error "请求参数错误"
 // @Failure 401 {object} vo.Error "当前用户登录令牌失效"
@@ -72,7 +71,7 @@ func (jh *JscHandler) ListByPrimaryID(ctx iris.Context) mvc.Result {
 	if ex != nil {
 		return response.Error(ex)
 	}
-	resp, ex := jh.Svc.ListByPrimaryID(params, pid)
+	resp, ex := jh.Svc.ListByPrimaryID(params, pid, jh.UserID)
 	if ex != nil {
 		return response.Error(ex)
 	}
@@ -194,7 +193,7 @@ func (jh *JscHandler) ListAllByPrimaryID(ctx iris.Context) mvc.Result {
 	if err != nil {
 		return response.Error(exception.Wrap(response.ExceptionInvalidRequestParameters, err))
 	}
-	res, ex := jh.Svc.ListAllByPrimaryID(pid)
+	res, ex := jh.Svc.ListAllByPrimaryID(pid, jh.UserID)
 	if ex != nil {
 		return response.Error(ex)
 	}

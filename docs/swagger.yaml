@@ -291,7 +291,7 @@ definitions:
     type: object
   vo.JsCategoryBrief:
     properties:
-      id:
+      cid:
         description: 分类的ID
         type: integer
       title:
@@ -2837,10 +2837,6 @@ paths:
         in: query
         name: page_size
         type: integer
-      - description: keywords
-        in: query
-        name: keywords
-        type: string
       responses:
         "200":
           description: 查询js分类列表成功

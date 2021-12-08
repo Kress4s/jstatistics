@@ -32,10 +32,10 @@ type Domain struct {
 }
 
 type JsCategoryResp struct {
-	Domain    *Domain       `json:"domain"`
-	Title     string        `json:"title"`
-	JsPrimary JsPrimaryResp `json:"primary"`
-	ID        int64         `json:"id"`
+	Domain    *Domain        `json:"domain"`
+	Title     string         `json:"title"`
+	JsPrimary *JsPrimaryResp `json:"primary,omitempty"`
+	ID        int64          `json:"id"`
 }
 
 func NewJsCategoryResponse(jp *models.JsCategory, domain *models.DomainMgr, jsp *models.JsPrimary) *JsCategoryResp {
@@ -46,11 +46,15 @@ func NewJsCategoryResponse(jp *models.JsCategory, domain *models.DomainMgr, jsp 
 	} else {
 		domainModel = nil
 	}
+	var jsPrimary *JsPrimaryResp
+	if jsp != nil {
+		jsPrimary = NewJsPrimaryResponse(jsp)
+	}
 	return &JsCategoryResp{
 		ID:        jp.ID,
 		Title:     jp.Title,
 		Domain:    domainModel,
-		JsPrimary: *NewJsPrimaryResponse(jsp),
+		JsPrimary: jsPrimary,
 	}
 }
 
@@ -79,7 +83,7 @@ type JsJscAndJsBriefResp struct {
 
 type JsCategoryBrief struct {
 	// 分类的ID
-	ID int64 `json:"id"`
+	CID int64 `json:"cid"`
 	// 分类的title
 	Title string `json:"title"`
 }

@@ -60,7 +60,7 @@ func (ch *JspHandler) Create(ctx iris.Context) mvc.Result {
 // @Security ApiKeyAuth
 // @Router /api/v1/application/js_primaries [get]
 func (ch *JspHandler) List(ctx iris.Context) mvc.Result {
-	resp, ex := ch.Svc.List()
+	resp, ex := ch.Svc.List(ch.UserID)
 	if ex != nil {
 		return response.Error(ex)
 	}

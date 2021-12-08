@@ -38,6 +38,7 @@ var (
 	ExceptionInvalidAccessToken       exception.Type = &Exception{code: 401001, statusCode: iris.StatusUnauthorized}
 	ExceptionForbidden                exception.Type = &Exception{code: 403001, statusCode: iris.StatusForbidden}
 	ExceptionRecordNotFound           exception.Type = &Exception{code: 404001, statusCode: iris.StatusNotFound}
+	ExceptionUserClose                exception.Type = &Exception{code: 405001, statusCode: iris.StatusNotFound}
 	ExceptionUnknown                  exception.Type = &Exception{code: 500000, statusCode: iris.StatusInternalServerError}
 	ExceptionMarshalJSON              exception.Type = &Exception{code: 500001, statusCode: iris.StatusInternalServerError}
 	ExceptionUnmarshalJSON            exception.Type = &Exception{code: 500002, statusCode: iris.StatusInternalServerError}

@@ -28,7 +28,7 @@ func GetUserRepo() UserRepo {
 
 type UserRepo interface {
 	Profile(db *gorm.DB, id int64) (*models.User, exception.Exception)
-	CheckPassword(db *gorm.DB, account, password string) (bool, int64, exception.Exception)
+	CheckPassword(db *gorm.DB, account, password string) (bool, bool, int64, exception.Exception)
 	Create(db *gorm.DB, user *models.User) exception.Exception
 	Get(db *gorm.DB, id int64) (*models.User, exception.Exception)
 	List(db *gorm.DB, pageInfo *vo.PageInfo, id int64) (int64, []models.User, exception.Exception)
@@ -51,16 +51,16 @@ func (u *UserRepoImpl) Profile(db *gorm.DB, id int64) (*models.User, exception.E
 	return &user, nil
 }
 
-func (u *UserRepoImpl) CheckPassword(db *gorm.DB, username, password string) (bool, int64, exception.Exception) {
+func (u *UserRepoImpl) CheckPassword(db *gorm.DB, username, password string) (bool, bool, int64, exception.Exception) {
 	user := &models.User{}
 	res := db.Where(&models.User{Username: username, Password: password}).Find(user)
 	if res.Error != nil {
-		return false, 0, exception.Wrap(response.ExceptionDatabase, res.Error)
+		return false, false, 0, exception.Wrap(response.ExceptionDatabase, res.Error)
 	}
 	if res.RowsAffected == 0 {
-		return false, 0, exception.New(response.ExceptionInvalidUserPassword, "用户名/密码错误")
+		return false, false, 0, exception.New(response.ExceptionInvalidUserPassword, "用户名/密码错误")
 	}
-	return true, user.ID, nil
+	return true, user.Status, user.ID, nil
 }
 
 func (u *UserRepoImpl) Create(db *gorm.DB, user *models.User) exception.Exception {

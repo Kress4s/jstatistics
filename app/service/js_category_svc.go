@@ -27,6 +27,8 @@ type jscServiceImpl struct {
 	jsmRepo    repositories.JsmRepo
 	rmRepo     repositories.RmRepo
 	stcRepo    repositories.StcRepo
+	userRepo   repositories.UserRepo
+	ucRepo     repositories.UserCategoryRepo
 }
 
 func GetJscService() JscService {
@@ -39,6 +41,8 @@ func GetJscService() JscService {
 			jsmRepo:    repositories.GetJsmRepo(),
 			rmRepo:     repositories.GetRmRepo(),
 			stcRepo:    repositories.GetStcRepo(),
+			userRepo:   repositories.GetUserRepo(),
+			ucRepo:     repositories.GetUserCategoryRepo(),
 		}
 	})
 	return jscServiceInstance
@@ -47,11 +51,11 @@ func GetJscService() JscService {
 type JscService interface {
 	Create(openID string, param *vo.JsCategoryReq) exception.Exception
 	Get(id int64) (*vo.JsCategoryResp, exception.Exception)
-	ListByPrimaryID(page *vo.PageInfo, pid int64) (*vo.DataPagination, exception.Exception)
+	ListByPrimaryID(page *vo.PageInfo, pid, userID int64) (*vo.DataPagination, exception.Exception)
 	Update(openID string, id int64, param *vo.JsCategoryUpdateReq) exception.Exception
 	Delete(id int64) exception.Exception
 	MultiDelete(ids string) exception.Exception
-	ListAllByPrimaryID(id int64) ([]vo.JsCategoryResp, exception.Exception)
+	ListAllByPrimaryID(id, userID int64) ([]vo.JsCategoryResp, exception.Exception)
 }
 
 func (jsi *jscServiceImpl) Create(openID string, param *vo.JsCategoryReq) exception.Exception {
@@ -79,8 +83,12 @@ func (jsi *jscServiceImpl) Get(id int64) (*vo.JsCategoryResp, exception.Exceptio
 	return vo.NewJsCategoryResponse(jsc, domain, jsp), nil
 }
 
-func (jsi *jscServiceImpl) ListByPrimaryID(pageInfo *vo.PageInfo, pid int64) (*vo.DataPagination, exception.Exception) {
-	count, jscs, ex := jsi.repo.ListByPrimaryID(jsi.db, pageInfo, pid)
+func (jsi *jscServiceImpl) ListByPrimaryID(pageInfo *vo.PageInfo, pid, userID int64) (*vo.DataPagination, exception.Exception) {
+	user, ex := jsi.userRepo.Profile(jsi.db, userID)
+	if ex != nil {
+		return nil, ex
+	}
+	count, jscs, ex := jsi.repo.ListByPrimaryID(jsi.db, pageInfo, pid, userID, user.IsAdmin)
 	if ex != nil {
 		return nil, ex
 	}
@@ -95,11 +103,7 @@ func (jsi *jscServiceImpl) ListByPrimaryID(pageInfo *vo.PageInfo, pid int64) (*v
 		} else {
 			domain = nil
 		}
-		jsp, ex := jsi.jspRepo.Get(jsi.db, jscs[i].PrimaryID)
-		if ex != nil {
-			return nil, ex
-		}
-		resp = append(resp, *vo.NewJsCategoryResponse(&jscs[i], domain, jsp))
+		resp = append(resp, *vo.NewJsCategoryResponse(&jscs[i], domain, nil))
 	}
 	return vo.NewDataPagination(count, resp, pageInfo), nil
 }
@@ -125,6 +129,10 @@ func (jsi *jscServiceImpl) Delete(id int64) exception.Exception {
 	}
 
 	if ex := jsi.stcRepo.DeleteByCategoryID(tx, id); ex != nil {
+		return ex
+	}
+
+	if ex := jsi.ucRepo.DeleteByCategoryID(tx, id); ex != nil {
 		return ex
 	}
 
@@ -169,6 +177,10 @@ func (jsi *jscServiceImpl) MultiDelete(ids string) exception.Exception {
 		return ex
 	}
 
+	if ex := jsi.ucRepo.DeleteByCategoriesID(tx, cids...); ex != nil {
+		return ex
+	}
+
 	if ex := jsi.repo.MultiDelete(tx, cids); ex != nil {
 		return ex
 	}
@@ -180,8 +192,12 @@ func (jsi *jscServiceImpl) MultiDelete(ids string) exception.Exception {
 	return nil
 }
 
-func (jsi *jscServiceImpl) ListAllByPrimaryID(id int64) ([]vo.JsCategoryResp, exception.Exception) {
-	jcs, ex := jsi.repo.ListAllByPrimaryID(jsi.db, id)
+func (jsi *jscServiceImpl) ListAllByPrimaryID(id, userID int64) ([]vo.JsCategoryResp, exception.Exception) {
+	user, ex := jsi.userRepo.Profile(jsi.db, userID)
+	if ex != nil {
+		return nil, ex
+	}
+	jcs, ex := jsi.repo.ListAllByPrimaryUserID(jsi.db, id, userID, user.IsAdmin)
 	if ex != nil {
 		return nil, ex
 	}
