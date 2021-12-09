@@ -19,10 +19,12 @@ import (
 	"js_statistics/commom/tools"
 	"js_statistics/config"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
-	// _ "github.com/mkevac/debugcharts"
+
+	_ "github.com/mkevac/debugcharts"
 )
 
 func main() {
@@ -32,7 +34,7 @@ func main() {
 	go app.RunJs(cfg.JsServer.Port)
 
 	// 性能监控
-	// go http.ListenAndServe(":7090", nil)
+	go http.ListenAndServe(":7090", nil)
 
 	// init log path
 	createDIR()

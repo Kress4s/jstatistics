@@ -58,8 +58,8 @@ type StcService interface {
 
 func (ssi *stcServiceImpl) ProcessJsRequest(ctx iris.Context) {
 	// ip := tools.GetRemoteAddr(ctx)
-	ip := ctx.RemoteAddr()
-	// ip = "117.89.12.136"
+	// ip := ctx.RemoteAddr()
+	ip := "121.41.38.13"
 	isBlack, ex := ssi.blackRepo.IsExistByIP(ssi.db, ip)
 	if ex != nil {
 		if ex.Type() != response.ExceptionRecordNotFound {
@@ -363,7 +363,7 @@ func (ssi *stcServiceImpl) GetRedirectInfo(ctx iris.Context, js *models.JsManage
 	// 判断跳转方式
 	switch js.RedirectMode {
 	case constant.Direct:
-		if js.RedirectMode == 0 {
+		if js.RedirectCode == 0 {
 			tools.DirectWindowsRedirect(ctx, redirectURL)
 		} else {
 			tools.DirectTopRedirect(ctx, redirectURL)

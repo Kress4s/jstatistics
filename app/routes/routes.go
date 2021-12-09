@@ -23,9 +23,10 @@ func RegisterRoutes(app *iris.Application) {
 	if cfg.DebugModel {
 		app.Get("/swagger/{any:path}", swagger.WrapHandler(swaggerFiles.Handler))
 	}
-	app.Get("/liveness", func(ctx iris.Context) {
-		ctx.ResponseWriter().WriteHeader(iris.StatusOK)
-	})
+	// app.Get("/liveness", func(ctx iris.Context) {
+	// 	ctx.ResponseWriter().WriteHeader(iris.StatusOK)
+	// })
+	// app.Get("/{sign:string}", v1.NewStatisticHandler().FilterJS)
 
 	authApp := app.Party("/auth")
 	mvc.New(authApp).Handle(auth.NewLoginHandler())
