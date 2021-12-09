@@ -6,6 +6,7 @@ import (
 	"js_statistics/app/response"
 	"js_statistics/app/vo"
 	"js_statistics/commom/drivers/database"
+	"js_statistics/commom/tools"
 	"js_statistics/constant"
 	"js_statistics/exception"
 	"strconv"
@@ -149,7 +150,7 @@ func (jsi *jsmServiceImpl) GetJSiteByID(id int64) (*vo.JSiteResp, exception.Exce
 		return nil, ex
 	}
 	if jc.DomainID == 0 {
-		return &vo.JSiteResp{Site: fmt.Sprintf(constant.JSiteForm, constant.DefaultJsDomain, js.Sign)}, nil
+		return &vo.JSiteResp{Site: fmt.Sprintf(constant.JSiteForm, tools.GetJSConnect(), js.Sign)}, nil
 	}
 	domain, ex := jsi.domainRepo.Get(jsi.db, jc.DomainID)
 	if ex != nil {

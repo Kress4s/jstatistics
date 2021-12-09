@@ -2,6 +2,7 @@ package service
 
 import (
 	"js_statistics/app/repositories"
+	"js_statistics/app/response"
 	"js_statistics/app/vo"
 	"js_statistics/commom/drivers/database"
 	"js_statistics/exception"
@@ -53,6 +54,9 @@ func (fsi *fakerServiceImpl) Get(id int64) (*vo.FakerResp, exception.Exception) 
 func (fsi *fakerServiceImpl) GetByJsID(jsID int64) (*vo.FakerResp, exception.Exception) {
 	faker, ex := fsi.repo.GetByJsID(fsi.db, jsID)
 	if ex != nil {
+		if ex.Type() == response.ExceptionRecordNotFound {
+			return nil, nil
+		}
 		return nil, ex
 	}
 	return vo.NewFakerResponse(faker), nil

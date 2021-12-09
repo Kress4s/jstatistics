@@ -83,7 +83,9 @@ type JsJscAndJsBriefResp struct {
 
 type JsCategoryBrief struct {
 	// 分类的ID
-	CID int64 `json:"cid"`
+	CID int64 `json:"id"`
 	// 分类的title
 	Title string `json:"title"`
+	// 父级(主分类)id
+	Pid int64 `json:"pid"`
 }

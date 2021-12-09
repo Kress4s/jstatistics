@@ -5,9 +5,6 @@ debug = true
 [prometheus]
 port = 1920
 
-[js_server]
-port = 8081
-
 [server]
 port = 9090
 max_page_size = 300
@@ -29,7 +26,11 @@ max_idle_conns = 30
 max_open_conns = 60
 
 [minio]
-addr = "115.159.122.220:9000"
+addr = "121.41.38.13:9000"
 access_key_id = "minioadmin"
 secret_access_key = "minioadmin"
 ssl = false
+
+[js_server]
+host = "121.41.38.13"
+port = 8081

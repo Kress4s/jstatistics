@@ -291,8 +291,11 @@ definitions:
     type: object
   vo.JsCategoryBrief:
     properties:
-      cid:
+      id:
         description: 分类的ID
+        type: integer
+      pid:
+        description: 父级(主分类)id
         type: integer
       title:
         description: 分类的title

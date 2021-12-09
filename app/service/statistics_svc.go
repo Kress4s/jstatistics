@@ -57,7 +57,8 @@ type StcService interface {
 }
 
 func (ssi *stcServiceImpl) ProcessJsRequest(ctx iris.Context) {
-	ip := tools.GetRemoteAddr(ctx)
+	// ip := tools.GetRemoteAddr(ctx)
+	ip := ctx.RemoteAddr()
 	// ip = "117.89.12.136"
 	isBlack, ex := ssi.blackRepo.IsExistByIP(ssi.db, ip)
 	if ex != nil {

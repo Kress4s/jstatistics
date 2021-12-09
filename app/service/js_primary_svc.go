@@ -164,6 +164,7 @@ func (jsi *jspServiceImpl) GetAllsCategoryTree() ([]vo.Primaries, exception.Exce
 				jcb := vo.JsCategoryBrief{
 					CID:   *res[i].Cid,
 					Title: *res[i].CTitle,
+					Pid:   *res[i].Pid,
 				}
 				pcMap[key] = append(pcMap[key], jcb)
 			}

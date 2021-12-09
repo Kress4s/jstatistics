@@ -22,7 +22,9 @@ else
         echo "docker-compose未安装成功,请检查执行过程"
         exit
 fi
-
 docker-compose up -d
-
+echo "--------------等待项目编译启动中--------------------"
+sleep 5
+echo "-------------------启动中--------------------"
+sleep 3
 ./js_statistics

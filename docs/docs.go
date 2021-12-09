@@ -7023,8 +7023,12 @@ var doc = `{
         "vo.JsCategoryBrief": {
             "type": "object",
             "properties": {
-                "cid": {
+                "id": {
                     "description": "分类的ID",
+                    "type": "integer"
+                },
+                "pid": {
+                    "description": "父级(主分类)id",
                     "type": "integer"
                 },
                 "title": {

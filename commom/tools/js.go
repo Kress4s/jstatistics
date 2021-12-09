@@ -1,6 +1,8 @@
 package tools
 
 import (
+	"fmt"
+	"js_statistics/config"
 	"js_statistics/constant"
 	"net/http"
 	"strings"
@@ -104,4 +106,14 @@ func GetVisitType(ctx iris.Context) (int, string) {
 		return constant.IPVisit, ""
 	}
 	return constant.UVVisit, cookie
+}
+
+func GetJSConnect() string {
+	cfg := config.GetConfig()
+	return fmt.Sprintf("%s:%d", cfg.JsServer.Host, cfg.JsServer.Port)
+}
+
+func GetMiniIoURL(objID string) string {
+	cfg := config.GetConfig()
+	return fmt.Sprintf("%s:%d/object/%s", cfg.JsServer.Host, cfg.Server.Port, objID)
 }

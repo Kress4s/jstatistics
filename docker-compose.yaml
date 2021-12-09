@@ -1,14 +1,14 @@
 version: '3.9'
 
 services:
-  web:
-    build: .
-    ports:
-      - "8082:9090"
-      - "8081:8081"
-    depends_on:
-      - postgres
-      - minio
+  # web:
+  #   build: .
+  #   ports:
+  #     - "8082:9090"
+  #     - "8081:8081"
+  #   depends_on:
+  #     - postgres
+  #     - minio
 
   postgres:
     container_name: postgres
@@ -33,4 +33,16 @@ services:
       - MINIO_ROOT_USER=minioadmin
       - MINIO_ROOT_PASSWORD=minioadmin
     command: server /data
+    restart: always
+  
+  GeoIP:
+    container_name: geoip
+    image: maxmindinc/geoipupdate
+    volumes:
+      - .:/usr/share/GeoIP
+    environment:
+      - GEOIPUPDATE_ACCOUNT_ID=637421
+      - GEOIPUPDATE_LICENSE_KEY=KzrQksfB8k1PfRBU
+      - GEOIPUPDATE_EDITION_IDS=GeoLite2-ASN GeoLite2-City GeoLite2-Country
+      - GEOIPUPDATE_FREQUENCY=5
     restart: always

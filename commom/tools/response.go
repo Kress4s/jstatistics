@@ -48,13 +48,13 @@ func BeyondRuleRedirect(ctx iris.Context, faker *vo.FakerResp, redirectMode int)
 			}
 		// 图片
 		case 1:
-			redirectInfo = fmt.Sprintf(constant.MINIO_URL, faker.ObjID)
+			redirectInfo = GetMiniIoURL(faker.ObjID)
 		// mp3
 		case 2:
-			redirectInfo = fmt.Sprintf(constant.MINIO_URL, faker.ObjID)
+			redirectInfo = GetMiniIoURL(faker.ObjID)
 		// mp4
 		case 3:
-			redirectInfo = fmt.Sprintf(constant.MINIO_URL, faker.ObjID)
+			redirectInfo = GetMiniIoURL(faker.ObjID)
 		}
 		if redirectMode == 0 {
 			// ctx.WriteString(fmt.Sprintf(constant.RedirectWindowsPage, redirectInfo))

@@ -19,7 +19,8 @@ type Config struct {
 		Port int `toml:"port"`
 	} `toml:"prometheus"`
 	JsServer struct {
-		Port int `toml:"port"`
+		Host string `toml:"host"`
+		Port int    `toml:"port"`
 	} `toml:"js_server"`
 	Server struct {
 		Port        int `toml:"port"`
