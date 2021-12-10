@@ -826,6 +826,19 @@ definitions:
       count:
         type: integer
     type: object
+  vo.UserListInfoResp:
+    properties:
+      admin:
+        type: boolean
+      id:
+        type: integer
+      role_names:
+        type: string
+      status:
+        type: boolean
+      user_name:
+        type: string
+    type: object
   vo.UserReq:
     properties:
       is_admin:
@@ -839,17 +852,6 @@ definitions:
         type: boolean
       user_name:
         description: 用户名
-        type: string
-    type: object
-  vo.UserResp:
-    properties:
-      admin:
-        type: boolean
-      id:
-        type: integer
-      status:
-        type: boolean
-      user_name:
         type: string
     type: object
   vo.UserToMenusResp:
@@ -4967,7 +4969,7 @@ paths:
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/vo.UserResp'
+                    $ref: '#/definitions/vo.UserListInfoResp'
                   type: array
               type: object
         "400":

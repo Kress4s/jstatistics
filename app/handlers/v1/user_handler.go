@@ -99,7 +99,7 @@ func (u *UserHandler) Get(ctx iris.Context) mvc.Result {
 // @Param page_size query int false "页大小"
 // @Param keywords query string false "用户昵称"
 // @Param id query string false "id"
-// @Success 200 {object} vo.DataPagination{data=[]vo.UserResp} "查询用户列表成功"
+// @Success 200 {object} vo.DataPagination{data=[]vo.UserListInfoResp} "查询用户列表成功"
 // @Failure 400 {object} vo.Error  "请求参数错误"
 // @Failure 401 {object} vo.Error "当前用户登录令牌失效"
 // @Failure 403 {object} vo.Error "当前操作无权限"

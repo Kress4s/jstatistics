@@ -31,7 +31,7 @@ func main() {
 	cfg := config.GetConfig()
 	// go monitor.Start()
 	go app.Run(cfg.Server.Port)
-	go app.RunJs(cfg.JsServer.Port)
+	// go app.RunJs(cfg.JsServer.Port)
 
 	// 性能监控
 	go http.ListenAndServe(":7090", nil)

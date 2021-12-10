@@ -19,11 +19,11 @@ func Run(port int) {
 	}
 }
 
-func RunJs(port int) {
-	if err := newJSApp().Run(iris.Addr(fmt.Sprintf("0.0.0.0:%d", port))); err != nil {
-		log.Fatal("Js server run failed, err is ", err.Error())
-	}
-}
+// func RunJs(port int) {
+// 	if err := newJSApp().Run(iris.Addr(fmt.Sprintf("0.0.0.0:%d", port))); err != nil {
+// 		log.Fatal("Js server run failed, err is ", err.Error())
+// 	}
+// }
 
 // newApp
 func newApp() *iris.Application {
@@ -62,40 +62,40 @@ func newApp() *iris.Application {
 	return app
 }
 
-func newJSApp() *iris.Application {
-	cfg := config.GetConfig()
-	jsApp := iris.New()
-	iris.WithOptimizations(jsApp)
-	// app.Use(middlewares.Recover())
-	if cfg.DebugModel {
-		jsApp.Use(IrisLogger())
-	} else {
-		// log recode
-		logFile := tools.NewLogFile()
-		jsApp.Logger().SetOutput(logFile)
-	}
-	jsApp.Use(iris.Compression)
-	// app.Use(middlewares.RecordSystemLog())
-	// 跨域规则
-	jsApp.UseRouter(cors.New(cors.Options{
-		AllowedOrigins: cfg.Server.Cors.AllowedOrigins,
-		AllowedMethods: []string{
-			iris.MethodHead,
-			iris.MethodGet,
-			iris.MethodPost,
-			iris.MethodPut,
-			iris.MethodPatch,
-			iris.MethodDelete,
-			iris.MethodOptions,
-		},
-		AllowedHeaders:     cfg.Server.Cors.AllowedHeaders,
-		ExposedHeaders:     []string{},
-		AllowCredentials:   true,
-		OptionsPassthrough: false,
-	}))
-	routes.RegisterJSRoutes(jsApp)
-	return jsApp
-}
+// func newJSApp() *iris.Application {
+// 	cfg := config.GetConfig()
+// 	jsApp := iris.New()
+// 	iris.WithOptimizations(jsApp)
+// 	// app.Use(middlewares.Recover())
+// 	if cfg.DebugModel {
+// 		jsApp.Use(IrisLogger())
+// 	} else {
+// 		// log recode
+// 		logFile := tools.NewLogFile()
+// 		jsApp.Logger().SetOutput(logFile)
+// 	}
+// 	jsApp.Use(iris.Compression)
+// 	// app.Use(middlewares.RecordSystemLog())
+// 	// 跨域规则
+// 	jsApp.UseRouter(cors.New(cors.Options{
+// 		AllowedOrigins: cfg.Server.Cors.AllowedOrigins,
+// 		AllowedMethods: []string{
+// 			iris.MethodHead,
+// 			iris.MethodGet,
+// 			iris.MethodPost,
+// 			iris.MethodPut,
+// 			iris.MethodPatch,
+// 			iris.MethodDelete,
+// 			iris.MethodOptions,
+// 		},
+// 		AllowedHeaders:     cfg.Server.Cors.AllowedHeaders,
+// 		ExposedHeaders:     []string{},
+// 		AllowCredentials:   true,
+// 		OptionsPassthrough: false,
+// 	}))
+// 	routes.RegisterJSRoutes(jsApp)
+// 	return jsApp
+// }
 
 func IrisLogger() context.Handler {
 	customLogger := logger.New(logger.Config{

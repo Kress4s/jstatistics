@@ -101,13 +101,14 @@ func (us *userServiceImpl) List(pageInfo *vo.PageInfo, id int64) (*vo.DataPagina
 	if ex != nil {
 		return nil, ex
 	}
-	resp := make([]vo.UserResp, 0, len(users))
+	resp := make([]vo.UserListInfoResp, 0, len(users))
 	for i := range users {
-		resp = append(resp, vo.UserResp{
-			ID:       users[i].ID,
-			UserName: users[i].Username,
-			Admin:    users[i].IsAdmin,
-			Status:   users[i].Status,
+		resp = append(resp, vo.UserListInfoResp{
+			ID:        users[i].ID,
+			UserName:  users[i].Username,
+			Admin:     users[i].IsAdmin,
+			Status:    users[i].Status,
+			RoleNames: users[i].RoleNames,
 		})
 	}
 	return vo.NewDataPagination(count, resp, pageInfo), nil

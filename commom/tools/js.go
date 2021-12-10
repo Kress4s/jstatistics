@@ -110,7 +110,7 @@ func GetVisitType(ctx iris.Context) (int, string) {
 
 func GetJSConnect() string {
 	cfg := config.GetConfig()
-	return fmt.Sprintf("%s:%d", cfg.JsServer.Host, cfg.JsServer.Port)
+	return fmt.Sprintf("%s:%d", cfg.JsServer.Host, cfg.Server.Port)
 }
 
 func GetMiniIoURL(objID string) string {

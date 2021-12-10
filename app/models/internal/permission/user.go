@@ -24,3 +24,11 @@ type UserToMenus struct {
 	MenuID   int64  `json:"menu_id"`
 	Identify string `json:"identify"`
 }
+
+type UserListInfo struct {
+	Username  string `gorm:"column:user_name"`
+	RoleNames string `gorm:"column:role_names"`
+	ID        int64  `gorm:"column:id"`
+	IsAdmin   bool   `gorm:"column:is_admin;type:boolean;not null;comment:是否是超管"`
+	Status    bool   `gorm:"column:status"`
+}

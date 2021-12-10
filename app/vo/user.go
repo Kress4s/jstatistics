@@ -53,6 +53,19 @@ type UserResp struct {
 	Status   bool   `json:"status"`
 }
 
+type UserListInfoResp struct {
+	// 用户名
+	UserName string `json:"user_name"`
+	// 拥有角色名
+	RoleNames string `json:"role_names"`
+	// id
+	ID int64 `json:"id"`
+	// 是否管理员
+	Admin bool `json:"admin"`
+	// 用户状态
+	Status bool `json:"status"`
+}
+
 type UserToMenusResp struct {
 	MenuName string `json:"menu_name"`
 	Route    string `json:"router"`

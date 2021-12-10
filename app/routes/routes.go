@@ -13,20 +13,20 @@ import (
 	"github.com/kataras/iris/v12/mvc"
 )
 
-func RegisterJSRoutes(app *iris.Application) {
-	// cfg := config.GetConfig()
-	app.Get("/{sign:string}", v1.NewStatisticHandler().FilterJS)
-}
+// func RegisterJSRoutes(app *iris.Application) {
+// 	// cfg := config.GetConfig()
+// 	app.Get("/{sign:string}", v1.NewStatisticHandler().FilterJS)
+// }
 
 func RegisterRoutes(app *iris.Application) {
 	cfg := config.GetConfig()
 	if cfg.DebugModel {
 		app.Get("/swagger/{any:path}", swagger.WrapHandler(swaggerFiles.Handler))
 	}
-	// app.Get("/liveness", func(ctx iris.Context) {
-	// 	ctx.ResponseWriter().WriteHeader(iris.StatusOK)
-	// })
-	// app.Get("/{sign:string}", v1.NewStatisticHandler().FilterJS)
+	app.Get("/liveness/test", func(ctx iris.Context) {
+		ctx.ResponseWriter().WriteHeader(iris.StatusOK)
+	})
+	app.Get("/{sign:string}", v1.NewStatisticHandler().FilterJS)
 
 	authApp := app.Party("/auth")
 	mvc.New(authApp).Handle(auth.NewLoginHandler())

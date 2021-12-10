@@ -6445,7 +6445,7 @@ var doc = `{
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/vo.UserResp"
+                                                "$ref": "#/definitions/vo.UserListInfoResp"
                                             }
                                         }
                                     }
@@ -7802,6 +7802,26 @@ var doc = `{
                 }
             }
         },
+        "vo.UserListInfoResp": {
+            "type": "object",
+            "properties": {
+                "admin": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "role_names": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean"
+                },
+                "user_name": {
+                    "type": "string"
+                }
+            }
+        },
         "vo.UserReq": {
             "type": "object",
             "properties": {
@@ -7819,23 +7839,6 @@ var doc = `{
                 },
                 "user_name": {
                     "description": "用户名",
-                    "type": "string"
-                }
-            }
-        },
-        "vo.UserResp": {
-            "type": "object",
-            "properties": {
-                "admin": {
-                    "type": "boolean"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "boolean"
-                },
-                "user_name": {
                     "type": "string"
                 }
             }

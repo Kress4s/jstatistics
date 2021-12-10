@@ -11,6 +11,7 @@ type (
 	// 权限管理
 	Base                   = common.Base
 	User                   = permission.User
+	UserListInfo           = permission.UserListInfo
 	Role                   = permission.Role
 	UserRoleRelation       = permission.UserRoleRelation
 	UserCategoryRelation   = permission.UserCategoryRelation

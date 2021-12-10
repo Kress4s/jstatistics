@@ -6,7 +6,7 @@ debug = true
 port = 1920
 
 [server]
-port = 9090
+port = 8082
 max_page_size = 300
 
 [server.cors]
@@ -33,4 +33,3 @@ ssl = false
 
 [js_server]
 host = "121.41.38.13"
-port = 8081
