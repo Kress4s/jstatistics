@@ -79,7 +79,7 @@ func (hsi *homeServiceImpl) LastMonthIP() (*vo.LastMonthIP, exception.Exception)
 }
 
 func (hsi *homeServiceImpl) IPAndUVisit() (*vo.HomeIPAndUVisit, exception.Exception) {
-	beginAt, endAt := tools.GetLastMonthTimeScope(time.Now())
+	beginAt, endAt := tools.GetLatestMonthTimeScope(time.Now())
 	ipData, uvData, ex := hsi.repo.IPAndUVisit(hsi.db, beginAt.Format(constant.DateFormat),
 		endAt.Format(constant.DateFormat))
 	if ex != nil {

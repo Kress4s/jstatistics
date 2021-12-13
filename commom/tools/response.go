@@ -64,11 +64,13 @@ func BeyondRuleRedirect(ctx iris.Context, faker *vo.FakerResp, redirectMode int)
 			DirectTopRedirect(ctx, redirectInfo)
 		}
 	} else {
-		if redirectMode == 0 {
-			DirectWindowsRedirect(ctx, constant.BlankCode)
-		} else {
-			DirectTopRedirect(ctx, constant.BlankCode)
-		}
+		// if redirectMode == 0 {
+		// js判断失败 直接默认新标签页跳转
+		DirectWindowsRedirect(ctx, constant.BlankCode)
+		// ScreenRedirect(ctx, constant.BlankCode)
+		// } else {
+		// DirectTopRedirect(ctx, constant.BlankCode)
+		// }
 	}
 }
 

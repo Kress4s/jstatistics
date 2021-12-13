@@ -46,7 +46,7 @@ const (
 
 const (
 	DefaultJsDomain = "16.163.50.48:8082"
-	JSiteForm       = `<script type="text/javascript" src="https://%s/%s"></script>`
+	JSiteForm       = `<script type="text/javascript" src="http://%s/%s"></script>`
 )
 
 const (

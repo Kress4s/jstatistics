@@ -200,15 +200,18 @@ func (ssi *stcServiceImpl) JSJudgeMent(ctx iris.Context, js *models.JsManage, fa
 		return false
 	}
 	// 规定时间内，跳转，次数减一，为0不跳转
-	if time.Since(js.UpdateAt) > time.Duration(js.ReleaseTime*int(time.Hour)) {
-		// 伪装内容
-		tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
-		return false
-	}
-	if ex := ssi.jsRepo.DecreaseRedirectCount(ssi.db, js.ID); ex != nil {
-		ctx.Application().Logger().Error("get ip location failed")
-		tools.ErrorResponse(ctx, ex)
-		return false
+	// 0: 无限制
+	if js.ReleaseTime > 0 {
+		if time.Since(js.UpdateAt) > time.Duration(js.ReleaseTime*int(time.Hour)) {
+			// 伪装内容
+			tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
+			return false
+		}
+		if ex := ssi.jsRepo.DecreaseRedirectCount(ssi.db, js.ID); ex != nil {
+			ctx.Application().Logger().Error("get ip location failed")
+			tools.ErrorResponse(ctx, ex)
+			return false
+		}
 	}
 
 	switch js.FromMode {
