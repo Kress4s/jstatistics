@@ -69,6 +69,8 @@ type UserListInfoResp struct {
 type UserToMenusResp struct {
 	MenuName string `json:"menu_name"`
 	Route    string `json:"router"`
+	Type     int    `json:"type"`
+	ParentID int64  `json:"parent_id"`
 	MenuID   int64  `json:"menu_id"`
 	Identify string `json:"identify"`
 }

@@ -115,7 +115,7 @@ func (u *UserRepoImpl) GetUserMenus(db *gorm.DB, userID int64) ([]models.UserToM
 	menus := make([]models.UserToMenus, 0)
 	tx := db.Table(tables.User+" as u").
 		Select(
-			"u.id as uid, p.id as menu_id, p.menu_name as menu_name, p.route as route, p.identify as identify",
+			"u.id as uid, p.id as menu_id, p.menu_name as menu_name, p.route as route, p.identify as identify, p.type as type, p.parent_id as parent_id",
 		).
 		Joins(fmt.Sprintf("INNER JOIN %s AS ur_rel ON ur_rel.user_id = u.id", tables.UserRoleRelation)).
 		Joins(fmt.Sprintf("INNER JOIN %s as rp_rel on rp_rel.role_id = ur_rel.role_id", tables.RolePermissionRelation)).

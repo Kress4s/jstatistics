@@ -75,7 +75,10 @@ func (ps *permissionServiceImpl) GetAll() ([]vo.PermissionResp, exception.Except
 			ID:       p[i].ID,
 			Name:     p[i].Name,
 			MenuName: p[i].MenuName,
+			Identify: p[i].Identify,
+			Route:    p[i].Route,
 			ParentID: p[i].ParentID,
+			Type:     p[i].Type,
 		})
 	}
 	return resp, nil

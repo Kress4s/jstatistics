@@ -7385,7 +7385,7 @@ var doc = `{
                     "type": "string"
                 },
                 "type": {
-                    "description": "权限类型   0: 菜单权限 1: 操作权限",
+                    "description": "权限类型   1: 菜单权限 0: 操作权限",
                     "type": "integer"
                 }
             }
@@ -7425,6 +7425,9 @@ var doc = `{
                 "id": {
                     "type": "integer"
                 },
+                "identify": {
+                    "type": "string"
+                },
                 "index": {
                     "type": "integer"
                 },
@@ -7445,6 +7448,9 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/vo.PermissionTree"
                     }
+                },
+                "type": {
+                    "type": "integer"
                 }
             }
         },
@@ -7806,18 +7812,23 @@ var doc = `{
             "type": "object",
             "properties": {
                 "admin": {
+                    "description": "是否管理员",
                     "type": "boolean"
                 },
                 "id": {
+                    "description": "id",
                     "type": "integer"
                 },
                 "role_names": {
+                    "description": "拥有角色名",
                     "type": "string"
                 },
                 "status": {
+                    "description": "用户状态",
                     "type": "boolean"
                 },
                 "user_name": {
+                    "description": "用户名",
                     "type": "string"
                 }
             }
@@ -7855,8 +7866,14 @@ var doc = `{
                 "menu_name": {
                     "type": "string"
                 },
+                "parent_id": {
+                    "type": "integer"
+                },
                 "router": {
                     "type": "string"
+                },
+                "type": {
+                    "type": "integer"
                 }
             }
         },

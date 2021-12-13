@@ -14,7 +14,7 @@ type PermissionReq struct {
 	Route string `json:"route"`
 	// 权限标识
 	Identify string `json:"identify"`
-	// 权限类型   0: 菜单权限 1: 操作权限
+	// 权限类型   1: 菜单权限 0: 操作权限
 	Type int `json:"type"`
 	// 父级菜单的ID,最高级为 0
 	ParentID int64 `json:"parent_id"`
@@ -81,9 +81,11 @@ func (pur *PermissionUpdateReq) ToMap(openID string) map[string]interface{} {
 type PermissionTree struct {
 	Name           string            `json:"name"`
 	MenuName       string            `json:"menu_name"`
+	Identify       string            `json:"identify"`
 	Route          string            `json:"route"`
 	SubPermissions []*PermissionTree `json:"sub_permissions"`
 	Index          int               `json:"index"`
+	Type           int               `json:"type"`
 	ParentID       int64             `json:"parent_id"`
 	ID             int64             `json:"id"`
 }
@@ -94,6 +96,8 @@ func NewPermissionTree(p *models.Permission) *PermissionTree {
 		Name:     p.Name,
 		MenuName: p.MenuName,
 		Route:    p.Route,
+		Type:     p.Type,
+		Identify: p.Identify,
 		Index:    p.Index,
 		ParentID: p.ParentID,
 	}

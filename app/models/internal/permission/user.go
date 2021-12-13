@@ -19,10 +19,12 @@ func (User) TableName() string {
 }
 
 type UserToMenus struct {
-	MenuName string `json:"menu_name"`
-	Route    string `json:"router"`
-	MenuID   int64  `json:"menu_id"`
-	Identify string `json:"identify"`
+	MenuName string `gorm:"column:menu_name"`
+	Route    string `gorm:"column:router"`
+	Type     int    `gorm:"column:type"`
+	MenuID   int64  `gorm:"column:menu_id"`
+	ParentID int64  `gorm:"column:parent_id"`
+	Identify string `gorm:"column:identify"`
 }
 
 type UserListInfo struct {

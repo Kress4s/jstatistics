@@ -268,6 +268,8 @@ func (us *userServiceImpl) GetUserMenus(userID int64) ([]vo.UserToMenusResp, exc
 			res = append(res, models.UserToMenus{
 				MenuID:   ps[i].ID,
 				MenuName: ps[i].MenuName,
+				Type:     ps[i].Type,
+				ParentID: ps[i].ParentID,
 				Route:    ps[i].Route,
 				Identify: ps[i].Identify,
 			})
@@ -291,6 +293,8 @@ func (us *userServiceImpl) GetUserMenus(userID int64) ([]vo.UserToMenusResp, exc
 				res = append(res, models.UserToMenus{
 					MenuID:   ps[i].ID,
 					MenuName: ps[i].MenuName,
+					Type:     ps[i].Type,
+					ParentID: ps[i].ParentID,
 					Route:    ps[i].Route,
 					Identify: ps[i].Identify,
 				})
@@ -304,6 +308,8 @@ func (us *userServiceImpl) GetUserMenus(userID int64) ([]vo.UserToMenusResp, exc
 			vo.UserToMenusResp{
 				MenuID:   res[i].MenuID,
 				MenuName: res[i].MenuName,
+				Type:     res[i].Type,
+				ParentID: res[i].ParentID,
 				Route:    res[i].Route,
 				Identify: res[i].Identify,
 			},

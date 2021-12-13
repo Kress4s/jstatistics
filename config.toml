@@ -6,7 +6,7 @@ debug = true
 port = 1920
 
 [server]
-port = 8082
+port = 9090
 max_page_size = 300
 
 [server.cors]
