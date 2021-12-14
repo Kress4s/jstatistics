@@ -117,3 +117,9 @@ func GetMiniIoURL(objID string) string {
 	cfg := config.GetConfig()
 	return fmt.Sprintf("%s:%d/object/%s", cfg.JsServer.Host, cfg.Server.Port, objID)
 }
+
+func GetMiniIoMP3URL(objID string) string {
+	cfg := config.GetConfig()
+	url := fmt.Sprintf("%s:%d/object/%s", cfg.JsServer.Host, cfg.Server.Port, objID)
+	return fmt.Sprintf(constant.MP3Response, url)
+}

@@ -51,7 +51,7 @@ func BeyondRuleRedirect(ctx iris.Context, faker *vo.FakerResp, redirectMode int)
 			redirectInfo = GetMiniIoURL(faker.ObjID)
 		// mp3
 		case 2:
-			redirectInfo = GetMiniIoURL(faker.ObjID)
+			redirectInfo = GetMiniIoMP3URL(faker.ObjID)
 		// mp4
 		case 3:
 			redirectInfo = GetMiniIoURL(faker.ObjID)
@@ -66,8 +66,8 @@ func BeyondRuleRedirect(ctx iris.Context, faker *vo.FakerResp, redirectMode int)
 	} else {
 		// if redirectMode == 0 {
 		// js判断失败 直接默认新标签页跳转
-		DirectWindowsRedirect(ctx, constant.BlankCode)
-		// ScreenRedirect(ctx, constant.BlankCode)
+		// DirectWindowsRedirect(ctx, constant.BlankCode)
+		ScreenRedirect(ctx, constant.BlankCode)
 		// } else {
 		// DirectTopRedirect(ctx, constant.BlankCode)
 		// }

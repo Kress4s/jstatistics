@@ -6,7 +6,7 @@ import (
 )
 
 type RedirectLog struct {
-	UpdateAt   time.Time `gorm:"column:update_at;type:timestamptz;comment:更新时间"`
+	UpdateAt   time.Time `gorm:"column:update_at;type:timestamp;comment:更新时间"`
 	OldPC      string    `gorm:"column:old_pc;type:varchar(100);comment:原pc跳转地址"`
 	OldAndroid string    `gorm:"column:old_android;type:varchar(100);comment:原android跳转地址"`
 	OldIOS     string    `gorm:"column:old_ios;type:varchar(100);comment:原ios跳转地址"`

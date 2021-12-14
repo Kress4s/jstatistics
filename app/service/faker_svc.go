@@ -17,8 +17,9 @@ var (
 )
 
 type fakerServiceImpl struct {
-	db   *gorm.DB
-	repo repositories.FakerRepo
+	db      *gorm.DB
+	repo    repositories.FakerRepo
+	objRepo repositories.ObjectRepo
 }
 
 func GetFakerService() FakerService {
@@ -63,5 +64,15 @@ func (fsi *fakerServiceImpl) GetByJsID(jsID int64) (*vo.FakerResp, exception.Exc
 }
 
 func (fsi *fakerServiceImpl) Update(openID string, id int64, param *vo.FakerUpdateReq) exception.Exception {
+	faker, ex := fsi.repo.Get(fsi.db, id)
+	if ex != nil {
+		return ex
+	}
+	if faker.Type != 0 && faker.ObjID == "" {
+		// delete file
+		if ex := fsi.objRepo.Delete(fsi.db, faker.ObjID); ex != nil {
+			return ex
+		}
+	}
 	return fsi.repo.Update(fsi.db, id, param.ToMap(openID))
 }

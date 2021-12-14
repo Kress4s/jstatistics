@@ -154,6 +154,26 @@ const (
 	<text>%s</text>`
 
 	ApplicationJson = `{"text": %s}`
+	MP3Response     = `<html>
+	<head>
+		<title>text/html</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+		<script>
+			window.onload = function () {
+				document.getElementById("myaudio").play();
+			}
+		</script>
+	</head>
+	
+	<body>
+		<h1>text/html</h1>
+		<audio id="myaudio" src="%s"
+			autoplay="autoplay" controls="controls" loop="loop" preload="preload" muted="muted">
+			不支持audio标签
+		</audio>
+	</body>
+	
+	</html>`
 )
 
 const (
