@@ -21,10 +21,10 @@ func (User) TableName() string {
 type UserToMenus struct {
 	MenuName string `gorm:"column:menu_name"`
 	Route    string `gorm:"column:router"`
+	Identify string `gorm:"column:identify"`
 	Type     int    `gorm:"column:type"`
 	MenuID   int64  `gorm:"column:menu_id"`
 	ParentID int64  `gorm:"column:parent_id"`
-	Identify string `gorm:"column:identify"`
 }
 
 type UserListInfo struct {
