@@ -110,7 +110,6 @@ func NewListJsManageResponse(jm *models.JsManageListView) *JsManageResp {
 	return &JsManageResp{
 		ID:    jm.ID,
 		Title: jm.Title,
-		//TODO:统计
 		IP:            jm.IPCount,
 		ShieldArea:    jm.ShieldArea,
 		ClientType:    jm.ClientType,

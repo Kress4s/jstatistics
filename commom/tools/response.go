@@ -2,6 +2,7 @@ package tools
 
 import (
 	"fmt"
+	"js_statistics/app/models"
 	"js_statistics/app/response"
 	"js_statistics/app/vo"
 	"js_statistics/constant"
@@ -24,9 +25,12 @@ func DefaultBlackCode(ctx iris.Context) {
 }
 
 // js规则之外的条件，设置的伪装内容
-func BeyondRuleRedirect(ctx iris.Context, faker *vo.FakerResp, redirectMode int) {
+func BeyondRuleRedirect(ctx iris.Context, faker *vo.FakerResp, js *models.JsManage) {
 	// var redirectInfo string
 	if faker != nil {
+		if !faker.Status {
+			ScreenRedirect(ctx, constant.BlankCode)
+		}
 		var redirectInfo string
 		switch faker.Type {
 		//文本
@@ -56,16 +60,33 @@ func BeyondRuleRedirect(ctx iris.Context, faker *vo.FakerResp, redirectMode int)
 		case 3:
 			redirectInfo = GetMiniIoURL(faker.ObjID)
 		}
-		if redirectMode == 0 {
-			// ctx.WriteString(fmt.Sprintf(constant.RedirectWindowsPage, redirectInfo))
-			DirectWindowsRedirect(ctx, redirectInfo)
-		} else {
-			// ctx.WriteString(fmt.Sprintf(constant.RedirectTopPage, redirectInfo))
-			DirectTopRedirect(ctx, redirectInfo)
+		// if redirectMode == 0 {
+		// 	// ctx.WriteString(fmt.Sprintf(constant.RedirectWindowsPage, redirectInfo))
+		// 	DirectWindowsRedirect(ctx, redirectInfo)
+		// } else {
+		// 	// ctx.WriteString(fmt.Sprintf(constant.RedirectTopPage, redirectInfo))
+		// 	DirectTopRedirect(ctx, redirectInfo)
+		// }
+		switch js.RedirectMode {
+		case constant.Direct:
+			if js.RedirectCode == 0 {
+				DirectWindowsRedirect(ctx, redirectInfo)
+			} else {
+				DirectTopRedirect(ctx, redirectInfo)
+			}
+		case constant.Nested:
+			NestedRedirect(ctx, redirectInfo)
+		case constant.Screen:
+			ScreenRedirect(ctx, redirectInfo)
+		default:
+			// id 为动态参数
+			// HrefRedirect(ctx, redirectInfo+"/"+strings.ReplaceAll(js.HrefID, ",", "/"))
+			//TODO 不使用Href跳转
+			ScreenRedirect(ctx, redirectInfo)
 		}
 	} else {
 		// if redirectMode == 0 {
-		// js判断失败 直接默认新标签页跳转
+		// 未设置伪装内容 直接默认新标签页跳转
 		// DirectWindowsRedirect(ctx, constant.BlankCode)
 		ScreenRedirect(ctx, constant.BlankCode)
 		// } else {

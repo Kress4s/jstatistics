@@ -58,8 +58,8 @@ type StcService interface {
 
 func (ssi *stcServiceImpl) ProcessJsRequest(ctx iris.Context) {
 	// ip := tools.GetRemoteAddr(ctx)
-	// ip := ctx.RemoteAddr()
-	ip := "121.41.38.13"
+	ip := ctx.RemoteAddr()
+	// ip := "121.41.38.13"
 	isBlack, ex := ssi.blackRepo.IsExistByIP(ssi.db, ip)
 	if ex != nil {
 		if ex.Type() != response.ExceptionRecordNotFound {
@@ -75,24 +75,10 @@ func (ssi *stcServiceImpl) ProcessJsRequest(ctx iris.Context) {
 		tools.ErrorResponse(ctx, ex)
 		return
 	}
-	// TODO 伪装内容
+	// 伪装内容
 	faker, ex := ssi.GetFakerRedirectInfoByJsID(js.ID)
 	if ex != nil {
 		if ex.Type() != response.ExceptionRecordNotFound {
-			// 	// 未设置伪装内容
-			// 	switch js.RedirectMode {
-			// 	case 0:
-			// 		tools.DirectWindowsRedirect(ctx, constant.BlankCode)
-			// 		return
-			// 	case 1:
-			// 		tools.DirectTopRedirect(ctx, constant.BlankCode)
-			// 		return
-			// 	}
-			// } else {
-			// 	ctx.Application().Logger().Error(ex.Error())
-			// 	tools.ErrorResponse(ctx, ex)
-			// 	return
-			// }
 			ctx.Application().Logger().Error(ex.Error())
 			tools.ErrorResponse(ctx, ex)
 			return
@@ -100,7 +86,7 @@ func (ssi *stcServiceImpl) ProcessJsRequest(ctx iris.Context) {
 	}
 	// 黑名单
 	if isBlack {
-		tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
+		tools.BeyondRuleRedirect(ctx, faker, js)
 		return
 	}
 	agent := strings.ToLower(ctx.Request().UserAgent())
@@ -109,10 +95,6 @@ func (ssi *stcServiceImpl) ProcessJsRequest(ctx iris.Context) {
 	if len(origin) == 0 {
 		origin = ctx.GetHeader("Referer")
 	}
-	// if len(sign) == 0 && len(agent) == 0 && len(origin) == 0 {
-	// 	// TODO 伪装内容
-	// 	tools.BeyondRuleRedirect(ctx)
-	// }
 	// 白名单
 	isWhite, ex := ssi.wipRepo.IsExistByIP(ssi.db, ip)
 	if ex != nil {
@@ -138,7 +120,7 @@ func (ssi *stcServiceImpl) ProcessJsRequest(ctx iris.Context) {
 	}
 	if isCDN {
 		// 过滤掉cdn的ip，直接返回
-		tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
+		tools.BeyondRuleRedirect(ctx, faker, js)
 		return
 	}
 	// js判断条件
@@ -152,8 +134,8 @@ func (ssi *stcServiceImpl) ProcessJsRequest(ctx iris.Context) {
 func (ssi *stcServiceImpl) JSJudgeMent(ctx iris.Context, js *models.JsManage, faker *vo.FakerResp, ip, sign, agent, origin string) bool {
 	// 默认屏蔽国外、香港、澳门、台湾IP
 	if !ssi.IsValidLocation(ip) {
-		// TODO 伪装内容
-		tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
+		// 伪装内容
+		tools.BeyondRuleRedirect(ctx, faker, js)
 		return false
 	}
 	// 国内屏蔽地区
@@ -173,30 +155,30 @@ func (ssi *stcServiceImpl) JSJudgeMent(ctx iris.Context, js *models.JsManage, fa
 		}
 		for i := range shieldAreas {
 			if strings.Contains(shieldAreas[i], region) {
-				// TODO 伪装内容
-				tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
+				//  伪装内容
+				tools.BeyondRuleRedirect(ctx, faker, js)
 				return false
 			}
 		}
 	}
 
 	if !js.Status {
-		// TODO 伪装内容
-		tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
+		// 伪装内容
+		tools.BeyondRuleRedirect(ctx, faker, js)
 		return false
 	}
 
 	// 判断是pc端、移动端 是否合法
 	clientType := tools.GetClintType(agent)
 	if !tools.IsInRuleClient(int64(clientType), js.ClientType) {
-		tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
+		tools.BeyondRuleRedirect(ctx, faker, js)
 		return false
 	}
 
 	// 封禁小时 和 次数，为0不跳转
 	if js.RedirectCount == 0 {
-		// TODO 伪装内容
-		tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
+		// 伪装内容
+		tools.BeyondRuleRedirect(ctx, faker, js)
 		return false
 	}
 	// 规定时间内，跳转，次数减一，为0不跳转
@@ -204,7 +186,7 @@ func (ssi *stcServiceImpl) JSJudgeMent(ctx iris.Context, js *models.JsManage, fa
 	if js.ReleaseTime > 0 {
 		if time.Since(js.UpdateAt) > time.Duration(js.ReleaseTime*int(time.Hour)) {
 			// 伪装内容
-			tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
+			tools.BeyondRuleRedirect(ctx, faker, js)
 			return false
 		}
 		if ex := ssi.jsRepo.DecreaseRedirectCount(ssi.db, js.ID); ex != nil {
@@ -229,13 +211,13 @@ func (ssi *stcServiceImpl) JSJudgeMent(ctx iris.Context, js *models.JsManage, fa
 		}
 		if !isInKey {
 			// 伪装内容
-			tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
+			tools.BeyondRuleRedirect(ctx, faker, js)
 			return false
 		}
 	case constant.FromTypeEngine:
 		isExist, engineType := tools.GetEngineType(agent)
 		if !isExist {
-			tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
+			tools.BeyondRuleRedirect(ctx, faker, js)
 			return false
 		}
 		isInRule := false
@@ -246,7 +228,7 @@ func (ssi *stcServiceImpl) JSJudgeMent(ctx iris.Context, js *models.JsManage, fa
 			}
 		}
 		if !isInRule {
-			tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
+			tools.BeyondRuleRedirect(ctx, faker, js)
 			return false
 		}
 	}
@@ -274,7 +256,7 @@ func (ssi *stcServiceImpl) GetRedirectInfo(ctx iris.Context, js *models.JsManage
 			return
 		} else if !res {
 			// 跳转管理时间区间不符合
-			tools.BeyondRuleRedirect(ctx, faker, js.RedirectMode)
+			tools.BeyondRuleRedirect(ctx, faker, js)
 			return
 		}
 	}

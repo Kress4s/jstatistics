@@ -95,7 +95,7 @@ func (dsi *ipServiceImpl) MultiDelete(ids string) exception.Exception {
 func (dsi *ipServiceImpl) IsExistByIP(ip string) bool {
 	_, ex := dsi.repo.IsExistByIP(dsi.db, ip)
 	if ex != nil {
-		// TODO 记录日志
+		// 记录日志
 		println(ex.Error())
 		return false
 	}

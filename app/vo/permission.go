@@ -70,7 +70,6 @@ func (pur *PermissionUpdateReq) ToMap(openID string) map[string]interface{} {
 		"route":     pur.Route,
 		"identify":  pur.Identify,
 		"type":      pur.Type,
-		// TODO index is not known
 		// "index": pur.Index,
 		"parent_id": pur.ParentID,
 		"update_by": openID,

@@ -18,7 +18,7 @@ type = "postgres"
 
 [database.dsn]
 addr = "121.41.38.13:5432"
-db = "test"
+db = "postgres"
 username = "postgres"
 password = "123456"
 connect_timeout = 5

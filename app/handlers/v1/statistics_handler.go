@@ -3,8 +3,6 @@ package v1
 import (
 	"js_statistics/app/handlers"
 	"js_statistics/app/service"
-	"js_statistics/commom/tools"
-	"js_statistics/constant"
 
 	"github.com/kataras/iris/v12"
 )
@@ -30,12 +28,4 @@ func NewStatisticHandler() *StatisticHandler {
 // @Router / [get]
 func (sh *StatisticHandler) FilterJS(ctx iris.Context) {
 	sh.Svc.ProcessJsRequest(ctx)
-}
-
-func IsValidLocation(ip string) bool {
-	location, ex := tools.OriginIPLocation(ip)
-	if ex != nil {
-		return false
-	}
-	return location.Country.IsoCode == constant.CN_ISO_CODE
 }

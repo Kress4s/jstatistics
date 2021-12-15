@@ -25,7 +25,7 @@ func (u UserReq) ToModel(openID string) models.User {
 		Username: u.UserName,
 		Password: u.Password,
 		IsAdmin:  u.IsAdmin,
-		Status:   u.Status,
+		Status:   true,
 		Base: models.Base{
 			CreateBy: openID,
 			UpdateBy: openID,

@@ -25,8 +25,9 @@ type fakerServiceImpl struct {
 func GetFakerService() FakerService {
 	fakerOnce.Do(func() {
 		fakerServiceInstance = &fakerServiceImpl{
-			db:   database.GetDriver(),
-			repo: repositories.GetFakerRepo(),
+			db:      database.GetDriver(),
+			repo:    repositories.GetFakerRepo(),
+			objRepo: repositories.GetObjectRepo(),
 		}
 	})
 	return fakerServiceInstance
@@ -68,7 +69,7 @@ func (fsi *fakerServiceImpl) Update(openID string, id int64, param *vo.FakerUpda
 	if ex != nil {
 		return ex
 	}
-	if faker.Type != 0 && faker.ObjID == "" {
+	if faker.Type != 0 && len(faker.ObjID) > 0 {
 		// delete file
 		if ex := fsi.objRepo.Delete(fsi.db, faker.ObjID); ex != nil {
 			return ex

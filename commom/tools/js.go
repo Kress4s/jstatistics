@@ -26,15 +26,10 @@ var IsMobileTypeCharacters = map[string]struct{}{
 	"iphone": {}, "ipod": {}, "ipad": {}, "android": {}, "mobile": {}, "blackberry": {},
 	"webos": {}, "incognito": {}, "webmate": {}, "bada": {}, "nokia": {}, "lg": {},
 	"ucweb": {}, "skyfire": {},
-
-	// TODO 测试移动端连接
-	"postman": {},
 }
 
 var IsIOSCharacters = map[string]struct{}{
 	"iphone": {}, "ipod": {}, "ipad": {}, "ios": {},
-	// TODO 测试postman
-	"post": {},
 }
 
 func GetClintType(agent string) int {

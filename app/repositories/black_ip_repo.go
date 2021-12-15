@@ -77,8 +77,8 @@ func (dri *BlackIPRepoImpl) MultiDelete(db *gorm.DB, ids []int64) exception.Exce
 }
 
 func (dri *BlackIPRepoImpl) IsExistByIP(db *gorm.DB, ip string) (bool, exception.Exception) {
-	wip := models.WhiteIP{}
-	res := db.Where(&models.WhiteIP{IP: ip}).Find(&wip)
+	wip := models.BlackIPMgr{}
+	res := db.Where(&models.BlackIPMgr{IP: ip}).Find(&wip)
 	if res.RowsAffected == 0 {
 		return false, exception.New(response.ExceptionRecordNotFound, "recode not found")
 	}
