@@ -62,6 +62,9 @@ func OriginIPLocation(ip string) (*vo.City, exception.Exception) {
 }
 
 func LocationIP(ip string) (*Location, exception.Exception) {
+	if IsValidIP(ip) {
+		return nil, exception.New(response.ExceptionPraseIPLocationError, "请输入正确的ip地址")
+	}
 	db, err := geoip2.Open("GeoLite2-City.mmdb")
 	if err != nil {
 		log.Fatal(err)
